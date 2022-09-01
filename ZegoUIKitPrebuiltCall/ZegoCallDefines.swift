@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import ZegoUIKit
 
 public enum ZegoMenuBarButtonType: Int {
     case quitButton

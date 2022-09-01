@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ZegoUIKit
 
 class ZegoCallNomalForegroundView: UIView {
     

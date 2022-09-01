@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ZegoUIKit
 
 public protocol ZegoUIKitPrebuiltCallInvitationServiceDelegate: AnyObject {
     func requireConfig(_ data: ZegoCallInvitationData) -> ZegoUIkitPrebuiltCallConfig

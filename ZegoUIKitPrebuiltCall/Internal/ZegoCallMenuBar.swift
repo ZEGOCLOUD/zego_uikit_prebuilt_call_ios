@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ZegoUIKit
 
 protocol CallMenuBarDelegate: AnyObject {
     func onMenuBarMoreButtonClick(_ buttonList: [UIView])
