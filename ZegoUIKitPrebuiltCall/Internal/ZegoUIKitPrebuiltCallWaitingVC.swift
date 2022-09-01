@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import ZegoUIKit
+import ZegoUIKitSDK
 
 class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
     

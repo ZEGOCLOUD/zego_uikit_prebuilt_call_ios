@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import ZegoUIKit
+import ZegoUIKitSDK
 
 public class ZegoUIkitPrebuiltCallConfig: NSObject {
     /// 用于控制是否在VideoView上显示prebuilt层默认的MicrophoneStateIcon
