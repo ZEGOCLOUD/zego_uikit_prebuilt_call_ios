@@ -241,7 +241,7 @@ class CallMoreButton: UIButton {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.setImage(ZegoUIIconSet.iconMore, for: .normal)
+        self.setImage(ZegoUIKitCallIconSetType.icon_more.load(), for: .normal)
     }
     
     required init?(coder: NSCoder) {
