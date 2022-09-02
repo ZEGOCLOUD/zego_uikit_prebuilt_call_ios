@@ -41,11 +41,8 @@ enum ZegoUIKitCallIconSetType: String, Hashable {
     case icon_more_light
     
     // MARK: - Image handling
-    
-    private static let bundle = Bundle(identifier: "ZegoUIKitPrebuiltCall")
-    
     func load() -> UIImage {
-        let image = UIImage(named: self.rawValue, in: ZegoUIKitCallIconSetType.bundle, compatibleWith: nil)!
+        let image = UIImage.loadImage(name: self.rawValue, bundleName: "ZegoUIKitPrebuiltCall")
         return image
     }
 }
