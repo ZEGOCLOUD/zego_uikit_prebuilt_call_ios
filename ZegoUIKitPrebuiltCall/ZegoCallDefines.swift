@@ -42,7 +42,7 @@ enum ZegoUIKitCallIconSetType: String, Hashable {
     
     // MARK: - Image handling
     func load() -> UIImage {
-        let image = UIImage.loadImage(name: self.rawValue, bundleName: "ZegoUIKitPrebuiltCall")
+        let image = UIImage.resource.loadImage(name: self.rawValue, bundleName: "ZegoUIKitPrebuiltCall") ?? UIImage()
         return image
     }
 }
