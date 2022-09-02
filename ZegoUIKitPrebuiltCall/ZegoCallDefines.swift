@@ -42,7 +42,7 @@ enum ZegoUIKitCallIconSetType: String, Hashable {
     
     // MARK: - Image handling
     
-    private static let bundle = Bundle(identifier: bundleIdentifier)
+    private static let bundle = Bundle(identifier: "ZegoUIKitPrebuiltCall")
     
     func load() -> UIImage {
         let image = UIImage(named: self.rawValue, in: ZegoUIKitCallIconSetType.bundle, compatibleWith: nil)!
@@ -61,8 +61,6 @@ func adaptLandscapeWidth(_ x: CGFloat) -> CGFloat {
 func adaptLandscapeHeight(_ x: CGFloat) -> CGFloat {
     return x * (UIkitScreenHeight / 818.0)
 }
-
-let bundleIdentifier: String = "im.zego.uikit"
 
 func currentViewController() -> (UIViewController?) {
    var window = UIApplication.shared.keyWindow

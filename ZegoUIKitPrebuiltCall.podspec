@@ -105,7 +105,8 @@ Pod::Spec.new do |spec|
   #
 
   # spec.resource  = "icon.png"
-  spec.resources = "ZegoUIKitPrebuiltCall/Resource/*.png"
+  # spec.resources = "ZegoUIKitPrebuiltCall/Resource/Call/**/*.png"
+  spec.resource_bundle = {'ZegoUIKitPrebuiltCall' => ['ZegoUIKitPrebuiltCall/Resource/*.{xcassets}']}
 
   # spec.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
@@ -132,8 +133,10 @@ Pod::Spec.new do |spec|
   spec.requires_arc = true
   spec.swift_versions = ['5.0']
 
+  # spec.framework = 'ZegoUIKit'
+
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   # spec.dependency "JSONKit", "~> 1.4"
-  spec.dependency 'ZegoUIKit','1.0.0' 
+  spec.dependency 'ZegoUIKit','1.0.2' 
 
 end
