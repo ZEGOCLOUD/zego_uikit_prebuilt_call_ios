@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "ZegoUIKitPrebuiltCall"
-  spec.version      = "1.0.1"
+  spec.version      = "1.0.2"
   spec.summary      = "ZegoUIKitPrebuiltCall iOS SDK"
 
   # This description is used to generate tags and improve search results.
@@ -90,7 +90,7 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files  = "ZegoUIKitPrebuiltCall", "ZegoUIKitPrebuiltCall/**/*.swift"
+  spec.source_files =  "ZegoUIKitPrebuiltCall","ZegoUIKitPrebuiltCall/**/*.swift"
   # spec.exclude_files = "Classes/Exclude"
 
   # spec.public_header_files = "Classes/**/*.h"
@@ -108,12 +108,7 @@ Pod::Spec.new do |spec|
   # spec.resources = "ZegoUIKitPrebuiltCall/Resource/Call/**/*.png"
   # create  ZegoUIKitPrebuiltCall_bundle
   spec.resource_bundle = {'ZegoUIKitPrebuiltCall' => ['ZegoUIKitPrebuiltCall/Resource/*.{xcassets}']}
-
   # spec.preserve_paths = "FilesToSave", "MoreFilesToSave"
-
-  spec.subspec 'Internal' do  |ss|
-    ss.source_files = "ZegoUIKitPrebuiltCall", "ZegoUIKitPrebuiltCall/Internal/*.swift"
-  end
 
 
 
