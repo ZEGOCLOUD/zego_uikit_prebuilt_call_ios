@@ -233,7 +233,9 @@ class ZegoCallMenuBar: UIView {
 extension ZegoCallMenuBar: LeaveButtonDelegate {
     func onLeaveButtonClick(_ isLeave: Bool) {
         delegate?.onHangUp(isLeave)
-        showQuitDialogVC?.dismiss(animated: true, completion: nil)
+        if isLeave {
+            showQuitDialogVC?.dismiss(animated: true, completion: nil)
+        }
     }
 }
 
