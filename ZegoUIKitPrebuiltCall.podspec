@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "ZegoUIKitPrebuiltCall"
-  spec.version      = "1.0.0"
+  spec.version      = "1.0.1"
   spec.summary      = "ZegoUIKitPrebuiltCall iOS SDK"
 
   # This description is used to generate tags and improve search results.
@@ -106,9 +106,15 @@ Pod::Spec.new do |spec|
 
   # spec.resource  = "icon.png"
   # spec.resources = "ZegoUIKitPrebuiltCall/Resource/Call/**/*.png"
+  # create  ZegoUIKitPrebuiltCall_bundle
   spec.resource_bundle = {'ZegoUIKitPrebuiltCall' => ['ZegoUIKitPrebuiltCall/Resource/*.{xcassets}']}
 
   # spec.preserve_paths = "FilesToSave", "MoreFilesToSave"
+
+  spec.subspec 'Internal' do  |ss|
+    ss.source_files = "ZegoUIKitPrebuiltCall", "ZegoUIKitPrebuiltCall/Internal/*.swift"
+  end
+
 
 
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
