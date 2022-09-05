@@ -112,7 +112,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         self.avContainer.setLayout(self.config.layout.mode, config: layoutConfig, audioVideoConfig: audioVideoConfig)
         self.menuBar.backgroundColor = UIColor.clear
         self.menuBar.delegate = self
-        ZegoUIKit.shared.setAudioOutputToSpeaker(enable: self.config.useSpeakerWhenjoining)
+        ZegoUIKit.shared.setAudioOutputToSpeaker(enable: self.config.useSpeakerWhenJoining)
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(tapClick))
         self.view.addGestureRecognizer(tap)
@@ -171,8 +171,8 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
               let userName = self.userName
         else { return }
         ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID)
-        ZegoUIKit.shared.turnCameraOn(userID, isOn: self.config.turnOnCameraWhenjoining)
-        ZegoUIKit.shared.turnMicrophoneOn(userID, isOn: self.config.turnOnMicrophoneWhenjoining)
+        ZegoUIKit.shared.turnCameraOn(userID, isOn: self.config.turnOnCameraWhenJoining)
+        ZegoUIKit.shared.turnMicrophoneOn(userID, isOn: self.config.turnOnMicrophoneWhenJoining)
     }
     
     deinit {
