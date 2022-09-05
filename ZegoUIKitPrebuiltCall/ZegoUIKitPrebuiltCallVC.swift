@@ -98,7 +98,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         self.menuBar.frame = CGRect.init(x: 0, y: self.view.frame.size.height - adaptLandscapeHeight(61), width: self.view.frame.size.width, height: adaptLandscapeHeight(61))
     }
 
-    public func addButtonToMenuBar(_ button: UIButton) {
+    public func addButtonToBottomMenuBar(_ button: UIButton) {
         self.menuBar.addButtonToMenuBar(button)
     }
     
@@ -111,7 +111,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(tapClick))
         self.view.addGestureRecognizer(tap)
         
-        if self.config.hideMenuBarAutomatically {
+        if self.config.bottomMenuBarConfig.hideAutomatically {
             //5秒自动隐藏
             guard let timer = timer else {
                 return
@@ -128,7 +128,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     }
     
     @objc func tapClick() {
-        if self.config.hideMenuBardByClick {
+        if self.config.bottomMenuBarConfig.hideByClick {
             self.hiddenMenuBar(!self.isHidenMenuBar)
             guard let timer = timer else {
                 return

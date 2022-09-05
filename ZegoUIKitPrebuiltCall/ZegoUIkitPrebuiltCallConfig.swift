@@ -9,34 +9,43 @@ import UIKit
 import ZegoUIKitSDK
 
 public class ZegoUIkitPrebuiltCallConfig: NSObject {
-    /// 用于控制是否在VideoView上显示prebuilt层默认的MicrophoneStateIcon
-    public var showMicrophoneStateOnView: Bool = true
-    /// 用于控制是否在VideoView上显示prebuilt层默认的CameraStateIcon
-    public var showCameraStateOnView: Bool = true
-    /// 用于控制是否在VideoView上显示prebuilt层默认的UserNameLabel
-    public var showUserNameOnView: Bool = true
-    ///
+    public var audioVideoViewConfig: ZegoAudioVideoViewConfig = ZegoAudioVideoViewConfig()
+    public var bottomMenuBarConfig: ZegoBottomMenuBarConfig = ZegoBottomMenuBarConfig()
     public var layout: ZegoLayout = ZegoLayout()
-    /// 是否默认开启摄像头，默认为开。
+    /// Whether the camera is enabled by default. The default value is enabled.
     public var turnOnCameraWhenjoining: Bool = true
-    /// 是否默认开启麦克风，默认为开。
+    /// Is the microphone enabled by default? It is enabled by default.
     public var turnOnMicrophoneWhenjoining: Bool = true
-    /// 是否默认使用扬声器，默认为是。如果否，使用系统默认设备。
+    /// Is the speaker used by default? The default is Yes. If no, use the default device.
     public var useSpeakerWhenjoining: Bool = false
-    /// 在ControlBar最多能显示的按钮数量，如果超过了该值，则显示“更多”按钮
-    public var menuBarButtons: [ZegoMenuBarButtonType] = [.toggleCameraButton,.toggleMicrophoneButton,.quitButton,.swtichAudioOutputButton,.swtichCameraFacingButton]
-    /// 在ControlBar最多能显示的按钮数量，如果超过了该值，则显示“更多”按钮在ControlBar最多能显示的按钮数量，如果超过了该值，则显示“更多”按钮,该值最大为5,注意这个值是包含“更多”按钮
-    public var menuBarButtonsMaxCount: Int = 5
-    /// 是否屏幕无操作5秒后，或用户点击屏幕无响应区位置，顶部、底部收起
-    public var hideMenuBarAutomatically: Bool = true
-    /// 是否可以点击无响应区域主动隐藏
-    public var hideMenuBardByClick: Bool = true
-    /// 点击挂断按钮时是否显示离开房间对话框的信息。不设置就不显示，设置了就会显示。
+    /// The maximum number of buttons that can be displayed in the ControlBar. If this value is exceeded, the "More" button is displayed
+    /// Whether to display information about the Leave Room dialog box when the hang up button is clicked. If it is not set, it will not be displayed. If it is set, it will be displayed.
     public var hangUpConfirmDialogInfo: ZegoLeaveConfirmDialogInfo?
-    ///默认false，普通黑边模式（否则横屏很难看）
-    /// if set to true, video view will proportional zoom fills the entire View and may be partially cut
-    /// if set to false, video view proportional scaling up, there may be black borders
-    public var useVideoViewAspectFill: Bool = false
+}
+
+public class ZegoAudioVideoViewConfig: NSObject {
+    /// Used to control whether the default MicrophoneStateIcon for the prebuilt layer is displayed on VideoView.
+    public var showMicrophoneStateOnView: Bool = true
+    /// Used to control whether the default CameraStateIcon for the prebuilt layer is displayed on VideoView.
+    public var showCameraStateOnView: Bool = true
+    /// Controls whether to display the default UserNameLabel for the prebuilt layer on VideoView
+    public var showUserNameOnView: Bool = true
+    /// Whether to display the sound waves around the profile picture in voice mode
+    public var showSoundWavesInAudioMode: Bool = true
+    /// Default true, normal black edge mode (otherwise landscape is ugly)
+    public var useVideoViewAspectFill: Bool = true
+}
+
+public class ZegoBottomMenuBarConfig: NSObject {
+    /// Buttons that need to be displayed on the MenuBar are displayed in the order of the actual List
+    public var buttons: [ZegoMenuBarButtonName] = [.toggleCameraButton,.toggleMicrophoneButton,.hangUpButton,.swtichAudioOutputButton,.switchCameraButton]
+    /// 在MenuBar最多能显示的按钮数量，该值最大为5。如果超过了该值，则显示“更多”按钮.注意这个值是包含“更多”按钮。
+    public var maxCount: UInt = 5
+    /// Yes no operation on the screen for 5 seconds, or if the user clicks the position of the non-response area on the screen, the top and bottom will be folded up
+    public var hideAutomatically: Bool = true
+    /// Whether the user can click the position of the non-responsive area of the screen, and fold up the top and bottom
+    public var hideByClick: Bool = true
+
 }
 
 public class ZegoLayout: NSObject {

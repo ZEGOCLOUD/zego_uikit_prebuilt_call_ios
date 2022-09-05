@@ -9,11 +9,11 @@ import Foundation
 import UIKit
 import ZegoUIKitSDK
 
-public enum ZegoMenuBarButtonType: Int {
-    case quitButton
+public enum ZegoMenuBarButtonName: Int {
+    case hangUpButton
     case toggleCameraButton
     case toggleMicrophoneButton
-    case swtichCameraFacingButton
+    case switchCameraButton
     case swtichAudioOutputButton
 }
 

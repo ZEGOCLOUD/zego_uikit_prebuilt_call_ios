@@ -60,14 +60,14 @@ class ZegoCallNomalForegroundView: UIView {
             return
         }
         var bottomWidth: CGFloat = 5
-        if config.showMicrophoneStateOnView {
+        if config.audioVideoViewConfig.showMicrophoneStateOnView {
             bottomWidth = bottomWidth + 18 + 5
         }
-        if config.showCameraStateOnView {
+        if config.audioVideoViewConfig.showCameraStateOnView {
             bottomWidth =  bottomWidth + 18 + 5
         }
         var textWidth: CGFloat = 0
-        if config.showUserNameOnView {
+        if config.audioVideoViewConfig.showUserNameOnView {
             textWidth = self.textWidth(UIFont.systemFont(ofSize: 12), text: self.userInfo?.userName ?? "")
             if bottomWidth + textWidth + 5 > self.frame.size.width && self.frame.size.width > 0 {
                 textWidth = textWidth - (bottomWidth + textWidth + 5) + (self.frame.size.width - 5)
@@ -79,22 +79,22 @@ class ZegoCallNomalForegroundView: UIView {
             bottomWidth = self.frame.size.width - 10
         }
         
-        if config.showMicrophoneStateOnView {
+        if config.audioVideoViewConfig.showMicrophoneStateOnView {
             self.micStateIcon.frame = CGRect.init(x: bottomWidth - 5 - 18, y: 2.5, width: 18, height: 18)
         } else {
             self.micStateIcon.frame = CGRect.init(x: bottomWidth - 5 , y: 0, width: 0, height: 0)
         }
-        if config.showCameraStateOnView {
+        if config.audioVideoViewConfig.showCameraStateOnView {
             self.camerStateIcon.frame = CGRect.init(x: bottomWidth - 5 - self.micStateIcon.bounds.size.width - 5 - 18, y: 2.5, width: 18, height: 18)
         } else {
             self.camerStateIcon.frame = CGRect.init(x: bottomWidth - 5 - self.micStateIcon.bounds.size.width, y: 0, width: 0, height: 0)
         }
-        if config.showUserNameOnView {
+        if config.audioVideoViewConfig.showUserNameOnView {
             var rightMargin : CGFloat = 0
-            if config.showMicrophoneStateOnView {
+            if config.audioVideoViewConfig.showMicrophoneStateOnView {
                 rightMargin = 5 + 18
             }
-            if config.showCameraStateOnView {
+            if config.audioVideoViewConfig.showCameraStateOnView {
                 rightMargin = rightMargin + 5 + 18
             }
             self.userNameLabel.frame = CGRect.init(x: bottomWidth - rightMargin - 5 - textWidth, y: 2.5, width: textWidth, height: 18)
