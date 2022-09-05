@@ -23,7 +23,7 @@ class ZegoCallMenuBar: UIView {
     public var userID: String?
     public var config: ZegoUIkitPrebuiltCallConfig = ZegoUIkitPrebuiltCallConfig() {
         didSet {
-            self.barButtons = config.menuBarButtons
+            self.barButtons = config.bottomMenuBarConfig.buttons
         }
     }
     public weak var delegate: CallMenuBarDelegate?
@@ -33,7 +33,7 @@ class ZegoCallMenuBar: UIView {
     
     private var buttons: [UIView] = []
     private var moreButtonList: [UIView] = []
-    private var barButtons:[ZegoMenuBarButtonType] = [] {
+    private var barButtons:[ZegoMenuBarButtonName] = [] {
         didSet {
             self.createButton()
             self.setupLayout()
@@ -90,7 +90,7 @@ class ZegoCallMenuBar: UIView {
     /// 添加自定义按钮
     /// - Parameter button: <#button description#>
     public func addButtonToMenuBar(_ button: UIButton) {
-        if self.buttons.count > self.config.menuBarButtonsMaxCount - 1 {
+        if self.buttons.count > self.config.bottomMenuBarConfig.maxCount - 1 {
             if self.buttons.last is CallMoreButton {
                 self.moreButtonList.append(button)
                 return
@@ -164,7 +164,7 @@ class ZegoCallMenuBar: UIView {
         var index = 0
         for item in self.barButtons {
             index = index + 1
-            if self.config.menuBarButtonsMaxCount < self.barButtons.count && index == self.config.menuBarButtonsMaxCount {
+            if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index == self.config.bottomMenuBarConfig.maxCount {
                 //显示更多按钮
                 let moreButton: CallMoreButton = CallMoreButton()
                 moreButton.addTarget(self, action: #selector(moreClick), for: .touchUpInside)
@@ -172,9 +172,9 @@ class ZegoCallMenuBar: UIView {
                 self.addSubview(moreButton)
             }
             switch item {
-            case .swtichCameraFacingButton:
-                let flipCameraComponent: ZegoSwitchCameraFacingButton = ZegoSwitchCameraFacingButton()
-                if self.config.menuBarButtonsMaxCount < self.barButtons.count && index >= self.config.menuBarButtonsMaxCount {
+            case .switchCameraButton:
+                let flipCameraComponent: ZegoSwitchCameraButton = ZegoSwitchCameraButton()
+                if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index >= self.config.bottomMenuBarConfig.maxCount {
                     self.moreButtonList.append(flipCameraComponent)
                 } else {
                     self.buttons.append(flipCameraComponent)
@@ -184,7 +184,7 @@ class ZegoCallMenuBar: UIView {
                 let switchCameraComponent: ZegoToggleCameraButton = ZegoToggleCameraButton()
                 switchCameraComponent.isOn = self.config.turnOnCameraWhenjoining
                 switchCameraComponent.userID = ZegoUIKit.shared.localUserInfo?.userID
-                if self.config.menuBarButtonsMaxCount < self.barButtons.count && index >= self.config.menuBarButtonsMaxCount {
+                if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index >= self.config.bottomMenuBarConfig.maxCount {
                     self.moreButtonList.append(switchCameraComponent)
                 } else {
                     self.buttons.append(switchCameraComponent)
@@ -194,7 +194,7 @@ class ZegoCallMenuBar: UIView {
                 let micButtonComponent: ZegoToggleMicrophoneButton = ZegoToggleMicrophoneButton()
                 micButtonComponent.userID = ZegoUIKit.shared.localUserInfo?.userID
                 micButtonComponent.isOn = self.config.turnOnMicrophoneWhenjoining
-                if self.config.menuBarButtonsMaxCount < self.barButtons.count && index >= self.config.menuBarButtonsMaxCount {
+                if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index >= self.config.bottomMenuBarConfig.maxCount {
                     self.moreButtonList.append(micButtonComponent)
                 } else {
                     self.buttons.append(micButtonComponent)
@@ -203,17 +203,17 @@ class ZegoCallMenuBar: UIView {
             case .swtichAudioOutputButton:
                 let audioOutputButtonComponent: ZegoSwitchAudioOutputButton = ZegoSwitchAudioOutputButton()
                 audioOutputButtonComponent.useSpeaker = self.config.useSpeakerWhenjoining
-                if self.config.menuBarButtonsMaxCount < self.barButtons.count && index >= self.config.menuBarButtonsMaxCount {
+                if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index >= self.config.bottomMenuBarConfig.maxCount {
                     self.moreButtonList.append(audioOutputButtonComponent)
                 } else {
                     self.buttons.append(audioOutputButtonComponent)
                     self.addSubview(audioOutputButtonComponent)
                 }
-            case .quitButton:
+            case .hangUpButton:
                 let endButtonComponent: ZegoLeaveButton = ZegoLeaveButton()
                 endButtonComponent.quitConfirmDialogInfo = self.config.hangUpConfirmDialogInfo ?? ZegoLeaveConfirmDialogInfo()
                 endButtonComponent.delegate = self
-                if self.config.menuBarButtonsMaxCount < self.barButtons.count && index >= self.config.menuBarButtonsMaxCount {
+                if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index >= self.config.bottomMenuBarConfig.maxCount {
                     self.moreButtonList.append(endButtonComponent)
                 } else {
                     self.buttons.append(endButtonComponent)
