@@ -9,7 +9,7 @@ import UIKit
 import ZegoUIKitSDK
 
 public class ZegoUIkitPrebuiltCallConfig: NSObject {
-    public var audioVideoViewConfig: ZegoAudioVideoViewConfig = ZegoAudioVideoViewConfig()
+    public var audioVideoViewConfig: ZegoPrebuiltAudioVideoViewConfig = ZegoPrebuiltAudioVideoViewConfig()
     public var bottomMenuBarConfig: ZegoBottomMenuBarConfig = ZegoBottomMenuBarConfig()
     public var layout: ZegoLayout = ZegoLayout()
     /// Whether the camera is enabled by default. The default value is enabled.
@@ -21,6 +21,19 @@ public class ZegoUIkitPrebuiltCallConfig: NSObject {
     /// The maximum number of buttons that can be displayed in the ControlBar. If this value is exceeded, the "More" button is displayed
     /// Whether to display information about the Leave Room dialog box when the hang up button is clicked. If it is not set, it will not be displayed. If it is set, it will be displayed.
     public var hangUpConfirmDialogInfo: ZegoLeaveConfirmDialogInfo?
+}
+
+public class ZegoPrebuiltAudioVideoViewConfig: NSObject {
+    /// Used to control whether the default MicrophoneStateIcon for the prebuilt layer is displayed on VideoView.
+    public var showMicrophoneStateOnView: Bool = true
+    /// Used to control whether the default CameraStateIcon for the prebuilt layer is displayed on VideoView.
+    public var showCameraStateOnView: Bool = false
+    /// Controls whether to display the default UserNameLabel for the prebuilt layer on VideoView
+    public var showUserNameOnView: Bool = true
+    /// Whether to display the sound waves around the profile picture in voice mode
+    public var showSoundWavesInAudioMode: Bool = true
+    /// Default true, normal black edge mode (otherwise landscape is ugly)
+    public var useVideoViewAspectFill: Bool = true
 }
 
 public class ZegoBottomMenuBarConfig: NSObject {

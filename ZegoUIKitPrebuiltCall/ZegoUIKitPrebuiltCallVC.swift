@@ -106,7 +106,10 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         guard let layoutConfig = self.config.layout.config else {
             fatalError("must set the layout config")
         }
-        self.avContainer.setLayout(self.config.layout.mode, config: layoutConfig, audioVideoConfig: self.config.audioVideoViewConfig)
+        let audioVideoConfig: ZegoAudioVideoViewConfig = ZegoAudioVideoViewConfig()
+        audioVideoConfig.showSoundWavesInAudioMode = self.config.audioVideoViewConfig.showSoundWavesInAudioMode
+        audioVideoConfig.useVideoViewAspectFill = self.config.audioVideoViewConfig.useVideoViewAspectFill
+        self.avContainer.setLayout(self.config.layout.mode, config: layoutConfig, audioVideoConfig: audioVideoConfig)
         self.menuBar.backgroundColor = UIColor.clear
         self.menuBar.delegate = self
         ZegoUIKit.shared.setAudioOutputToSpeaker(enable: self.config.useSpeakerWhenjoining)
