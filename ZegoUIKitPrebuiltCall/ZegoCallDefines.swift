@@ -50,6 +50,7 @@ enum ZegoUIKitCallIconSetType: String, Hashable {
 
 let UIkitScreenHeight = UIScreen.main.bounds.size.height
 let UIKitScreenWidth = UIScreen.main.bounds.size.width
+let UIKitBottomSafeAreaHeight = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
 
 func adaptLandscapeWidth(_ x: CGFloat) -> CGFloat {
     return x * (UIKitScreenWidth / 375.0)

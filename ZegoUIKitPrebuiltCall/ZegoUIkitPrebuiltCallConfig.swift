@@ -23,19 +23,6 @@ public class ZegoUIkitPrebuiltCallConfig: NSObject {
     public var hangUpConfirmDialogInfo: ZegoLeaveConfirmDialogInfo?
 }
 
-public class ZegoAudioVideoViewConfig: NSObject {
-    /// Used to control whether the default MicrophoneStateIcon for the prebuilt layer is displayed on VideoView.
-    public var showMicrophoneStateOnView: Bool = true
-    /// Used to control whether the default CameraStateIcon for the prebuilt layer is displayed on VideoView.
-    public var showCameraStateOnView: Bool = true
-    /// Controls whether to display the default UserNameLabel for the prebuilt layer on VideoView
-    public var showUserNameOnView: Bool = true
-    /// Whether to display the sound waves around the profile picture in voice mode
-    public var showSoundWavesInAudioMode: Bool = true
-    /// Default true, normal black edge mode (otherwise landscape is ugly)
-    public var useVideoViewAspectFill: Bool = true
-}
-
 public class ZegoBottomMenuBarConfig: NSObject {
     /// Buttons that need to be displayed on the MenuBar are displayed in the order of the actual List
     public var buttons: [ZegoMenuBarButtonName] = [.toggleCameraButton,.toggleMicrophoneButton,.hangUpButton,.swtichAudioOutputButton,.switchCameraButton]

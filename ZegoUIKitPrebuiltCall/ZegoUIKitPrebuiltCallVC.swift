@@ -95,7 +95,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.avContainer.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height)
-        self.menuBar.frame = CGRect.init(x: 0, y: self.view.frame.size.height - adaptLandscapeHeight(61), width: self.view.frame.size.width, height: adaptLandscapeHeight(61))
+        self.menuBar.frame = CGRect.init(x: 0, y: self.view.frame.size.height - adaptLandscapeHeight(61) - CGFloat(UIKitBottomSafeAreaHeight), width: self.view.frame.size.width, height: adaptLandscapeHeight(61) + CGFloat(UIKitBottomSafeAreaHeight))
     }
 
     public func addButtonToBottomMenuBar(_ button: UIButton) {
@@ -103,7 +103,10 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     }
     
     func setupLayout() {
-        self.avContainer.setLayout(self.config.layout.mode, config: self.config.layout.config)
+        guard let layoutConfig = self.config.layout.config else {
+            fatalError("must set the layout config")
+        }
+        self.avContainer.setLayout(self.config.layout.mode, config: layoutConfig, audioVideoConfig: self.config.audioVideoViewConfig)
         self.menuBar.backgroundColor = UIColor.clear
         self.menuBar.delegate = self
         ZegoUIKit.shared.setAudioOutputToSpeaker(enable: self.config.useSpeakerWhenjoining)
@@ -150,8 +153,8 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     private func hiddenMenuBar(_ isHidden: Bool) {
         self.isHidenMenuBar = isHidden
         UIView.animate(withDuration: 0.5) {
-            let y: CGFloat = isHidden ? UIScreen.main.bounds.size.height:UIScreen.main.bounds.size.height - adaptLandscapeHeight(61)
-            self.menuBar.frame = CGRect.init(x: 0, y: y, width: UIScreen.main.bounds.size.width, height: adaptLandscapeHeight(61))
+            let y: CGFloat = isHidden ? UIScreen.main.bounds.size.height:UIScreen.main.bounds.size.height - adaptLandscapeHeight(61) - CGFloat(UIKitBottomSafeAreaHeight)
+            self.menuBar.frame = CGRect.init(x: 0, y: y, width: UIScreen.main.bounds.size.width, height: adaptLandscapeHeight(61) + CGFloat(UIKitBottomSafeAreaHeight))
         }
     }
     
