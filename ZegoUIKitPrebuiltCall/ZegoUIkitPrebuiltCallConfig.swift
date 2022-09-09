@@ -17,7 +17,7 @@ public class ZegoUIkitPrebuiltCallConfig: NSObject {
     /// Is the microphone enabled by default? It is enabled by default.
     public var turnOnMicrophoneWhenJoining: Bool = true
     /// Is the speaker used by default? The default is Yes. If no, use the default device.
-    public var useSpeakerWhenJoining: Bool = false
+    public var useSpeakerWhenJoining: Bool = true
     /// The maximum number of buttons that can be displayed in the ControlBar. If this value is exceeded, the "More" button is displayed
     /// Whether to display information about the Leave Room dialog box when the hang up button is clicked. If it is not set, it will not be displayed. If it is set, it will be displayed.
     public var hangUpConfirmDialogInfo: ZegoLeaveConfirmDialogInfo?
