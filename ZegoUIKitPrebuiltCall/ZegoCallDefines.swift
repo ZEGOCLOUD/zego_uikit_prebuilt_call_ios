@@ -15,6 +15,7 @@ public enum ZegoMenuBarButtonName: Int {
     case toggleMicrophoneButton
     case switchCameraButton
     case swtichAudioOutputButton
+    case showMemberListButton
 }
 
 public enum ZegoViewPosition: Int {
@@ -24,11 +25,23 @@ public enum ZegoViewPosition: Int {
     case bottomRight
 }
 
+public enum ZegoCallType: Int {
+    case oneOnOneVoiceCall
+    case oneOnOneVideoCall
+    case groupVoiceCall
+    case groupVideoCall
+}
+
 public class ZegoCallInvitationData: NSObject {
     public var callID: String?
     public var type: ZegoInvitationType?
     public var invitees: [ZegoUIkitUser]?
     public var inviter: ZegoUIkitUser?
+}
+
+public enum ZegoMenuBarStyle: Int {
+    case light
+    case dark
 }
 
 enum ZegoUIKitCallIconSetType: String, Hashable {
@@ -39,6 +52,9 @@ enum ZegoUIKitCallIconSetType: String, Hashable {
     case call_video_selected_icon
     case icon_more
     case icon_more_light
+    case icon_member_normal
+    case icon_back
+    case icon_camera_overturn
     
     // MARK: - Image handling
     func load() -> UIImage {
@@ -51,6 +67,7 @@ enum ZegoUIKitCallIconSetType: String, Hashable {
 let UIkitScreenHeight = UIScreen.main.bounds.size.height
 let UIKitScreenWidth = UIScreen.main.bounds.size.width
 let UIKitBottomSafeAreaHeight = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
+let UIKitTopSafeAreaHeight = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
 
 func adaptLandscapeWidth(_ x: CGFloat) -> CGFloat {
     return x * (UIKitScreenWidth / 375.0)

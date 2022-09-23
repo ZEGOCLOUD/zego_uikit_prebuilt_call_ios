@@ -8,25 +8,25 @@
 import UIKit
 import ZegoUIKitSDK
 
-protocol CallMenuBarDelegate: AnyObject {
+protocol ZegoCallLightBottomMenuBarDelegate: AnyObject {
     func onMenuBarMoreButtonClick(_ buttonList: [UIView])
-    func onHangUp(_ isHandUp: Bool)
+    func onHangUp(_ isHandup: Bool)
 }
 
-extension CallMenuBarDelegate {
+extension ZegoCallLightBottomMenuBarDelegate {
     func onMenuBarMoreButtonClick(_ buttonList: [UIView]) { }
-    func onHandup(_ isHandUp: Bool){ }
+    func onHangUp(_ isHandup: Bool){ }
 }
 
-class ZegoCallMenuBar: UIView {
+class ZegoCallLightBottomMenuBar: UIView {
     
     public var userID: String?
-    public var config: ZegoUIkitPrebuiltCallConfig = ZegoUIkitPrebuiltCallConfig() {
+    public var config: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallConfig(.oneOnOneVideoCall) {
         didSet {
             self.barButtons = config.bottomMenuBarConfig.buttons
         }
     }
-    public weak var delegate: CallMenuBarDelegate?
+    public weak var delegate: ZegoCallLightBottomMenuBarDelegate?
     
     
     weak var showQuitDialogVC: UIViewController?
@@ -211,7 +211,24 @@ class ZegoCallMenuBar: UIView {
                 }
             case .hangUpButton:
                 let endButtonComponent: ZegoLeaveButton = ZegoLeaveButton()
-                endButtonComponent.quitConfirmDialogInfo = self.config.hangUpConfirmDialogInfo ?? ZegoLeaveConfirmDialogInfo()
+                if let leaveConfirmDialogInfo = self.config.hangUpConfirmDialogInfo {
+                    if leaveConfirmDialogInfo.title == "" || leaveConfirmDialogInfo.title == nil {
+                        leaveConfirmDialogInfo.title = "Leave the room"
+                    }
+                    if leaveConfirmDialogInfo.message == "" || leaveConfirmDialogInfo.title == nil {
+                        leaveConfirmDialogInfo.message = "Are you sure to leave the room?"
+                    }
+                    if leaveConfirmDialogInfo.cancelButtonName == "" || leaveConfirmDialogInfo.cancelButtonName == nil  {
+                        leaveConfirmDialogInfo.cancelButtonName = "Cancel"
+                    }
+                    if leaveConfirmDialogInfo.confirmButtonName == "" || leaveConfirmDialogInfo.confirmButtonName == nil  {
+                        leaveConfirmDialogInfo.confirmButtonName = "Confirm"
+                    }
+                    if leaveConfirmDialogInfo.dialogPresentVC == nil  {
+                        leaveConfirmDialogInfo.dialogPresentVC = self.showQuitDialogVC
+                    }
+                    endButtonComponent.quitConfirmDialogInfo = leaveConfirmDialogInfo
+                }
                 endButtonComponent.delegate = self
                 if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index >= self.config.bottomMenuBarConfig.maxCount {
                     self.moreButtonList.append(endButtonComponent)
@@ -219,6 +236,11 @@ class ZegoCallMenuBar: UIView {
                     self.buttons.append(endButtonComponent)
                     self.addSubview(endButtonComponent)
                 }
+            case .showMemberListButton:
+                let memberButton: ZegoVideoConferenceMemberButton = ZegoVideoConferenceMemberButton()
+                self.buttons.append(memberButton)
+                self.addSubview(memberButton)
+                memberButton.addTarget(self, action: #selector(memberButtonClick), for: .touchUpInside)
             }
         }
     }
@@ -228,9 +250,13 @@ class ZegoCallMenuBar: UIView {
         self.delegate?.onMenuBarMoreButtonClick(self.moreButtonList)
     }
     
+    @objc func memberButtonClick() {
+        
+    }
+    
 }
 
-extension ZegoCallMenuBar: LeaveButtonDelegate {
+extension ZegoCallLightBottomMenuBar: LeaveButtonDelegate {
     func onLeaveButtonClick(_ isLeave: Bool) {
         delegate?.onHangUp(isLeave)
         if isLeave {

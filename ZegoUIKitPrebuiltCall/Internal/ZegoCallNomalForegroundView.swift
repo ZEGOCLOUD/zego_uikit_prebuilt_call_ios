@@ -23,7 +23,7 @@ class ZegoCallNomalForegroundView: UIView {
         view.layer.cornerRadius = 6
         return view
     }()
-    var config: ZegoUIkitPrebuiltCallConfig?
+    var config: ZegoUIKitPrebuiltCallConfig?
     var userInfo: ZegoUIkitUser? {
         didSet {
             guard let userInfo = userInfo else {
@@ -40,7 +40,7 @@ class ZegoCallNomalForegroundView: UIView {
         }
     }
     
-    init(_ config: ZegoUIkitPrebuiltCallConfig, frame: CGRect) {
+    init(_ config: ZegoUIKitPrebuiltCallConfig, frame: CGRect) {
         super.init(frame: frame)
         self.config = config
         self.addSubview(self.bottomView)
