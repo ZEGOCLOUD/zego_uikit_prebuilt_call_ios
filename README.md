@@ -115,7 +115,7 @@ Open the `Info.plist`, add the following code inside the `dict` part:
 <string>We require microphone access to connect to a call</string>
 ```
 
-<img src="http://doc.oa.zego.im/Pics/ZegoUIKit/iOS/config_device_permissions.png" width = 600>
+<img src="https://storage.zego.im/sdk-doc/Pics/ZegoUIKit/iOS/config_device_permissions.png" width = 600>
 
 
 ## Run & Test
