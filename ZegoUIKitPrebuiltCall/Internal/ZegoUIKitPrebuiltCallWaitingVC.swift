@@ -12,6 +12,13 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
     
     private let help: ZegoUIKitPrebuiltCallWaitingVC_Help = ZegoUIKitPrebuiltCallWaitingVC_Help()
     
+    @IBOutlet weak var backgroundImage: UIImageView!{
+        didSet {
+            backgroundImage.image = ZegoUIKitCallIconSetType.call_waiting_bg.load()
+        }
+    }
+    
+    
     @IBOutlet weak var videoPreviewView: ZegoAudioVideoView! {
         didSet {
             if self.isInviter && self.callInvitationData?.type == .videoCall {
@@ -111,8 +118,10 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
             if self.isInviter && callInvitationData?.type == .videoCall {
                 videoPreviewView.userID = callInvitationData?.inviter?.userID
                 videoPreviewView.isHidden = false
+                switchFacingCameraButton.isHidden = false
             } else {
                 videoPreviewView.isHidden = true
+                switchFacingCameraButton.isHidden = true
             }
         }
     }

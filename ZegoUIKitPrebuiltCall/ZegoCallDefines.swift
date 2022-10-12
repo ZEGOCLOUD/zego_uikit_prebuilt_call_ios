@@ -55,6 +55,7 @@ enum ZegoUIKitCallIconSetType: String, Hashable {
     case icon_member_normal
     case icon_back
     case icon_camera_overturn
+    case call_waiting_bg
     
     // MARK: - Image handling
     func load() -> UIImage {
