@@ -105,7 +105,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         if ZegoUIKitPrebuiltCallInvitationService.shared.isCalling {
             guard let userID = inviter.userID else { return }
             let dataDict: [String : AnyObject] = ["reason":"busy" as AnyObject,"invitationID": pluginInvitationID as AnyObject]
-            ZegoUIKitInvitationService.shared.refuseInvitation(userID, data: dataDict.jsonString)
+            ZegoUIKitInvitationService.shared.refuseInvitation(userID, data: dataDict.call_jsonString)
         } else {
             let callData = ZegoCallInvitationData()
             if let dataDic = dataDic {

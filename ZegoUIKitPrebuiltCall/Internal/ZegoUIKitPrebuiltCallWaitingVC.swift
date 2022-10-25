@@ -112,7 +112,7 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
             }
             
             let refuseData: [String : AnyObject] = ["reason": "decline" as AnyObject, "invitationID": callInvitationData?.invitationID as AnyObject]
-            declineButton.data = refuseData.jsonString
+            declineButton.data = refuseData.call_jsonString
             
             if let inviter = callInvitationData?.inviter {
                 declineButton.inviterID = inviter.userID

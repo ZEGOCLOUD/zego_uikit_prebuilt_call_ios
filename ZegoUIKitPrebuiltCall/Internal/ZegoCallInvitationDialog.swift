@@ -45,7 +45,7 @@ class ZegoCallInvitationDialog: UIView {
             self.acceptButton.inviterID = invitationData?.inviter?.userID
             self.refuseButton.inviterID = invitationData?.inviter?.userID
             let refuseData: [String : AnyObject] = ["reason": "decline" as AnyObject, "invitationID": invitationData?.invitationID as AnyObject]
-            self.refuseButton.data = refuseData.jsonString
+            self.refuseButton.data = refuseData.call_jsonString
         }
     }
     
