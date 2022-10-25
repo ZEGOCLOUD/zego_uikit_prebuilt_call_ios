@@ -76,17 +76,29 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     func startIncomingRing() {
         var ringResourcePath: String? = self.config?.incomingCallRingtone
         if ringResourcePath == nil {
-            ringResourcePath = Bundle(for: ZegoUIKitPrebuiltCallInvitationService.self).path(forResource: "zego_incoming", ofType: "mp3")
+            let musicBundle = self.getMusicBundle()
+            ringResourcePath = musicBundle?.path(forResource: "zego_incoming", ofType: "mp3")
         }
-        ZegoCallAudioPlayerTool.startPlay(ringResourcePath!)
+        guard let ringResourcePath = ringResourcePath else { return }
+        ZegoCallAudioPlayerTool.startPlay(ringResourcePath)
     }
-    
+
     func startOutgoingRing() {
         var ringResourcePath: String? = self.config?.outgoingCallRingtone
         if ringResourcePath == nil {
-            ringResourcePath = Bundle(for: ZegoUIKitPrebuiltCallInvitationService.self).path(forResource: "zego_outgoing", ofType: "mp3")
+            let musicBundle = self.getMusicBundle()
+            ringResourcePath = musicBundle?.path(forResource: "zego_outgoing", ofType: "mp3")
         }
-        ZegoCallAudioPlayerTool.startPlay(ringResourcePath!)
+        guard let ringResourcePath = ringResourcePath else { return }
+        ZegoCallAudioPlayerTool.startPlay(ringResourcePath)
+    }
+    
+    func getMusicBundle() -> Bundle? {
+        guard let resourcePath: String = Bundle.main.resourcePath else { return nil }
+        let pathComponent = "/Frameworks/ZegoUIKitPrebuiltCall.framework/ZegoUIKitPrebuiltCall.bundle"
+        let bundlePath = resourcePath + pathComponent
+        let bundle = Bundle(path: bundlePath)
+        return bundle
     }
     
 }
