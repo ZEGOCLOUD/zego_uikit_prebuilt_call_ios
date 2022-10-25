@@ -101,6 +101,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     
     public init(_ data: ZegoCallInvitationData, config: ZegoUIKitPrebuiltCallConfig?) {
         super.init(nibName: nil, bundle: nil)
+        self.help.callVC = self
         ZegoUIKit.shared.addEventHandler(self.help)
         self.userID = ZegoUIKit.shared.localUserInfo?.userID
         self.userName = ZegoUIKit.shared.localUserInfo?.userName

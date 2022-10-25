@@ -12,12 +12,11 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
     
     private let help: ZegoUIKitPrebuiltCallWaitingVC_Help = ZegoUIKitPrebuiltCallWaitingVC_Help()
     
-    @IBOutlet weak var backgroundImage: UIImageView!{
+    @IBOutlet weak var backgroundImage: UIImageView! {
         didSet {
             backgroundImage.image = ZegoUIKitCallIconSetType.call_waiting_bg.load()
         }
     }
-    
     
     @IBOutlet weak var videoPreviewView: ZegoAudioVideoView! {
         didSet {
@@ -88,7 +87,12 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
         }
     }
     
-    @IBOutlet weak var switchFacingCameraButton: ZegoSwitchCameraButton!
+    @IBOutlet weak var switchFacingCameraButton: ZegoSwitchCameraButton! {
+        didSet {
+            switchFacingCameraButton.iconBackFacingCamera = ZegoUIKitCallIconSetType.icon_camera_overturn.load()
+            switchFacingCameraButton.iconFrontFacingCamera = ZegoUIKitCallIconSetType.icon_camera_overturn.load()
+        }
+    }
     
     
     var callInvitationData: ZegoCallInvitationData? {
@@ -106,9 +110,14 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
                     self.cancelInviationButton.invitees.append(userID)
                 }
             }
+            
+            let refuseData: [String : AnyObject] = ["reason": "decline" as AnyObject, "invitationID": callInvitationData?.invitationID as AnyObject]
+            declineButton.data = refuseData.jsonString
+            
             if let inviter = callInvitationData?.inviter {
                 declineButton.inviterID = inviter.userID
                 acceptButton.inviterID = inviter.userID
+                
                 if callInvitationData?.type == .videoCall {
                     acceptButton.icon = ZegoUIKitCallIconSetType.call_video_icon.load()
                 } else {
@@ -163,28 +172,37 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     weak var waitingVC: ZegoUIKitPrebuiltCallWaitingVC?
     
     func onRefuseInvitationButtonClick() {
+        ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
+        ZegoCallAudioPlayerTool.stopPlay()
         waitingVC?.dismiss(animated: true, completion: nil)
     }
     
     func onAcceptInvitationButtonClick() {
+        ZegoCallAudioPlayerTool.stopPlay()
         guard let callInvitationData = self.waitingVC?.callInvitationData else { return }
         self.waitingVC?.dismiss(animated: false, completion: {
             var nomalConfig = ZegoUIKitPrebuiltCallConfig(.oneOnOneVideoCall)
-            if self.waitingVC?.callInvitationData?.type == .voiceCall {
-                nomalConfig = ZegoUIKitPrebuiltCallConfig(.oneOnOneVoiceCall)
+            if callInvitationData.invitees?.count ?? 0 > 1 {
+                //group call
+                nomalConfig = ZegoUIKitPrebuiltCallConfig(callInvitationData.type == .videoCall ? .groupVideoCall : .groupVoiceCall)
             } else {
-                nomalConfig = ZegoUIKitPrebuiltCallConfig(.oneOnOneVideoCall)
+                //one on one call
+                nomalConfig = ZegoUIKitPrebuiltCallConfig(callInvitationData.type == .videoCall ? .oneOnOneVideoCall : .oneOnOneVoiceCall)
             }
             let config: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(callInvitationData) ?? nomalConfig
             let callVC: ZegoUIKitPrebuiltCallVC = ZegoUIKitPrebuiltCallVC.init(callInvitationData, config: config)
             callVC.modalPresentationStyle = .fullScreen
             callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help
             currentViewController()?.present(callVC, animated: false, completion: nil)
+            ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
         })
     }
     
     func onCancelInvitationButtonClick() {
+        ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
+        ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
+        ZegoCallAudioPlayerTool.stopPlay()
         waitingVC?.dismiss(animated: true, completion: nil)
     }
     
@@ -196,6 +214,7 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
             callVC.modalPresentationStyle = .fullScreen
             callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help
             currentViewController()?.present(callVC, animated: false, completion: nil)
+            ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
         })
     }
     

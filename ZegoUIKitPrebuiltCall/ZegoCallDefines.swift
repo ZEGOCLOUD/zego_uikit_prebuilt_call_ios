@@ -37,6 +37,9 @@ public class ZegoCallInvitationData: NSObject {
     public var type: ZegoInvitationType?
     public var invitees: [ZegoUIkitUser]?
     public var inviter: ZegoUIkitUser?
+    public var invitationID: String?
+    public var customData: String?
+    
 }
 
 public enum ZegoMenuBarStyle: Int {
@@ -118,4 +121,10 @@ func currentViewController(_ vc :UIViewController?) -> UIViewController? {
 func KeyWindow() -> UIWindow {
     let window: UIWindow = UIApplication.shared.windows.filter({ $0.isKeyWindow }).last!
     return window
+}
+
+func getTimeStamp() -> Int64 {
+    let timeInterval:TimeInterval = Date().timeIntervalSince1970
+    let timeStamp = Int64(timeInterval)
+    return timeStamp
 }
