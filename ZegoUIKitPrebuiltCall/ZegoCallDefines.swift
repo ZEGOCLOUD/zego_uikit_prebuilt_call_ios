@@ -50,9 +50,7 @@ public enum ZegoMenuBarStyle: Int {
 enum ZegoUIKitCallIconSetType: String, Hashable {
     
     case call_accept_icon
-    case call_accept_selected_icon
     case call_video_icon
-    case call_video_selected_icon
     case icon_more
     case icon_more_light
     case icon_member_normal

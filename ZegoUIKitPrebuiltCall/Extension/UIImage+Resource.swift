@@ -69,11 +69,21 @@ extension Resource where Base: UIImage {
         return UIImage(named: name)
     }
 
+//    fileprivate static func commonLoadImage(name: String, in pathComponent: String) -> UIImage? {
+//        guard let resourcePath: String = Bundle.main.resourcePath else { return nil }
+//        let bundlePath = resourcePath + pathComponent
+//        let bundle = Bundle(path: bundlePath)
+//        return UIImage(named: name, in: bundle, compatibleWith: nil)
+//    }
+    
     fileprivate static func commonLoadImage(name: String, in pathComponent: String) -> UIImage? {
-        guard let resourcePath: String = Bundle.main.resourcePath else { return nil }
-        let bundlePath = resourcePath + pathComponent
-        let bundle = Bundle(path: bundlePath)
-        return UIImage(named: name, in: bundle, compatibleWith: nil)
-    }
+            guard let resourcePath: String = Bundle.main.resourcePath else { return nil }
+            let bundlePath = resourcePath + pathComponent
+            let bundle = Bundle(path: bundlePath)
+            let scale = Int(UIScreen().scale)
+            let imagePath = bundle?.path(forResource: String(format: "%@%dx", "call_accept_icon@",scale), ofType: "png")
+            guard let imagePath = imagePath else { return nil }
+            return UIImage.init(contentsOfFile: imagePath)
+        }
 
 }
