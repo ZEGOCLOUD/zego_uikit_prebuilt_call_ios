@@ -35,11 +35,16 @@ public enum ZegoCallType: Int {
 public class ZegoCallInvitationData: NSObject {
     public var callID: String?
     public var type: ZegoInvitationType?
-    public var invitees: [ZegoUIkitUser]?
-    public var inviter: ZegoUIkitUser?
+    public var invitees: [ZegoUIKitUser]?
+    public var inviter: ZegoUIKitUser?
     public var invitationID: String?
     public var customData: String?
     
+}
+
+@objc public enum ZegoInvitationType: Int {
+    case voiceCall = 0
+    case videoCall = 1
 }
 
 public enum ZegoMenuBarStyle: Int {

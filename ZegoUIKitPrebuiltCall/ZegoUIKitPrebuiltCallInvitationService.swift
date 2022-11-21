@@ -111,7 +111,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         self.uikitEventDelegates.add(eventHandle)
     }
     
-    func onInvitationReceived(_ inviter: ZegoUIkitUser, type: Int, data: String?) {
+    func onInvitationReceived(_ inviter: ZegoUIKitUser, type: Int, data: String?) {
         let dataDic: Dictionary? = data?.call_convertStringToDictionary()
         let pluginInvitationID: String? = dataDic?["invitationID"] as? String
         if ZegoUIKitPrebuiltCallInvitationService.shared.isCalling {
@@ -136,19 +136,19 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         }
     }
     
-    func onInvitationAccepted(_ invitee: ZegoUIkitUser, data: String?) {
+    func onInvitationAccepted(_ invitee: ZegoUIKitUser, data: String?) {
         ZegoCallAudioPlayerTool.stopPlay()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
     }
     
-    func onInvitationCanceled(_ inviter: ZegoUIkitUser, data: String?) {
+    func onInvitationCanceled(_ inviter: ZegoUIKitUser, data: String?) {
         ZegoCallAudioPlayerTool.stopPlay()
         ZegoCallInvitationDialog.hide()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
     }
     
-    func onInvitationRefused(_ invitee: ZegoUIkitUser, data: String?) {
+    func onInvitationRefused(_ invitee: ZegoUIKitUser, data: String?) {
         if let invitationData = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData,
            let invitationInvitees = invitationData.invitees
         {
@@ -167,14 +167,14 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         }
     }
     
-    func onInvitationTimeout(_ inviter: ZegoUIkitUser, data: String?) {
+    func onInvitationTimeout(_ inviter: ZegoUIKitUser, data: String?) {
         ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         ZegoCallAudioPlayerTool.stopPlay()
         ZegoCallInvitationDialog.hide()
     }
     
-    func onInvitationResponseTimeout(_ invitees: [ZegoUIkitUser], data: String?) {
+    func onInvitationResponseTimeout(_ invitees: [ZegoUIKitUser], data: String?) {
         if let invitationData = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData,
            let invitationInvitees = invitationData.invitees
         {
@@ -233,13 +233,13 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         }
     }
     
-    func getInviteeList(_ invitees: [Dictionary<String,String>]) -> [ZegoUIkitUser] {
-        var inviteeList = [ZegoUIkitUser]()
+    func getInviteeList(_ invitees: [Dictionary<String,String>]) -> [ZegoUIKitUser] {
+        var inviteeList = [ZegoUIKitUser]()
         for dict in invitees {
             if let userID = dict["user_id"],
                let userName = dict["user_name"]
             {
-                let user = ZegoUIkitUser.init(userID, userName)
+                let user = ZegoUIKitUser.init(userID, userName)
                 inviteeList.append(user)
             }
         }

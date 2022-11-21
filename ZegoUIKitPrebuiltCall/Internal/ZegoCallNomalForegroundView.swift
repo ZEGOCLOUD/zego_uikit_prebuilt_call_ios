@@ -24,7 +24,7 @@ class ZegoCallNomalForegroundView: UIView {
         return view
     }()
     var config: ZegoUIKitPrebuiltCallConfig?
-    var userInfo: ZegoUIkitUser? {
+    var userInfo: ZegoUIKitUser? {
         didSet {
             guard let userInfo = userInfo else {
                 return

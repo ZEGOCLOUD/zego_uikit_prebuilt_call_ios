@@ -9,10 +9,10 @@ import UIKit
 import ZegoUIKitSDK
 
 @objc public protocol ZegoUIKitPrebuiltCallVCDelegate: AnyObject {
-    @objc optional func getForegroundView(_ userInfo: ZegoUIkitUser?) -> UIView?
-    @objc optional func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIkitUser) -> UITableViewCell?
+    @objc optional func getForegroundView(_ userInfo: ZegoUIKitUser?) -> UIView?
+    @objc optional func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell?
     @objc optional func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView?
-    @objc optional func getMemberListItemHeight(_ userInfo: ZegoUIkitUser) -> CGFloat
+    @objc optional func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat
     @objc optional func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat
     @objc optional func onHangUp(_ isHandup: Bool)
     @objc optional func onOnlySelfInRoom()
@@ -90,7 +90,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         self.help.callVC = self
         ZegoUIKit.shared.addEventHandler(self.help)
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
-        ZegoUIKit.shared.localUserInfo = ZegoUIkitUser.init(userID, userName)
+        ZegoUIKit.shared.localUserInfo = ZegoUIKitUser.init(userID, userName)
         self.userID = userID
         self.userName = userName
         self.roomID = callID
@@ -273,13 +273,58 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
 
 class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, ZegoUIKitEventHandle {
     
+    
     weak var callVC: ZegoUIKitPrebuiltCallVC?
+    
+    func sortAudioVideo(_ userList: [ZegoUIKitUser]) -> [ZegoUIKitUser]? {
+        if callVC?.config.layout.mode == .pictureInPicture {
+            var tempList: [ZegoUIKitUser] = []
+            if userList.count > 1 {
+                var index = 0
+                for user in userList {
+                    if index == 0 {
+                        tempList.append(user)
+                    } else {
+                        if user.userID == ZegoUIKit.shared.localUserInfo?.userID {
+                            tempList.append(user)
+                        } else {
+                            tempList.insert(user, at: 0)
+                        }
+                    }
+                    index = index + 1
+                }
+            } else {
+                tempList.append(contentsOf: userList)
+            }
+            return tempList
+        } else {
+            var tempList: [ZegoUIKitUser] = userList.reversed()
+            var localUser: ZegoUIKitUser?
+            var index = 0
+            for user in tempList {
+                if user.userID == ZegoUIKit.shared.localUserInfo?.userID {
+                    localUser = user
+                    tempList.remove(at: index)
+                    break
+                }
+                index = index + 1
+            }
+            if let localUser = localUser {
+                if tempList.count == 0 {
+                    tempList.append(localUser)
+                } else {
+                    tempList.insert(localUser, at: 0)
+                }
+            }
+            return tempList
+        }
+    }
     
     func onOnlySelfInRoom() {
         self.callVC?.delegate?.onOnlySelfInRoom?()
     }
     
-    func getForegroundView(_ userInfo: ZegoUIkitUser?) -> UIView? {
+    func getForegroundView(_ userInfo: ZegoUIKitUser?) -> UIView? {
         guard let userInfo = userInfo,
               let callVC = self.callVC
         else {
@@ -322,7 +367,7 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallDarkBottomMenuBarDelegate,ZegoCallLig
         self.delegate?.onHangUp?(isHandup)
     }
     
-    func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIkitUser) -> UITableViewCell? {
+    func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell? {
         return self.delegate?.getMemberListItemView?(tableView, indexPath: indexPath, userInfo: userInfo)
     }
     
@@ -330,7 +375,7 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallDarkBottomMenuBarDelegate,ZegoCallLig
         return self.delegate?.getMemberListviewForHeaderInSection?(tableView, section: section)
     }
     
-    func getMemberListItemHeight(_ userInfo: ZegoUIkitUser) -> CGFloat {
+    func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat {
         return self.delegate?.getMemberListItemHeight?(userInfo) ?? 54
     }
     

@@ -19,10 +19,10 @@ enum ZegoCallInvitationState: Int {
 
 class ZegoCallPrebuiltInvitationUser: NSObject {
     
-    var user: ZegoUIkitUser?
+    var user: ZegoUIKitUser?
     var state: ZegoCallInvitationState = .error
     
-    init(_ user: ZegoUIkitUser, state: ZegoCallInvitationState) {
+    init(_ user: ZegoUIKitUser, state: ZegoCallInvitationState) {
         self.user = user
         self.state = state
     }
@@ -32,12 +32,12 @@ class ZegoCallPrebuiltInvitationUser: NSObject {
 class ZegoCallPrebuiltInvitationData: NSObject {
     var pluginInvitationID: String? //is zim call id
     var invitationID: String? // is rtc roomID
-    var inviter: ZegoUIkitUser?
+    var inviter: ZegoUIKitUser?
     var invitees: [ZegoCallPrebuiltInvitationUser]?
     var type: ZegoInvitationType = .voiceCall
     var inviteesDict: [String : String] = [:]
     
-    init(_ invitationID: String, inviter: ZegoUIkitUser, invitees: [ZegoCallPrebuiltInvitationUser], type: ZegoInvitationType) {
+    init(_ invitationID: String, inviter: ZegoUIKitUser, invitees: [ZegoCallPrebuiltInvitationUser], type: ZegoInvitationType) {
         super.init()
         self.invitationID = invitationID
         self.invitees = invitees

@@ -9,20 +9,20 @@ import UIKit
 import ZegoUIKitSDK
 
 protocol ZegoConferenceMemberListDelegate: AnyObject {
-    func getForegroundView(_ userInfo: ZegoUIkitUser?) -> UIView?
+    func getForegroundView(_ userInfo: ZegoUIKitUser?) -> UIView?
     func onLeaveVideoConference(_ isLeave: Bool)
-    func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIkitUser) -> UITableViewCell?
+    func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell?
     func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView?
-    func getMemberListItemHeight(_ userInfo: ZegoUIkitUser) -> CGFloat
+    func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat
     func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat
 }
 
 extension ZegoConferenceMemberListDelegate {
-    func getForegroundView(_ userInfo: ZegoUIkitUser?) -> UIView? {nil}
+    func getForegroundView(_ userInfo: ZegoUIKitUser?) -> UIView? {nil}
     func onLeaveVideoConference(_ isLeave: Bool) { }
-    func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIkitUser) -> UITableViewCell? { return nil }
+    func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell? { return nil }
     func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView? { return nil}
-    func getMemberListItemHeight(_ userInfo: ZegoUIkitUser) -> CGFloat { 54 }
+    func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat { 54 }
     func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat { return 65 }
 }
 
@@ -89,7 +89,7 @@ class ZegoConferenceMemberList: UIView {
 
 extension ZegoConferenceMemberList: ZegoMemberListDelegate, ZegoMemberListHeaderViewDelegate {
     
-    func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIkitUser) -> UITableViewCell? {
+    func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell? {
         if let cell = self.delegate?.getMemberListItemView(tableView, indexPath: indexPath, userInfo: userInfo) {
             return cell
         } else {
@@ -107,7 +107,7 @@ extension ZegoConferenceMemberList: ZegoMemberListDelegate, ZegoMemberListHeader
         }
     }
     
-    func getMemberListItemHeight(_ userInfo: ZegoUIkitUser) -> CGFloat {
+    func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat {
         return self.delegate?.getMemberListItemHeight(userInfo) ?? 54
     }
     

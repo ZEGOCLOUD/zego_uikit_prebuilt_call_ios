@@ -206,7 +206,7 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
         waitingVC?.dismiss(animated: true, completion: nil)
     }
     
-    func onInvitationAccepted(_ invitee: ZegoUIkitUser, data: String?) {
+    func onInvitationAccepted(_ invitee: ZegoUIKitUser, data: String?) {
         guard let callInvitationData = self.waitingVC?.callInvitationData else { return }
         self.waitingVC?.dismiss(animated: false, completion: {
             let config = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(callInvitationData)
@@ -218,26 +218,26 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
         })
     }
     
-    func onInvitationCanceled(_ inviter: ZegoUIkitUser, data: String?) {
+    func onInvitationCanceled(_ inviter: ZegoUIKitUser, data: String?) {
         if self.waitingVC?.callInvitationData?.inviter?.userID == inviter.userID {
             self.waitingVC?.dismiss(animated: true, completion: nil)
         }
     }
     
-    func onInvitationRefused(_ invitee: ZegoUIkitUser, data: String?) {
+    func onInvitationRefused(_ invitee: ZegoUIKitUser, data: String?) {
         let curInvitee = self.waitingVC?.callInvitationData?.invitees?.first
         if curInvitee?.userID == invitee.userID {
             self.waitingVC?.dismiss(animated: true, completion: nil)
         }
     }
     
-    func onInvitationTimeout(_ inviter: ZegoUIkitUser, data: String?) {
+    func onInvitationTimeout(_ inviter: ZegoUIKitUser, data: String?) {
         if inviter.userID == self.waitingVC?.callInvitationData?.inviter?.userID {
             self.waitingVC?.dismiss(animated: true, completion: nil)
         }
     }
     
-    func onInvitationResponseTimeout(_ invitees: [ZegoUIkitUser], data: String?) {
+    func onInvitationResponseTimeout(_ invitees: [ZegoUIKitUser], data: String?) {
         let curInvitee = self.waitingVC?.callInvitationData?.invitees?.first
         let timeoutInvitee = invitees.first
         if curInvitee?.userID == timeoutInvitee?.userID {

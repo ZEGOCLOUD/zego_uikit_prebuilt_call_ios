@@ -16,7 +16,7 @@ public class ZegoStartCallInvitationButton: ZegoStartInvitationButton {
         }
     }
     
-    @objc public var inviteeList: [ZegoUIkitUser] = [] {
+    @objc public var inviteeList: [ZegoUIKitUser] = [] {
         didSet {
             self.invitees.removeAll()
             for user in inviteeList {
@@ -29,10 +29,15 @@ public class ZegoStartCallInvitationButton: ZegoStartInvitationButton {
     
     @objc public var customData: String?
     
-    @objc public override init(_ type: ZegoInvitationType) {
+    @objc public override init(_ type: Int) {
         super.init(type)
-        self.isVideoCall = type == .videoCall ? true : false
+        self.isVideoCall = type == 1 ? true : false
     }
+    
+//    @objc public override init(_ type: ZegoInvitationType) {
+//        super.init(type)
+//        self.isVideoCall = type == .videoCall ? true : false
+//    }
     
     @objc required public init?(coder: NSCoder) {
         super.init(coder: coder)
