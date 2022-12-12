@@ -53,7 +53,7 @@ public class ZegoStartCallInvitationButton: ZegoStartInvitationButton {
         callData.type = isVideoCall ? .videoCall : .voiceCall
         self.data = ["call_id": callData.callID as AnyObject, "invitees": self.conversionInvitees() as AnyObject, "customData": self.customData as AnyObject].call_jsonString
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = self.buildInvitationData(callData)
-        ZegoUIKitInvitationService.shared.sendInvitation(self.invitees, timeout: self.timeout, type: self.type, data: self.data) { data in
+        ZegoUIKitSignalingPluginImpl.shared.sendInvitation(self.invitees, timeout: self.timeout, type: self.type, data: self.data) { data in
             guard let data = data else { return }
             if data["code"] as! Int == 0 {
                 if let errorInvitees = data["errorInvitees"] as? [String] {

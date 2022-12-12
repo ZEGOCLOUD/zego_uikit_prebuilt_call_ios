@@ -21,7 +21,7 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     var config: ZegoUIKitPrebuiltCallInvitationConfig? {
         didSet {
             if let plugins = config?.plugins {
-                ZegoUIKitInvitationService.shared.installPlugins(plugins)
+                ZegoUIKitSignalingPluginImpl.shared.installPlugins(plugins)
             }
         }
     }
@@ -53,7 +53,7 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
             guard let userID = userID,
                   let userName = userName
             else { return }
-            ZegoUIKitInvitationService.shared.login(userID, userName: userName)
+            ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
         }
     }
     
@@ -62,14 +62,14 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
         self.userID = userID
         self.userName = userName
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
-        ZegoUIKitInvitationService.shared.initWithAppID(appID: appID, appSign: appSign)
+        ZegoUIKitSignalingPluginImpl.shared.initWithAppID(appID: appID, appSign: appSign)
         ZegoUIKit.shared.login(userID, userName: userName)
-        ZegoUIKitInvitationService.shared.login(userID, userName: userName)
+        ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
     }
     
     public func unInit() {
         ZegoUIKit.shared.uninit()
-        ZegoUIKitInvitationService.shared.uninit()
+        ZegoUIKitSignalingPluginImpl.shared.uninit()
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -117,7 +117,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         if ZegoUIKitPrebuiltCallInvitationService.shared.isCalling {
             guard let userID = inviter.userID else { return }
             let dataDict: [String : AnyObject] = ["reason":"busy" as AnyObject,"invitationID": pluginInvitationID as AnyObject]
-            ZegoUIKitInvitationService.shared.refuseInvitation(userID, data: dataDict.call_jsonString)
+            ZegoUIKitSignalingPluginImpl.shared.refuseInvitation(userID, data: dataDict.call_jsonString)
         } else {
             let callData = ZegoCallInvitationData()
             if let dataDic = dataDic {
@@ -219,7 +219,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
                     }
                 }
                 if needCancel {
-                    ZegoUIKitInvitationService.shared.cancelInvitation(cancelInvitees, data: nil, callback: nil)
+                    ZegoUIKitSignalingPluginImpl.shared.cancelInvitation(cancelInvitees, data: nil, callback: nil)
                 }
             }
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
