@@ -25,12 +25,23 @@ public enum ZegoViewPosition: Int {
     case bottomRight
 }
 
-public enum ZegoCallType: Int {
-    case oneOnOneVoiceCall
-    case oneOnOneVideoCall
-    case groupVoiceCall
-    case groupVideoCall
+//public enum ZegoCallType: Int {
+//    case oneOnOneVoiceCall
+//    case oneOnOneVideoCall
+//    case groupVoiceCall
+//    case groupVideoCall
+//}
+
+@objc public enum ZegoCallType: Int {
+    case voiceCall = 0
+    case videoCall = 1
 }
+
+public class ZegoCallUser: NSObject {
+    public var id: String?
+    public var name: String?
+}
+
 
 public class ZegoCallInvitationData: NSObject {
     public var callID: String?
@@ -62,6 +73,8 @@ enum ZegoUIKitCallIconSetType: String, Hashable {
     case icon_back
     case icon_camera_overturn
     case call_waiting_bg
+    case user_phone_icon
+    case user_video_icon
     
     // MARK: - Image handling
     func load() -> UIImage {

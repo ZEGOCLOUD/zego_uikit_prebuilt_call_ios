@@ -64,6 +64,8 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
         }
     }
     
+    @IBOutlet weak var declineButtonLabel: UILabel!
+    
     @IBOutlet weak var cancelInviationButton: ZegoCancelInvitationButton! {
         didSet {
             cancelInviationButton.delegate = self.help
@@ -87,6 +89,8 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
         }
     }
     
+    @IBOutlet weak var acceptButtonLabel: UILabel!
+    
     @IBOutlet weak var switchFacingCameraButton: ZegoSwitchCameraButton! {
         didSet {
             switchFacingCameraButton.iconBackFacingCamera = ZegoUIKitCallIconSetType.icon_camera_overturn.load()
@@ -97,13 +101,26 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
     
     var callInvitationData: ZegoCallInvitationData? {
         didSet {
+            let config = ZegoUIKitPrebuiltCallInvitationService.shared.config
+            var userNameTextFormat = "%@"
+            
             if !self.isInviter {
-                self.userNameLabel.text = callInvitationData?.inviter?.userName
+                if callInvitationData?.type == .videoCall {
+                    userNameTextFormat = callInvitationData?.invitees?.count ?? 0 > 1 ? config?.innerText.incomingGroupVideoCallPageTitle ?? "%@" : config?.innerText.incomingVideoCallPageTitle ?? "%@"
+                } else {
+                    userNameTextFormat = callInvitationData?.invitees?.count ?? 0 > 1 ? config?.innerText.incomingGroupVoiceCallPageTitle ?? "@" : config?.innerText.incomingVoiceCallPageTitle ?? "%@"
+                }
+                self.userNameLabel.text = String(format: userNameTextFormat , callInvitationData?.inviter?.userName ?? "")
                 self.setHeadUserName(callInvitationData?.inviter?.userName)
+                self.callStatusLabel.text = callInvitationData?.invitees?.count ?? 0 > 1 ? (callInvitationData?.type == .videoCall ? config?.innerText.incomingGroupVideoCallPageMessage : config?.innerText.incomingGroupVoiceCallPageMessage) : (callInvitationData?.type == .videoCall ? config?.innerText.incomingVideoCallPageMessage : config?.innerText.incomingVoiceCallPageMessage)
             } else {
-                self.userNameLabel.text = callInvitationData?.invitees?.first?.userName
+//                self.userNameLabel.text = callInvitationData?.invitees?.first?.userName
+                userNameTextFormat = callInvitationData?.type == .videoCall ? config?.innerText.outgoingVideoCallPageTitle ?? "%@" : config?.innerText.outgoingVoiceCallPageTitle ?? "%@"
+                self.userNameLabel.text = String(format: userNameTextFormat, callInvitationData?.invitees?.first?.userName ?? "")
                 self.setHeadUserName(callInvitationData?.invitees?.first?.userName)
+                self.callStatusLabel.text = callInvitationData?.type == .videoCall ? config?.innerText.outgoingVideoCallPageMessage : config?.innerText.outgoingVoiceCallPageMessage
             }
+            
             if let invitees = callInvitationData?.invitees {
                 for user in invitees {
                     guard let userID = user.userID else { return }
@@ -132,6 +149,8 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
                 videoPreviewView.isHidden = true
                 switchFacingCameraButton.isHidden = true
             }
+            self.acceptButtonLabel.text = config?.innerText.incomingCallPageAcceptButton
+            self.declineButtonLabel.text = config?.innerText.incomingCallPageDeclineButton
         }
     }
     
@@ -149,6 +168,20 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
             
         }
     }
+    
+    var showDeclineButton: Bool = true {
+        didSet {
+            if showDeclineButton == false {
+                self.declineView.isHidden = true
+                let acceptRect: CGRect = self.acceptView.frame
+                let x: CGFloat = (self.view.frame.width - acceptRect.width)/2
+                self.trailingConstraint.constant = x
+            }
+        }
+    }
+    
+    
+    @IBOutlet weak var trailingConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -172,6 +205,7 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     weak var waitingVC: ZegoUIKitPrebuiltCallWaitingVC?
     
     func onRefuseInvitationButtonClick() {
+        ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallDeclineButtonPressed?()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
         ZegoCallAudioPlayerTool.stopPlay()
@@ -179,16 +213,17 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     }
     
     func onAcceptInvitationButtonClick() {
+        ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallAcceptButtonPressed?()
         ZegoCallAudioPlayerTool.stopPlay()
         guard let callInvitationData = self.waitingVC?.callInvitationData else { return }
         self.waitingVC?.dismiss(animated: false, completion: {
-            var nomalConfig = ZegoUIKitPrebuiltCallConfig(.oneOnOneVideoCall)
+            var nomalConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
             if callInvitationData.invitees?.count ?? 0 > 1 {
                 //group call
-                nomalConfig = ZegoUIKitPrebuiltCallConfig(callInvitationData.type == .videoCall ? .groupVideoCall : .groupVoiceCall)
+                nomalConfig = callInvitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.groupVideoCall() : ZegoUIKitPrebuiltCallConfig.groupVoiceCall()
             } else {
                 //one on one call
-                nomalConfig = ZegoUIKitPrebuiltCallConfig(callInvitationData.type == .videoCall ? .oneOnOneVideoCall : .oneOnOneVoiceCall)
+                nomalConfig =  callInvitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall() :  ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
             }
             let config: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(callInvitationData) ?? nomalConfig
             let callVC: ZegoUIKitPrebuiltCallVC = ZegoUIKitPrebuiltCallVC.init(callInvitationData, config: config)
@@ -200,6 +235,7 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     }
     
     func onCancelInvitationButtonClick() {
+        ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallCancelButtonPressed?()
         ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         ZegoCallAudioPlayerTool.stopPlay()

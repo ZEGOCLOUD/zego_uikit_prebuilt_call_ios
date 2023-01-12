@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ZegoUIKitPrebuiltCallWaitingVC" customModule="ZegoUIKitCallWithInvitationDemo" customModuleProvider="target"/>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ZegoUIKitPrebuiltCallWaitingVC" customModule="ZegoUIKitPrebuiltCall" customModuleProvider="target"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <viewController id="Y3a-pg-wah" customClass="ZegoUIKitPrebuiltCallWaitingVC" customModule="ZegoUIKitCallWithInvitationDemo" customModuleProvider="target">
+        <viewController id="Y3a-pg-wah" customClass="ZegoUIKitPrebuiltCallWaitingVC" customModule="ZegoUIKitPrebuiltCall" customModuleProvider="target">
             <view key="view" contentMode="scaleToFill" id="vSB-jY-6kK">
                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -156,14 +156,17 @@
             </view>
             <connections>
                 <outlet property="acceptButton" destination="2Em-bK-ySG" id="e2I-Hd-xOO"/>
+                <outlet property="acceptButtonLabel" destination="l5V-nZ-bAO" id="Jgd-P6-4SK"/>
                 <outlet property="acceptView" destination="x3F-Tp-EIz" id="h1o-bv-DCe"/>
                 <outlet property="backgroundImage" destination="1Ja-I8-yfa" id="zZo-dy-cA1"/>
-                <outlet property="callStatusLabel" destination="DqY-IC-VR1" id="YCk-JU-Ebq"/>
+                <outlet property="callStatusLabel" destination="DqY-IC-VR1" id="SOw-LK-FxS"/>
                 <outlet property="cancelInviationButton" destination="MPg-X8-equ" id="Ci2-mE-JOs"/>
                 <outlet property="declineButton" destination="4p7-Md-VYj" id="wX9-vL-a5f"/>
+                <outlet property="declineButtonLabel" destination="vwt-BO-HWJ" id="sON-R1-qZL"/>
                 <outlet property="declineView" destination="xkI-mk-Nag" id="XBD-p6-4pd"/>
                 <outlet property="headLabel" destination="2Fr-ez-FUn" id="rKG-za-yhO"/>
                 <outlet property="switchFacingCameraButton" destination="AQU-Cg-BeJ" id="qhA-74-MCH"/>
+                <outlet property="trailingConstraint" destination="n08-Y5-zaO" id="nHL-FR-2DV"/>
                 <outlet property="userNameLabel" destination="4wY-05-Bls" id="UMz-Y5-jOM"/>
                 <outlet property="videoPreviewView" destination="23e-2m-WOZ" id="43i-9s-V5A"/>
             </connections>

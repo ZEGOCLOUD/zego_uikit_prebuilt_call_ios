@@ -26,73 +26,86 @@ public class ZegoUIKitPrebuiltCallConfig: NSObject {
     
     public var memberListConfig: ZegoMemberListConfig = ZegoMemberListConfig()
     public var topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
-
-    public init(_ callType: ZegoCallType) {
-        super.init()
-        switch callType {
-        case .oneOnOneVoiceCall:
-            self.turnOnCameraWhenJoining = false
-            self.turnOnMicrophoneWhenJoining = true
-            self.useSpeakerWhenJoining = false
-            let layout = ZegoLayout()
-            layout.mode = .pictureInPicture
-            layout.config = ZegoLayoutPictureInPictureConfig()
-            self.layout = layout
-            let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
-            bottomMenuBarConfig.buttons = [.toggleMicrophoneButton,.hangUpButton,.swtichAudioOutputButton]
-            bottomMenuBarConfig.style = .light
-            self.bottomMenuBarConfig = bottomMenuBarConfig
-            let topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
-            topMenuBarConfig.isVisible = false
-            self.topMenuBarConfig = topMenuBarConfig
-        case .oneOnOneVideoCall:
-            self.turnOnCameraWhenJoining = true
-            self.turnOnMicrophoneWhenJoining = true
-            self.useSpeakerWhenJoining = true
-            let layout = ZegoLayout()
-            layout.mode = .pictureInPicture
-            layout.config = ZegoLayoutPictureInPictureConfig()
-            self.layout = layout
-            let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
-            bottomMenuBarConfig.buttons = [.toggleCameraButton,.switchCameraButton,.hangUpButton,.toggleMicrophoneButton,.swtichAudioOutputButton]
-            bottomMenuBarConfig.style = .light
-            self.bottomMenuBarConfig = bottomMenuBarConfig
-            let topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
-            topMenuBarConfig.isVisible = false
-            self.topMenuBarConfig = topMenuBarConfig
-        case .groupVoiceCall:
-            self.turnOnCameraWhenJoining = false
-            self.turnOnMicrophoneWhenJoining = true
-            self.useSpeakerWhenJoining = true
-            let layout = ZegoLayout()
-            layout.mode = .gallery
-            layout.config = ZegoLayoutGalleryConfig()
-            self.layout = layout
-            let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
-            bottomMenuBarConfig.buttons = [.toggleMicrophoneButton,.hangUpButton, .swtichAudioOutputButton]
-            self.bottomMenuBarConfig = bottomMenuBarConfig
-            let topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
-            topMenuBarConfig.buttons = [.showMemberListButton]
-            topMenuBarConfig.isVisible = true
-            self.topMenuBarConfig = topMenuBarConfig
-        case .groupVideoCall:
-            self.turnOnCameraWhenJoining = true
-            self.turnOnMicrophoneWhenJoining = true
-            self.useSpeakerWhenJoining = true
-            let layout = ZegoLayout()
-            layout.mode = .gallery
-            layout.config = ZegoLayoutGalleryConfig()
-            self.layout = layout
-            let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
-            bottomMenuBarConfig.buttons = [.toggleCameraButton,.switchCameraButton,.hangUpButton, .toggleMicrophoneButton,.swtichAudioOutputButton]
-            self.bottomMenuBarConfig = bottomMenuBarConfig
-            let topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
-            topMenuBarConfig.isVisible = true
-            topMenuBarConfig.buttons = [.showMemberListButton]
-            self.topMenuBarConfig = topMenuBarConfig
-        }
+    
+    public static func oneOnOneVideoCall() -> ZegoUIKitPrebuiltCallConfig {
+        let config = ZegoUIKitPrebuiltCallConfig()
+        config.turnOnCameraWhenJoining = true
+        config.turnOnMicrophoneWhenJoining = true
+        config.useSpeakerWhenJoining = true
+        let layout = ZegoLayout()
+        layout.mode = .pictureInPicture
+        layout.config = ZegoLayoutPictureInPictureConfig()
+        config.layout = layout
+        let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
+        bottomMenuBarConfig.buttons = [.toggleCameraButton,.switchCameraButton,.hangUpButton,.toggleMicrophoneButton,.swtichAudioOutputButton]
+        bottomMenuBarConfig.style = .light
+        config.bottomMenuBarConfig = bottomMenuBarConfig
+        let topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
+        topMenuBarConfig.isVisible = false
+        config.topMenuBarConfig = topMenuBarConfig
+        
+        return config
+    }
+        
+    public static func oneOnOneVoiceCall() -> ZegoUIKitPrebuiltCallConfig {
+        let config = ZegoUIKitPrebuiltCallConfig()
+        config.turnOnCameraWhenJoining = false
+        config.turnOnMicrophoneWhenJoining = true
+        config.useSpeakerWhenJoining = false
+        let layout = ZegoLayout()
+        layout.mode = .pictureInPicture
+        layout.config = ZegoLayoutPictureInPictureConfig()
+        config.layout = layout
+        let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
+        bottomMenuBarConfig.buttons = [.toggleMicrophoneButton,.hangUpButton,.swtichAudioOutputButton]
+        bottomMenuBarConfig.style = .light
+        config.bottomMenuBarConfig = bottomMenuBarConfig
+        let topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
+        topMenuBarConfig.isVisible = false
+        config.topMenuBarConfig = topMenuBarConfig
+        
+        return config
+    }
+        
+    public static func groupVoiceCall() -> ZegoUIKitPrebuiltCallConfig {
+        let config = ZegoUIKitPrebuiltCallConfig()
+        config.turnOnCameraWhenJoining = false
+        config.turnOnMicrophoneWhenJoining = true
+        config.useSpeakerWhenJoining = true
+        let layout = ZegoLayout()
+        layout.mode = .gallery
+        layout.config = ZegoLayoutGalleryConfig()
+        config.layout = layout
+        let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
+        bottomMenuBarConfig.buttons = [.toggleMicrophoneButton,.hangUpButton, .swtichAudioOutputButton]
+        config.bottomMenuBarConfig = bottomMenuBarConfig
+        let topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
+        topMenuBarConfig.buttons = [.showMemberListButton]
+        topMenuBarConfig.isVisible = true
+        config.topMenuBarConfig = topMenuBarConfig
+        
+        return config
     }
     
+    public static func groupVideoCall() -> ZegoUIKitPrebuiltCallConfig {
+        let config = ZegoUIKitPrebuiltCallConfig()
+        config.turnOnCameraWhenJoining = true
+        config.turnOnMicrophoneWhenJoining = true
+        config.useSpeakerWhenJoining = true
+        let layout = ZegoLayout()
+        layout.mode = .gallery
+        layout.config = ZegoLayoutGalleryConfig()
+        config.layout = layout
+        let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
+        bottomMenuBarConfig.buttons = [.toggleCameraButton,.switchCameraButton,.hangUpButton, .toggleMicrophoneButton,.swtichAudioOutputButton]
+        config.bottomMenuBarConfig = bottomMenuBarConfig
+        let topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
+        topMenuBarConfig.isVisible = true
+        topMenuBarConfig.buttons = [.showMemberListButton]
+        config.topMenuBarConfig = topMenuBarConfig
+        
+        return config
+    }
 }
 
 public class ZegoPrebuiltAudioVideoViewConfig: NSObject {

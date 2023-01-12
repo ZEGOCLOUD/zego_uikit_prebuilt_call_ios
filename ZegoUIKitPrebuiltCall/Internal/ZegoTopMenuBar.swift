@@ -15,7 +15,7 @@ protocol ZegoTopMenuBarDelegate: AnyObject {
 class ZegoTopMenuBar: UIView {
     
     public var userID: String?
-    public var config: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallConfig(.oneOnOneVideoCall) {
+    public var config: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall() {
         didSet {
             self.barButtons = config.topMenuBarConfig.buttons
         }

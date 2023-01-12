@@ -34,7 +34,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     public weak var delegate: ZegoUIKitPrebuiltCallVCDelegate?
     
     private let help: ZegoUIKitPrebuiltCallVC_Help = ZegoUIKitPrebuiltCallVC_Help()
-    fileprivate var config: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallConfig(.oneOnOneVideoCall)
+    fileprivate var config: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
     private var userID: String?
     private var userName: String?
     private var roomID: String?

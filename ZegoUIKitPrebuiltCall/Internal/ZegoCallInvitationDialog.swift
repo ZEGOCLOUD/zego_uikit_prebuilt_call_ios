@@ -40,6 +40,7 @@ class ZegoCallInvitationDialog: UIView {
     }
     
     weak var delegate: CallAcceptTipViewDelegate?
+//    static var showDeclineButton: Bool = true
     private var invitationData: ZegoCallInvitationData? {
         didSet {
             self.acceptButton.inviterID = invitationData?.inviter?.userID
@@ -63,6 +64,7 @@ class ZegoCallInvitationDialog: UIView {
     }
     
     private static func showTipView(_ callInvitationData: ZegoCallInvitationData) -> ZegoCallInvitationDialog {
+        
         let tipView: ZegoCallInvitationDialog = UINib(nibName: "ZegoCallInvitationDialog", bundle: Bundle(for: ZegoCallInvitationData.self)).instantiate(withOwner: nil, options: nil).first as! ZegoCallInvitationDialog
         let y = KeyWindow().safeAreaInsets.top
         tipView.frame = CGRect.init(x: 8, y: y + 8, width: UIScreen.main.bounds.size.width - 16, height: 80)
@@ -72,12 +74,17 @@ class ZegoCallInvitationDialog: UIView {
         tipView.type = callInvitationData.type ?? .voiceCall
         tipView.setHeadUserName(callInvitationData.inviter?.userName)
         tipView.userNameLabel.text = callInvitationData.inviter?.userName
+        tipView.refuseButton.isHidden = !(ZegoUIKitPrebuiltCallInvitationService.shared.config?.showDeclineButton ?? true)
+        let innerText: ZegoInnerText? = ZegoUIKitPrebuiltCallInvitationService.shared.config?.innerText
         switch callInvitationData.type {
         case .voiceCall:
-            tipView.messageLabel.text = callInvitationData.invitees?.count ?? 0 > 1 ? "Group voice call" : "Voice call"
+//            tipView.messageLabel.text = callInvitationData.invitees?.count ?? 0 > 1 ? "Group voice call" : "Voice call"
+            tipView.messageLabel.text = callInvitationData.invitees?.count ?? 0 > 1 ? innerText?.incomingGroupVoiceCallDialogMessage : innerText?.incomingVoiceCallDialogMessage
+            tipView.userNameLabel.text = callInvitationData.invitees?.count ?? 0 > 1 ? String(format: innerText?.incomingGroupVoiceCallDialogTitle ?? "%@", callInvitationData.inviter?.userName ?? "") : String(format: innerText?.incomingVoiceCallDialogTitle ?? "%@", callInvitationData.inviter?.userName ?? "")
             tipView.acceptButton.icon = ZegoUIKitCallIconSetType.call_accept_icon.load()
         case .videoCall:
-            tipView.messageLabel.text = callInvitationData.invitees?.count ?? 0 > 1 ? "Group video call" : "Video call"
+            tipView.messageLabel.text = callInvitationData.invitees?.count ?? 0 > 1 ? innerText?.incomingGroupVideoCallDialogMessage : innerText?.incomingVideoCallDialogMessage
+            tipView.userNameLabel.text = callInvitationData.invitees?.count ?? 0 > 1 ? String(format: innerText?.incomingGroupVideoCallDialogTitle ?? "%@", callInvitationData.inviter?.userName ?? "") : String(format: innerText?.incomingVideoCallDialogTitle ?? "%@", callInvitationData.inviter?.userName ?? "")
             tipView.acceptButton.icon  = ZegoUIKitCallIconSetType.call_video_icon.load()
         case .none:
             break
@@ -117,6 +124,7 @@ class ZegoCallInvitationDialog: UIView {
         vc.callInvitationData = self.invitationData
         vc.modalPresentationStyle = .fullScreen
         currentViewController()?.present(vc, animated: true, completion: nil)
+        vc.showDeclineButton = ZegoUIKitPrebuiltCallInvitationService.shared.config?.showDeclineButton ?? true
         ZegoCallInvitationDialog.hide()
     }
     
@@ -127,13 +135,15 @@ extension ZegoCallInvitationDialog: ZegoAcceptInvitationButtonDelegate {
         guard let invitationData = invitationData else {
             return
         }
-        var nomalConfig = ZegoUIKitPrebuiltCallConfig(.oneOnOneVoiceCall)
+        var nomalConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
         if invitationData.invitees?.count ?? 0 > 1 {
             //group call
-            nomalConfig = ZegoUIKitPrebuiltCallConfig(invitationData.type == .videoCall ? .groupVideoCall : .groupVoiceCall)
+//            nomalConfig = ZegoUIKitPrebuiltCallConfig(invitationData.type == .videoCall ? .groupVideoCall : .groupVoiceCall)
+            nomalConfig = invitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.groupVideoCall() : ZegoUIKitPrebuiltCallConfig.groupVoiceCall()
         } else {
             //one on one call
-            nomalConfig = ZegoUIKitPrebuiltCallConfig(invitationData.type == .videoCall ? .oneOnOneVideoCall : .oneOnOneVoiceCall)
+//            nomalConfig = ZegoUIKitPrebuiltCallConfig(invitationData.type == .videoCall ? .oneOnOneVideoCall : .oneOnOneVoiceCall)
+            nomalConfig =  invitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall() : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
         }
         let config = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(invitationData) ?? nomalConfig
         let callVC: ZegoUIKitPrebuiltCallVC = ZegoUIKitPrebuiltCallVC.init(invitationData, config: config)
@@ -141,6 +151,7 @@ extension ZegoCallInvitationDialog: ZegoAcceptInvitationButtonDelegate {
         callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help
         currentViewController()?.present(callVC, animated: true, completion: nil)
         ZegoCallInvitationDialog.hide()
+        ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallAcceptButtonPressed?()
         ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
         ZegoCallAudioPlayerTool.stopPlay()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
@@ -151,6 +162,7 @@ extension ZegoCallInvitationDialog: ZegoAcceptInvitationButtonDelegate {
 extension ZegoCallInvitationDialog: ZegoRefuseInvitationButtonDelegate {
     func onRefuseInvitationButtonClick() {
         ZegoCallAudioPlayerTool.stopPlay()
+        ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallDeclineButtonPressed?()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
         ZegoCallInvitationDialog.hide()
