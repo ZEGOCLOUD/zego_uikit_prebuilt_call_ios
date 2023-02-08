@@ -34,7 +34,9 @@ public class ZegoUIKitPrebuiltCallConfig: NSObject {
         config.useSpeakerWhenJoining = true
         let layout = ZegoLayout()
         layout.mode = .pictureInPicture
-        layout.config = ZegoLayoutPictureInPictureConfig()
+        let pipConfig = ZegoLayoutPictureInPictureConfig()
+        pipConfig.removeViewWhenAudioVideoUnavailable = false
+        layout.config = pipConfig
         config.layout = layout
         let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
         bottomMenuBarConfig.buttons = [.toggleCameraButton,.switchCameraButton,.hangUpButton,.toggleMicrophoneButton,.swtichAudioOutputButton]
@@ -54,7 +56,9 @@ public class ZegoUIKitPrebuiltCallConfig: NSObject {
         config.useSpeakerWhenJoining = false
         let layout = ZegoLayout()
         layout.mode = .pictureInPicture
-        layout.config = ZegoLayoutPictureInPictureConfig()
+        let pipConfig = ZegoLayoutPictureInPictureConfig()
+        pipConfig.removeViewWhenAudioVideoUnavailable = false
+        layout.config = pipConfig
         config.layout = layout
         let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
         bottomMenuBarConfig.buttons = [.toggleMicrophoneButton,.hangUpButton,.swtichAudioOutputButton]

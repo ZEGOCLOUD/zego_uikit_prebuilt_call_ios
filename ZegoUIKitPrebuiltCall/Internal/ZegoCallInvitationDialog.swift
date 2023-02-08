@@ -153,6 +153,7 @@ extension ZegoCallInvitationDialog: ZegoAcceptInvitationButtonDelegate {
         ZegoCallInvitationDialog.hide()
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallAcceptButtonPressed?()
         ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
+        ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallAcceptButtonPressed?()
         ZegoCallAudioPlayerTool.stopPlay()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         

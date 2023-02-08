@@ -7,6 +7,7 @@
 
 import UIKit
 import ZegoUIKitSDK
+import ZegoPluginAdapter
 
 @objc public protocol ZegoUIKitPrebuiltCallInvitationServiceDelegate: AnyObject {
     func requireConfig(_ data: ZegoCallInvitationData) -> ZegoUIKitPrebuiltCallConfig
@@ -30,13 +31,7 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     public weak var delegate: ZegoUIKitPrebuiltCallInvitationServiceDelegate?
     
     let help = ZegoUIKitPrebuiltCallInvitationService_Help()
-    var config: ZegoUIKitPrebuiltCallInvitationConfig? {
-        didSet {
-            if let plugins = config?.plugins {
-                ZegoUIKitSignalingPluginImpl.shared.installPlugins(plugins)
-            }
-        }
-    }
+    var config: ZegoUIKitPrebuiltCallInvitationConfig?
     var invitationData: ZegoCallPrebuiltInvitationData? {
         didSet {
             guard let invitationData = invitationData else {
@@ -48,7 +43,7 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     }
     var isCalling: Bool = false
     var isGroupCall: Bool = false
-    var pluginConnectState: ZegoPluginConnectionState?
+    var pluginConnectState: ZegoSignalingPluginConnectionState?
     var userID: String?
     var userName: String?
     weak var callVC: UIViewController?
@@ -83,6 +78,15 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
         DispatchQueue.main.asyncAfter(deadline:DispatchTime.now()+0.5){
             ZegoUIKit.getSignalingPlugin().enableNotifyWhenAppRunningInBackgroundOrQuit(config.notifyWhenAppRunningInBackgroundOrQuit, isSandboxEnvironment: config.isSandboxEnvironment)
         }
+    }
+    
+    public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String) {
+        self.userID = userID
+        self.userName = userName
+        ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
+        ZegoUIKitSignalingPluginImpl.shared.initWithAppID(appID: appID, appSign: appSign)
+        ZegoUIKit.shared.login(userID, userName: userName)
+        ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
     }
     
     public func unInit() {
@@ -179,9 +183,9 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     func onInvitationAccepted(_ invitee: ZegoUIKitUser, data: String?) {
-        let callee = getCallUser(invitee)
-        let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.callID
-        ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallAccepted?(callID ?? "", callee: callee)
+//        let callee = getCallUser(invitee)
+//        let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.callID
+//        ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallAccepted?(callID ?? "", callee: callee)
         ZegoCallAudioPlayerTool.stopPlay()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
     }
@@ -267,7 +271,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     func onSignalingPluginConnectionState(_ params: [String : AnyObject]) {
-        let state: ZegoPluginConnectionState? = params["state"] as? ZegoPluginConnectionState
+        let state: ZegoSignalingPluginConnectionState? = params["state"] as? ZegoSignalingPluginConnectionState
         ZegoUIKitPrebuiltCallInvitationService.shared.pluginConnectState = state
     }
     

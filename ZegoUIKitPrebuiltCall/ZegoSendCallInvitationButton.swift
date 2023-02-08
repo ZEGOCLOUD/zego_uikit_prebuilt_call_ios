@@ -7,6 +7,7 @@
 
 import UIKit
 import ZegoUIKitSDK
+import ZegoPluginAdapter
 
 @objc public protocol ZegoSendCallInvitationButtonDelegate: AnyObject{
     func onPressed(_ errorCode: Int, errorMessage: String?, errorInvitees: [ZegoCallUser]?)

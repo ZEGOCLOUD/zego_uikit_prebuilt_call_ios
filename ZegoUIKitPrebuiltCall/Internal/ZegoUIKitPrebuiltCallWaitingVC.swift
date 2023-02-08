@@ -231,6 +231,7 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
             callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help
             currentViewController()?.present(callVC, animated: false, completion: nil)
             ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
+            ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallAcceptButtonPressed?()
         })
     }
     
@@ -251,6 +252,10 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
             callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help
             currentViewController()?.present(callVC, animated: false, completion: nil)
             ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
+            
+            let callee = self.getCallUser(invitee)
+            let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.callID
+            ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallAccepted?(callID ?? "", callee: callee)
         })
     }
     
@@ -281,4 +286,10 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
         }
     }
     
+    func getCallUser(_ user: ZegoUIKitUser) -> ZegoCallUser {
+        let callUser: ZegoCallUser = ZegoCallUser()
+        callUser.id = user.userID
+        callUser.name = user.userName
+        return callUser
+    }
 }

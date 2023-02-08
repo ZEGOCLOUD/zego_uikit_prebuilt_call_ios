@@ -17,20 +17,12 @@ public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
     public var isSandboxEnvironment: Bool = true
     
     public var innerText: ZegoInnerText = ZegoInnerText()
-    
-    var plugins: [ZegoUIKitPlugin]?
-    
-    public init(_ plugins: [ZegoUIKitPlugin], notifyWhenAppRunningInBackgroundOrQuit: Bool = true, isSandboxEnvironment: Bool = true) {
+        
+    public init(notifyWhenAppRunningInBackgroundOrQuit: Bool = true, isSandboxEnvironment: Bool = true) {
         super.init()
-        self.plugins = plugins
         self.notifyWhenAppRunningInBackgroundOrQuit = notifyWhenAppRunningInBackgroundOrQuit
         self.isSandboxEnvironment = isSandboxEnvironment
     }
-    
-//    public init(_ plugins: [ZegoUIKitPlugin]) {
-//        super.init()
-//        self.plugins = plugins
-//    }
 }
 
 
