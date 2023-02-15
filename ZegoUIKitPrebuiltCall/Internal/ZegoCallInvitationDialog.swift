@@ -151,7 +151,6 @@ extension ZegoCallInvitationDialog: ZegoAcceptInvitationButtonDelegate {
         callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help
         currentViewController()?.present(callVC, animated: true, completion: nil)
         ZegoCallInvitationDialog.hide()
-        ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallAcceptButtonPressed?()
         ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallAcceptButtonPressed?()
         ZegoCallAudioPlayerTool.stopPlay()

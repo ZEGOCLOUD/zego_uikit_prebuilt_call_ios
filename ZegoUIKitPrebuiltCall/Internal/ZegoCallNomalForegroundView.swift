@@ -8,7 +8,7 @@
 import UIKit
 import ZegoUIKitSDK
 
-class ZegoCallNomalForegroundView: UIView {
+class ZegoCallNomalForegroundView: ZegoBaseAudioVideoForegroundView {
     
     let userNameLabel: UILabel = UILabel()
     let camerStateIcon: ZegoCameraStateIcon = ZegoCameraStateIcon(frame: .zero)
@@ -40,8 +40,8 @@ class ZegoCallNomalForegroundView: UIView {
         }
     }
     
-    init(_ config: ZegoUIKitPrebuiltCallConfig, frame: CGRect) {
-        super.init(frame: frame)
+    init(_ config: ZegoUIKitPrebuiltCallConfig, userID: String?, frame: CGRect) {
+        super.init(frame: frame, userID: userID, delegate: nil)
         self.config = config
         self.addSubview(self.bottomView)
     }

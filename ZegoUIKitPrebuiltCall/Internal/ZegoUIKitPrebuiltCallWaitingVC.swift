@@ -213,7 +213,6 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     }
     
     func onAcceptInvitationButtonClick() {
-        ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallAcceptButtonPressed?()
         ZegoCallAudioPlayerTool.stopPlay()
         guard let callInvitationData = self.waitingVC?.callInvitationData else { return }
         self.waitingVC?.dismiss(animated: false, completion: {

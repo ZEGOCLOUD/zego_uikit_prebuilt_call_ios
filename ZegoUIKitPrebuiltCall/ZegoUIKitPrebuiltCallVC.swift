@@ -9,7 +9,7 @@ import UIKit
 import ZegoUIKitSDK
 
 @objc public protocol ZegoUIKitPrebuiltCallVCDelegate: AnyObject {
-    @objc optional func getForegroundView(_ userInfo: ZegoUIKitUser?) -> UIView?
+    @objc optional func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView?
     @objc optional func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell?
     @objc optional func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView?
     @objc optional func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat
@@ -90,7 +90,6 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         self.help.callVC = self
         ZegoUIKit.shared.addEventHandler(self.help)
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
-        ZegoUIKit.shared.localUserInfo = ZegoUIKitUser.init(userID, userName)
         self.userID = userID
         self.userName = userName
         self.roomID = callID
@@ -324,19 +323,19 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
         self.callVC?.delegate?.onOnlySelfInRoom?()
     }
     
-    func getForegroundView(_ userInfo: ZegoUIKitUser?) -> UIView? {
+    func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView? {
         guard let userInfo = userInfo,
               let callVC = self.callVC
         else {
             return nil
         }
         
-        let foregroundView: UIView? = callVC.delegate?.getForegroundView?(userInfo)
+        let foregroundView: ZegoBaseAudioVideoForegroundView? = callVC.delegate?.getForegroundView?(userInfo)
         if let foregroundView = foregroundView {
             return foregroundView
         } else {
             // user nomal foregroundView
-            let nomalForegroundView: ZegoCallNomalForegroundView = ZegoCallNomalForegroundView.init(callVC.config, frame: .zero)
+            let nomalForegroundView: ZegoCallNomalForegroundView = ZegoCallNomalForegroundView.init(callVC.config, userID: userInfo.userID, frame: .zero)
             nomalForegroundView.userInfo = userInfo
             return nomalForegroundView
         }
