@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import ZegoUIKitSDK
+import ZegoUIKit
 
 protocol CallAcceptTipViewDelegate: AnyObject {
 //    func tipViewDeclineCall(_ userInfo: UserInfo, callType: CallType)

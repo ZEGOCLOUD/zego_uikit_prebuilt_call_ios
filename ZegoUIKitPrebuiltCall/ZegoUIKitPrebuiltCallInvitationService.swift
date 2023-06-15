@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import ZegoUIKitSDK
+import ZegoUIKit
 import ZegoPluginAdapter
 
 @objc public protocol ZegoUIKitPrebuiltCallInvitationServiceDelegate: AnyObject {

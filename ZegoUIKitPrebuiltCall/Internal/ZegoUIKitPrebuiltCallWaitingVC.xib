@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -19,11 +19,11 @@
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="call_waiting_bg" translatesAutoresizingMaskIntoConstraints="NO" id="1Ja-I8-yfa">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                     </imageView>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="23e-2m-WOZ" customClass="ZegoAudioVideoView" customModule="ZegoUIKitSDK">
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="23e-2m-WOZ" customClass="ZegoAudioVideoView" customModule="ZegoUIKit">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Fr-ez-FUn">
-                        <rect key="frame" x="157" y="182" width="100" height="100"/>
+                        <rect key="frame" x="157" y="186" width="100" height="100"/>
                         <color key="backgroundColor" red="0.85882352941176465" green="0.8666666666666667" blue="0.8901960784313725" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="100" id="TrG-54-UgZ"/>
@@ -34,7 +34,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4wY-05-Bls">
-                        <rect key="frame" x="181.5" y="287" width="51.5" height="30"/>
+                        <rect key="frame" x="181.5" y="291" width="51.5" height="30"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="30" id="OOB-bi-fiW"/>
                         </constraints>
@@ -43,7 +43,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Calling..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DqY-IC-VR1">
-                        <rect key="frame" x="175.5" y="340.5" width="63" height="23"/>
+                        <rect key="frame" x="175.5" y="344.5" width="63" height="23"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="23" id="98e-g5-kJz"/>
                         </constraints>
@@ -60,7 +60,7 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="0.69999999999999996" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4p7-Md-VYj" customClass="ZegoRefuseInvitationButton" customModule="ZegoUIKitSDK">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4p7-Md-VYj" customClass="ZegoRefuseInvitationButton" customModule="ZegoUIKit">
                                 <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="NPi-QY-GzL"/>
@@ -89,7 +89,7 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="0.69999999999999996" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Em-bK-ySG" customClass="ZegoAcceptInvitationButton" customModule="ZegoUIKitSDK">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Em-bK-ySG" customClass="ZegoAcceptInvitationButton" customModule="ZegoUIKit">
                                 <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="tZO-ds-nsB"/>
@@ -109,7 +109,7 @@
                             <constraint firstAttribute="trailing" secondItem="2Em-bK-ySG" secondAttribute="trailing" id="u5h-lT-iOi"/>
                         </constraints>
                     </view>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MPg-X8-equ" customClass="ZegoCancelInvitationButton" customModule="ZegoUIKitSDK">
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MPg-X8-equ" customClass="ZegoCancelInvitationButton" customModule="ZegoUIKit">
                         <rect key="frame" x="177" y="749" width="60" height="60"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="60" id="g06-W2-gdf"/>
@@ -118,8 +118,8 @@
                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                         <state key="normal" title="Button"/>
                     </button>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AQU-Cg-BeJ" customClass="ZegoSwitchCameraButton" customModule="ZegoUIKitSDK">
-                        <rect key="frame" x="368" y="80" width="26" height="26"/>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AQU-Cg-BeJ" customClass="ZegoSwitchCameraButton" customModule="ZegoUIKit">
+                        <rect key="frame" x="368" y="84" width="26" height="26"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="26" id="Ahe-IG-5iU"/>
                             <constraint firstAttribute="height" constant="26" id="fwZ-bV-oTC"/>

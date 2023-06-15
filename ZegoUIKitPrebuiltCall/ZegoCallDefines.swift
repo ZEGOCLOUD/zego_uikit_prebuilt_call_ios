@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-import ZegoUIKitSDK
+import ZegoUIKit
 
 public enum ZegoMenuBarButtonName: Int {
     case hangUpButton
