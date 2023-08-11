@@ -243,19 +243,21 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     }
     
     func onInvitationAccepted(_ invitee: ZegoUIKitUser, data: String?) {
-        guard let callInvitationData = self.waitingVC?.callInvitationData else { return }
-        self.waitingVC?.dismiss(animated: false, completion: {
-            let config = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(callInvitationData)
-            let callVC: ZegoUIKitPrebuiltCallVC = ZegoUIKitPrebuiltCallVC.init(callInvitationData, config: config)
-            callVC.modalPresentationStyle = .fullScreen
-            callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help
-            currentViewController()?.present(callVC, animated: false, completion: nil)
-            ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
-            
-            let callee = self.getCallUser(invitee)
-            let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.callID
-            ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallAccepted?(callID ?? "", callee: callee)
-        })
+        if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall {
+            guard let callInvitationData = self.waitingVC?.callInvitationData else { return }
+            self.waitingVC?.dismiss(animated: false, completion: {
+                let config = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(callInvitationData)
+                let callVC: ZegoUIKitPrebuiltCallVC = ZegoUIKitPrebuiltCallVC.init(callInvitationData, config: config)
+                callVC.modalPresentationStyle = .fullScreen
+                callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help
+                currentViewController()?.present(callVC, animated: false, completion: nil)
+                ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
+                
+                let callee = self.getCallUser(invitee)
+                let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.callID
+                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallAccepted?(callID ?? "", callee: callee)
+            })
+        }
     }
     
     func onInvitationCanceled(_ inviter: ZegoUIKitUser, data: String?) {
@@ -265,8 +267,7 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     }
     
     func onInvitationRefused(_ invitee: ZegoUIKitUser, data: String?) {
-        let curInvitee = self.waitingVC?.callInvitationData?.invitees?.first
-        if curInvitee?.userID == invitee.userID {
+        if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall {
             self.waitingVC?.dismiss(animated: true, completion: nil)
         }
     }
