@@ -76,7 +76,7 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
         ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
         
         DispatchQueue.main.asyncAfter(deadline:DispatchTime.now()+0.5){
-            ZegoUIKit.getSignalingPlugin().enableNotifyWhenAppRunningInBackgroundOrQuit(config.notifyWhenAppRunningInBackgroundOrQuit, isSandboxEnvironment: config.isSandboxEnvironment)
+            ZegoUIKit.getSignalingPlugin().enableNotifyWhenAppRunningInBackgroundOrQuit(config.notifyWhenAppRunningInBackgroundOrQuit, isSandboxEnvironment: config.isSandboxEnvironment, certificateIndex: config.certificateIndex)
         }
     }
     

@@ -7,6 +7,7 @@
 
 import UIKit
 import ZegoUIKit
+import ZegoPluginAdapter
 
 @objcMembers
 public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
@@ -15,13 +16,17 @@ public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
     public var showDeclineButton: Bool = true
     public var notifyWhenAppRunningInBackgroundOrQuit: Bool = true
     public var isSandboxEnvironment: Bool = true
+    public var certificateIndex: ZegoSignalingPluginMultiCertificate = .firstCertificate
     
     public var innerText: ZegoInnerText = ZegoInnerText()
         
-    public init(notifyWhenAppRunningInBackgroundOrQuit: Bool = true, isSandboxEnvironment: Bool = true) {
+    public init(notifyWhenAppRunningInBackgroundOrQuit: Bool = true,
+                isSandboxEnvironment: Bool = true,
+                certificateIndex: ZegoSignalingPluginMultiCertificate = .firstCertificate) {
         super.init()
         self.notifyWhenAppRunningInBackgroundOrQuit = notifyWhenAppRunningInBackgroundOrQuit
         self.isSandboxEnvironment = isSandboxEnvironment
+        self.certificateIndex = certificateIndex
     }
 }
 
