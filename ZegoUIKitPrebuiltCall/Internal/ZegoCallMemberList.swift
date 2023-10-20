@@ -26,7 +26,7 @@ extension ZegoConferenceMemberListDelegate {
     func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat { return 65 }
 }
 
-class ZegoConferenceMemberList: UIView {
+class ZegoCallMemberList: UIView {
     
     var showMicroPhoneStateOnMemberList: Bool = true {
         didSet {
@@ -87,7 +87,7 @@ class ZegoConferenceMemberList: UIView {
     }
 }
 
-extension ZegoConferenceMemberList: ZegoMemberListDelegate, ZegoMemberListHeaderViewDelegate {
+extension ZegoCallMemberList: ZegoMemberListDelegate, ZegoMemberListHeaderViewDelegate {
     
     func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell? {
         if let cell = self.delegate?.getMemberListItemView(tableView, indexPath: indexPath, userInfo: userInfo) {

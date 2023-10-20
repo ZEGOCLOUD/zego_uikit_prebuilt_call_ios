@@ -16,6 +16,10 @@ import ZegoUIKit
     @objc optional func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat
     @objc optional func onHangUp(_ isHandup: Bool)
     @objc optional func onOnlySelfInRoom()
+    
+    //MARK: - ZegoInRoomChatViewDelegate
+    @objc optional func getChatViewItemView(_ tableView: UITableView, indexPath: IndexPath, message: ZegoInRoomMessage) -> UITableViewCell?
+    @objc optional func getChatViewItemHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, message: ZegoInRoomMessage) -> CGFloat
 }
 
 open class ZegoUIKitPrebuiltCallVC: UIViewController {
@@ -349,7 +353,7 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
     }
 }
 
-extension ZegoUIKitPrebuiltCallVC: ZegoCallDarkBottomMenuBarDelegate,ZegoCallLightBottomMenuBarDelegate, ZegoConferenceMemberListDelegate {
+extension ZegoUIKitPrebuiltCallVC: ZegoCallDarkBottomMenuBarDelegate,ZegoCallLightBottomMenuBarDelegate, ZegoConferenceMemberListDelegate, ZegoCallChatViewDelegate {
     
     func onMenuBarMoreButtonClick(_ buttonList: [UIView]) {
         let newList:[UIView] = buttonList
@@ -380,5 +384,14 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallDarkBottomMenuBarDelegate,ZegoCallLig
     
     func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat {
         return self.delegate?.getMemberListHeaderHeight?(tableView, section: section) ?? 65
+    }
+    
+    //MARK: -ZegoCallChatViewDelegate
+    func getChatViewItemView(_ tableView: UITableView, indexPath: IndexPath, message: ZegoInRoomMessage) -> UITableViewCell? {
+        return self.delegate?.getChatViewItemView?(tableView, indexPath: indexPath, message: message)
+    }
+    
+    func getChatViewItemHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, message: ZegoInRoomMessage) -> CGFloat {
+        return self.delegate?.getChatViewItemHeight?(tableView, heightForRowAt: indexPath, message: message) ?? -1
     }
 }

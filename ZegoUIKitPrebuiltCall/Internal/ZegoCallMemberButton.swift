@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ZegoVideoConferenceMemberButton: UIButton {
+class ZegoCallMemberButton: UIButton {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
