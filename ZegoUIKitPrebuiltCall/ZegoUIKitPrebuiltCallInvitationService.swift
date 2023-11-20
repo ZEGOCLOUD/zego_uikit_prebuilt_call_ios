@@ -71,6 +71,7 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
         self.userID = userID
         self.userName = userName
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
+        ZegoUIKit.shared.enableCustomVideoRender(enable: true)
         ZegoUIKitSignalingPluginImpl.shared.initWithAppID(appID: appID, appSign: appSign)
         ZegoUIKit.shared.login(userID, userName: userName)
         ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
@@ -92,6 +93,7 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     public func unInit() {
         ZegoUIKit.shared.uninit()
         ZegoUIKitSignalingPluginImpl.shared.uninit()
+        ZegoUIKit.shared.enableCustomVideoRender(enable: false)
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -302,6 +304,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     func onOnlySelfInRoom() {
         if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall {
             ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
+            ZegoMinimizeManager.shared.stopPiP()
+            ZegoMinimizeManager.shared.callVC = nil
             ZegoUIKitPrebuiltCallInvitationService.shared.callVC?.dismiss(animated: true, completion: nil)
         }
     }

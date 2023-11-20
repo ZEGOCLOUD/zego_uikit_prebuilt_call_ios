@@ -8,18 +8,16 @@
 import UIKit
 import ZegoUIKit
 
-protocol ZegoConferenceMemberListDelegate: AnyObject {
+protocol ZegoCallMemberListDelegate: AnyObject {
     func getForegroundView(_ userInfo: ZegoUIKitUser?) -> UIView?
-    func onLeaveVideoConference(_ isLeave: Bool)
     func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell?
     func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView?
     func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat
     func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat
 }
 
-extension ZegoConferenceMemberListDelegate {
+extension ZegoCallMemberListDelegate {
     func getForegroundView(_ userInfo: ZegoUIKitUser?) -> UIView? {nil}
-    func onLeaveVideoConference(_ isLeave: Bool) { }
     func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell? { return nil }
     func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView? { return nil}
     func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat { 54 }
@@ -39,7 +37,7 @@ class ZegoCallMemberList: UIView {
         }
     }
     
-    weak var delegate: ZegoConferenceMemberListDelegate?
+    weak var delegate: ZegoCallMemberListDelegate?
     
     lazy var backgroundView: UIView = {
         let view: UIView = UIView()

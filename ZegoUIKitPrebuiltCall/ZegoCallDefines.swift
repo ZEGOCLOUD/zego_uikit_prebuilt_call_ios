@@ -17,6 +17,7 @@ public enum ZegoMenuBarButtonName: Int {
     case swtichAudioOutputButton
     case showMemberListButton
     case chatButton
+    case minimizingButton
 }
 
 public enum ZegoViewPosition: Int {
@@ -78,6 +79,7 @@ enum ZegoUIKitCallIconSetType: String, Hashable {
     case user_video_icon
     case icon_message_normal
     case icon_message_press
+    case minimizing_icon
     
     // MARK: - Image handling
     func load() -> UIImage {

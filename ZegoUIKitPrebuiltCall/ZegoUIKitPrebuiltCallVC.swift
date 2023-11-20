@@ -50,6 +50,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     private var bottomBarY: CGFloat = 0
     private var topBarY: CGFloat = 0
     var lastFrame: CGRect = CGRect.zero
+    let callDuration: ZegoCallDuration = ZegoCallDuration()
     
     lazy var avContainer: ZegoAudioVideoContainer = {
         let container: ZegoAudioVideoContainer = ZegoAudioVideoContainer()
@@ -86,6 +87,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         }
         topMenuBar.showQuitDialogVC = self
         topMenuBar.config = self.config
+        topMenuBar.delegate = self
         return topMenuBar
     }()
     
@@ -121,7 +123,6 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        self.joinRoom()
         self.view.backgroundColor = UIColor.black
         self.view.addSubview(self.avContainer.view)
         self.view.addSubview(self.topBar)
@@ -134,7 +135,17 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
             self.bottomBarHeight = adaptLandscapeHeight(61) + UIKitBottomSafeAreaHeight
             self.view.addSubview(self.lightMenuBar)
         }
+        ZegoMinimizeManager.shared.delegate = self
+        ZegoMinimizeManager.shared.pipConfig = config.layout.config
+        if config.topMenuBarConfig.buttons.contains(.minimizingButton) || config.bottomMenuBarConfig.buttons.contains(.minimizingButton) {
+            if config.turnOnCameraWhenJoining && config.layout.mode == .pictureInPicture {
+                ZegoMinimizeManager.shared.setupPipControllerWithSourceView(sourceView: view, isOnevOneVideo: true)
+            } else {
+                ZegoMinimizeManager.shared.setupPipControllerWithSourceView(sourceView: view, isOnevOneVideo: false)
+            }
+        }
         self.setupLayout()
+        self.joinRoom()
     }
     
     open override func viewWillAppear(_ animated: Bool) {
@@ -266,9 +277,12 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID)
         ZegoUIKit.shared.turnCameraOn(userID, isOn: self.config.turnOnCameraWhenJoining)
         ZegoUIKit.shared.turnMicrophoneOn(userID, isOn: self.config.turnOnMicrophoneWhenJoining)
+        callDuration.delegate = self
+        callDuration.startTheTimer()
     }
     
     deinit {
+        callDuration.stopTheTimer()
         ZegoUIKit.shared.leaveRoom()
         print("CallViewController deinit")
     }
@@ -353,7 +367,7 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
     }
 }
 
-extension ZegoUIKitPrebuiltCallVC: ZegoCallDarkBottomMenuBarDelegate,ZegoCallLightBottomMenuBarDelegate, ZegoConferenceMemberListDelegate, ZegoCallChatViewDelegate {
+extension ZegoUIKitPrebuiltCallVC: ZegoCallDarkBottomMenuBarDelegate,ZegoCallLightBottomMenuBarDelegate, ZegoCallMemberListDelegate, ZegoCallChatViewDelegate, ZegoTopMenuBarDelegate {
     
     func onMenuBarMoreButtonClick(_ buttonList: [UIView]) {
         let newList:[UIView] = buttonList
@@ -368,6 +382,11 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallDarkBottomMenuBarDelegate,ZegoCallLig
             self.dismiss(animated: true, completion: nil)
         }
         self.delegate?.onHangUp?(isHandup)
+    }
+    
+    func onMinimizationButtonDidClick() {
+        ZegoMinimizeManager.shared.callVC = self
+        self.dismiss(animated: false)
     }
     
     func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell? {
@@ -393,5 +412,23 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallDarkBottomMenuBarDelegate,ZegoCallLig
     
     func getChatViewItemHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, message: ZegoInRoomMessage) -> CGFloat {
         return self.delegate?.getChatViewItemHeight?(tableView, heightForRowAt: indexPath, message: message) ?? -1
+    }
+}
+
+extension ZegoUIKitPrebuiltCallVC: ZegoMinimizeManagerDelegate {
+    func willStopPictureInPicture() {
+        if let callVC = ZegoMinimizeManager.shared.callVC,
+           ZegoMinimizeManager.shared.isNarrow
+        {
+            ZegoMinimizeManager.shared.isNarrow = false
+            currentViewController()?.present(callVC, animated: false)
+            ZegoMinimizeManager.shared.callVC = nil
+        }
+    }
+}
+
+extension ZegoUIKitPrebuiltCallVC: ZegoCallDurationDelegate {
+    func onTimeUpdate(_ duration: Int, formattedString: String) {
+        ZegoMinimizeManager.shared.updateCallTime(time: formattedString)
     }
 }

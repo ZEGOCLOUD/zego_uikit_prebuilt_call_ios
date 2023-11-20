@@ -11,11 +11,13 @@ import ZegoUIKit
 protocol ZegoCallLightBottomMenuBarDelegate: AnyObject {
     func onMenuBarMoreButtonClick(_ buttonList: [UIView])
     func onHangUp(_ isHandup: Bool)
+    func onMinimizationButtonDidClick()
 }
 
 extension ZegoCallLightBottomMenuBarDelegate {
     func onMenuBarMoreButtonClick(_ buttonList: [UIView]) { }
     func onHangUp(_ isHandup: Bool){ }
+    func onMinimizationButtonDidClick() {}
 }
 
 class ZegoCallLightBottomMenuBar: UIView {
@@ -174,41 +176,21 @@ class ZegoCallLightBottomMenuBar: UIView {
             switch item {
             case .switchCameraButton:
                 let flipCameraComponent: ZegoSwitchCameraButton = ZegoSwitchCameraButton()
-                if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index >= self.config.bottomMenuBarConfig.maxCount {
-                    self.moreButtonList.append(flipCameraComponent)
-                } else {
-                    self.buttons.append(flipCameraComponent)
-                    self.addSubview(flipCameraComponent)
-                }
+                saveButton(flipCameraComponent, index: index)
             case .toggleCameraButton:
                 let switchCameraComponent: ZegoToggleCameraButton = ZegoToggleCameraButton()
                 switchCameraComponent.isOn = self.config.turnOnCameraWhenJoining
                 switchCameraComponent.userID = ZegoUIKit.shared.localUserInfo?.userID
-                if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index >= self.config.bottomMenuBarConfig.maxCount {
-                    self.moreButtonList.append(switchCameraComponent)
-                } else {
-                    self.buttons.append(switchCameraComponent)
-                    self.addSubview(switchCameraComponent)
-                }
+                saveButton(switchCameraComponent, index: index)
             case .toggleMicrophoneButton:
                 let micButtonComponent: ZegoToggleMicrophoneButton = ZegoToggleMicrophoneButton()
                 micButtonComponent.userID = ZegoUIKit.shared.localUserInfo?.userID
                 micButtonComponent.isOn = self.config.turnOnMicrophoneWhenJoining
-                if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index >= self.config.bottomMenuBarConfig.maxCount {
-                    self.moreButtonList.append(micButtonComponent)
-                } else {
-                    self.buttons.append(micButtonComponent)
-                    self.addSubview(micButtonComponent)
-                }
+                saveButton(micButtonComponent, index: index)
             case .swtichAudioOutputButton:
                 let audioOutputButtonComponent: ZegoSwitchAudioOutputButton = ZegoSwitchAudioOutputButton()
                 audioOutputButtonComponent.useSpeaker = self.config.useSpeakerWhenJoining
-                if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index >= self.config.bottomMenuBarConfig.maxCount {
-                    self.moreButtonList.append(audioOutputButtonComponent)
-                } else {
-                    self.buttons.append(audioOutputButtonComponent)
-                    self.addSubview(audioOutputButtonComponent)
-                }
+                saveButton(audioOutputButtonComponent, index: index)
             case .hangUpButton:
                 let endButtonComponent: ZegoLeaveButton = ZegoLeaveButton()
                 if let leaveConfirmDialogInfo = self.config.hangUpConfirmDialogInfo {
@@ -230,23 +212,29 @@ class ZegoCallLightBottomMenuBar: UIView {
                     endButtonComponent.quitConfirmDialogInfo = leaveConfirmDialogInfo
                 }
                 endButtonComponent.delegate = self
-                if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index >= self.config.bottomMenuBarConfig.maxCount {
-                    self.moreButtonList.append(endButtonComponent)
-                } else {
-                    self.buttons.append(endButtonComponent)
-                    self.addSubview(endButtonComponent)
-                }
+                saveButton(endButtonComponent, index: index)
             case .showMemberListButton:
                 let memberButton: ZegoCallMemberButton = ZegoCallMemberButton()
-                self.buttons.append(memberButton)
-                self.addSubview(memberButton)
                 memberButton.addTarget(self, action: #selector(memberButtonClick), for: .touchUpInside)
+                saveButton(memberButton, index: index)
             case .chatButton:
                 let messageButton: ZegoCallChatButton = ZegoCallChatButton()
-                self.buttons.append(messageButton)
-                self.addSubview(messageButton)
                 messageButton.addTarget(self, action: #selector(messageButtonClick), for: .touchUpInside)
+                saveButton(messageButton, index: index)
+            case .minimizingButton:
+                let minimizingButton = ZegoMinimizationButton()
+                minimizingButton.delegate = self
+                saveButton(minimizingButton, index: index)
             }
+        }
+    }
+    
+    private func saveButton(_ button: UIButton, index: Int) {
+        if self.config.bottomMenuBarConfig.maxCount < self.barButtons.count && index >= self.config.bottomMenuBarConfig.maxCount {
+            self.moreButtonList.append(button)
+        } else {
+            self.buttons.append(button)
+            self.addSubview(button)
         }
     }
     
@@ -259,7 +247,7 @@ class ZegoCallLightBottomMenuBar: UIView {
         let memberListView: ZegoCallMemberList = ZegoCallMemberList()
         memberListView.showCameraStateOnMemberList = self.config.memberListConfig.showCameraState
         memberListView.showMicroPhoneStateOnMemberList = self.config.memberListConfig.showMicrophoneState
-        memberListView.delegate = self.showQuitDialogVC as? ZegoConferenceMemberListDelegate
+        memberListView.delegate = self.showQuitDialogVC as? ZegoCallMemberListDelegate
         memberListView.frame = CGRect(x: 0, y: 0, width: self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIkitScreenHeight)
         self.showQuitDialogVC?.view.addSubview(memberListView)
     }
@@ -273,12 +261,16 @@ class ZegoCallLightBottomMenuBar: UIView {
     
 }
 
-extension ZegoCallLightBottomMenuBar: LeaveButtonDelegate {
+extension ZegoCallLightBottomMenuBar: LeaveButtonDelegate, ZegoMinimizationButtonDelegate {
     func onLeaveButtonClick(_ isLeave: Bool) {
         delegate?.onHangUp(isLeave)
         if isLeave {
             showQuitDialogVC?.dismiss(animated: true, completion: nil)
         }
+    }
+    
+    func onMinimizationButtonDidClick() {
+        delegate?.onMinimizationButtonDidClick()
     }
 }
 

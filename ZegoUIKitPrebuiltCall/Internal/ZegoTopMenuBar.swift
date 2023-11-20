@@ -10,6 +10,12 @@ import ZegoUIKit
 
 protocol ZegoTopMenuBarDelegate: AnyObject {
     func onLeaveVideoConference(_ isLeave: Bool)
+    func onMinimizationButtonDidClick()
+}
+
+extension ZegoTopMenuBarDelegate {
+    func onLeaveVideoConference(_ isLeave: Bool) {}
+    func onMinimizationButtonDidClick() {}
 }
 
 class ZegoTopMenuBar: UIView {
@@ -161,6 +167,11 @@ class ZegoTopMenuBar: UIView {
                 self.buttons.append(messageButton)
                 self.addSubview(messageButton)
                 messageButton.addTarget(self, action: #selector(messageButtonClick), for: .touchUpInside)
+            case .minimizingButton:
+                let minimizingButton = ZegoMinimizationButton()
+                minimizingButton.delegate = self
+                self.buttons.append(minimizingButton)
+                self.addSubview(minimizingButton)
             }
         }
     }
@@ -169,7 +180,7 @@ class ZegoTopMenuBar: UIView {
         let memberListView: ZegoCallMemberList = ZegoCallMemberList()
         memberListView.showCameraStateOnMemberList = self.config.memberListConfig.showCameraState
         memberListView.showMicroPhoneStateOnMemberList = self.config.memberListConfig.showMicrophoneState
-        memberListView.delegate = self.showQuitDialogVC as? ZegoConferenceMemberListDelegate
+        memberListView.delegate = self.showQuitDialogVC as? ZegoCallMemberListDelegate
         memberListView.frame = CGRect(x: 0, y: 0, width: self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIkitScreenHeight)
         self.showQuitDialogVC?.view.addSubview(memberListView)
     }
@@ -183,8 +194,12 @@ class ZegoTopMenuBar: UIView {
 
 }
 
-extension ZegoTopMenuBar: LeaveButtonDelegate {
+extension ZegoTopMenuBar: LeaveButtonDelegate, ZegoMinimizationButtonDelegate {
     func onLeaveButtonClick(_ isLeave: Bool) {
         self.delegate?.onLeaveVideoConference(isLeave)
+    }
+    
+    func onMinimizationButtonDidClick() {
+        delegate?.onMinimizationButtonDidClick()
     }
 }
