@@ -193,6 +193,10 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         self.topBar.addButtonToMenuBar(button)
     }
     
+    public func finish() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     func setupLayout() {
         let audioVideoConfig: ZegoAudioVideoViewConfig = ZegoAudioVideoViewConfig()
         audioVideoConfig.showSoundWavesInAudioMode = self.config.audioVideoViewConfig.showSoundWavesInAudioMode

@@ -111,6 +111,12 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
         ZegoUIKit.getSignalingPlugin().setRemoteNotificationsDeviceToken(deviceToken)
     }
     
+    public func endCall() {
+        if let vc = self.callVC, vc.isKind(of: ZegoUIKitPrebuiltCallVC.classForCoder()) {
+            (vc as! ZegoUIKitPrebuiltCallVC).finish()
+        }
+    }
+    
     func startIncomingRing() {
         var ringResourcePath: String? = self.config?.incomingCallRingtone
         if ringResourcePath == nil {
