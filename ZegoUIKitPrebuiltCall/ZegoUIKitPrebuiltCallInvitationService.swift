@@ -23,6 +23,8 @@ import ZegoPluginAdapter
     @objc optional func onIncomingCallTimeout(_ callID: String,  caller: ZegoCallUser)
     @objc optional func onOutgoingCallTimeout(_ callID: String, callees: [ZegoCallUser])
     
+    @objc optional func onCallTimeUpdate(_ duration: Int)
+    
 }
 
 public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
@@ -308,6 +310,10 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             ZegoMinimizeManager.shared.callVC = nil
             ZegoUIKitPrebuiltCallInvitationService.shared.callVC?.dismiss(animated: true, completion: nil)
         }
+    }
+    
+    func onCallTimeUpdate(_ duration: Int) {
+        ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onCallTimeUpdate?(duration)
     }
     
     func getInviteeList(_ invitees: [Dictionary<String,String>]) -> [ZegoUIKitUser] {

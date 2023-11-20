@@ -27,6 +27,8 @@ public class ZegoUIKitPrebuiltCallConfig: NSObject {
     public var memberListConfig: ZegoMemberListConfig = ZegoMemberListConfig()
     public var topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
     
+    public var showCallDuration: Bool = true
+    
     public static func oneOnOneVideoCall() -> ZegoUIKitPrebuiltCallConfig {
         let config = ZegoUIKitPrebuiltCallConfig()
         config.turnOnCameraWhenJoining = true

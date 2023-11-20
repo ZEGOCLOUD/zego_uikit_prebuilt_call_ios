@@ -20,6 +20,8 @@ import ZegoUIKit
     //MARK: - ZegoInRoomChatViewDelegate
     @objc optional func getChatViewItemView(_ tableView: UITableView, indexPath: IndexPath, message: ZegoInRoomMessage) -> UITableViewCell?
     @objc optional func getChatViewItemHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, message: ZegoInRoomMessage) -> CGFloat
+    
+    @objc optional func onCallTimeUpdate(_ duration: Int)
 }
 
 open class ZegoUIKitPrebuiltCallVC: UIViewController {
@@ -91,6 +93,15 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         return topMenuBar
     }()
     
+    lazy var callTimeLabel: UILabel = {
+        let label: UILabel = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        label.textAlignment = .center
+        label.textColor = UIColor.white
+        label.isHidden = !self.config.showCallDuration
+        return label
+    }()
+    
     public init(_ appID: UInt32, appSign: String, userID: String, userName: String, callID: String, config: ZegoUIKitPrebuiltCallConfig?) {
         super.init(nibName: nil, bundle: nil)
         self.help.callVC = self
@@ -125,6 +136,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         // Do any additional setup after loading the view.
         self.view.backgroundColor = UIColor.black
         self.view.addSubview(self.avContainer.view)
+        self.view.addSubview(self.callTimeLabel)
         self.view.addSubview(self.topBar)
         if self.config.bottomMenuBarConfig.style == .dark {
             self.currentBottomMenuBar = self.menuBar
@@ -161,6 +173,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         super.viewDidLayoutSubviews()
         if !self.view.frame.equalTo(self.lastFrame) {
             self.avContainer.view.frame = CGRect(x: 0, y: UIKitTopSafeAreaHeight, width: self.view.frame.size.width, height: self.view.frame.size.height - UIKitTopSafeAreaHeight - UIKitBottomSafeAreaHeight)
+            self.callTimeLabel.frame = CGRect(x: 100, y: UIKitTopSafeAreaHeight + 10, width: UIScreen.main.bounds.width - 200, height: 20)
             self.topBar.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.topMenuBarHeight)
             self.currentBottomMenuBar?.frame = CGRect.init(x: 0, y: self.view.frame.size.height - self.bottomBarHeight, width: self.view.frame.size.width, height: self.bottomBarHeight)
             self.menuBar.addCorner(conrners: [.topLeft,.topRight], radius: 16)
@@ -429,6 +442,8 @@ extension ZegoUIKitPrebuiltCallVC: ZegoMinimizeManagerDelegate {
 
 extension ZegoUIKitPrebuiltCallVC: ZegoCallDurationDelegate {
     func onTimeUpdate(_ duration: Int, formattedString: String) {
+        self.callTimeLabel.text = formattedString
+        self.delegate?.onCallTimeUpdate?(duration)
         ZegoMinimizeManager.shared.updateCallTime(time: formattedString)
     }
 }
