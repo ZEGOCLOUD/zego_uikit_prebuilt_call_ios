@@ -87,15 +87,19 @@ public class ZegoSendCallInvitationButton: UIButton {
     }
     
     @objc func buttonClick() {
-        if ZegoUIKitPrebuiltCallInvitationService.shared.isCalling || invitees.count == 0 { return }
+        if ZegoUIKitPrebuiltCallInvitationService.shared.invitationData != nil || invitees.count == 0 { return }
         guard let userID = ZegoUIKit.shared.localUserInfo?.userID else { return }
         let callData = ZegoCallInvitationData()
         callData.callID = String(format: "call_%@_%d", userID,getTimeStamp())
         callData.invitees = self.inviteeList
         callData.inviter = ZegoUIKit.shared.localUserInfo
         callData.type = isVideoCall ? .videoCall : .voiceCall
-        self.data = ["call_id": callData.callID as AnyObject, "invitees": self.conversionInvitees() as AnyObject, "customData": self.customData as AnyObject].call_jsonString
-        ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = self.buildInvitationData(callData)
+        self.data = ["call_id": callData.callID as AnyObject, 
+                     "invitees": self.conversionInvitees() as AnyObject,
+                     "inviter": self.conversionInviter() as AnyObject,
+                     "customData": self.customData as AnyObject].call_jsonString
+        ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = callData
+        ZegoUIKitPrebuiltCallInvitationService.shared.invitees = buildInvitationUserList(callData)
         
         let config: ZegoUIKitPrebuiltCallInvitationConfig? = ZegoUIKitPrebuiltCallInvitationService.shared.config
         let resourceID: String = self.resourceID ?? ""
@@ -121,20 +125,17 @@ public class ZegoSendCallInvitationButton: UIButton {
                     ZegoUIKitPrebuiltCallInvitationService.shared.help.updateUserState(.error, userList: errorInvitees)
                     if errorInvitees.count == self.invitees.count {
                         //all invitees offline
-                        ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
+                        ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
                     } else {
-                        ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = true
                         self.startCall(callData)
                     }
                     ZegoUIKitPrebuiltCallInvitationService.shared.help.checkInviteesState()
                 } else {
-                    ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = true
                     self.startCall(callData)
                 }
                 self.delegate?.onPressed(code, errorMessage: message, errorInvitees: errorUsers as? [ZegoCallUser])
             } else {
                 self.delegate?.onPressed(code, errorMessage: message, errorInvitees: errorUsers as? [ZegoCallUser])
-                ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
                 ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
             }
         }
@@ -173,18 +174,22 @@ public class ZegoSendCallInvitationButton: UIButton {
         return newInvitees
     }
     
-    func buildInvitationData(_ callData: ZegoCallInvitationData) -> ZegoCallPrebuiltInvitationData? {
-        guard let invitationID = callData.callID,
-        let prebuiltInviter = callData.inviter,
-        let invitees = callData.invitees
-        else { return nil }
+    func conversionInviter() -> [String: String] {
+        return [
+            "id": ZegoUIKit.shared.localUserInfo?.userID ?? "",
+            "name": ZegoUIKit.shared.localUserInfo?.userName ?? ""
+        ]
+    }
+        
+    func buildInvitationUserList(_ callData: ZegoCallInvitationData) -> [ZegoCallPrebuiltInvitationUser]? {
+        guard let invitees = callData.invitees else {
+            return nil
+        }
         var invitationUsers: [ZegoCallPrebuiltInvitationUser] = []
         for user in invitees {
             let invitationUser = ZegoCallPrebuiltInvitationUser.init(user, state: .wating)
             invitationUsers.append(invitationUser)
         }
-        let invitationData: ZegoCallPrebuiltInvitationData = ZegoCallPrebuiltInvitationData.init(invitationID, inviter: prebuiltInviter, invitees: invitationUsers, type: callData.type ?? .voiceCall)
-        return invitationData
+        return invitationUsers
     }
-    
 }

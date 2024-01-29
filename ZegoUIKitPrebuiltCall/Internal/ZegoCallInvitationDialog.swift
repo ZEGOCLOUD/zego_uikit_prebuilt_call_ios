@@ -164,7 +164,6 @@ extension ZegoCallInvitationDialog: ZegoRefuseInvitationButtonDelegate {
         ZegoCallAudioPlayerTool.stopPlay()
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallDeclineButtonPressed?()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
-        ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
         ZegoCallInvitationDialog.hide()
     }
 }

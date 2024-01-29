@@ -207,7 +207,6 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     func onRefuseInvitationButtonClick() {
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallDeclineButtonPressed?()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
-        ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
         ZegoCallAudioPlayerTool.stopPlay()
         waitingVC?.dismiss(animated: true, completion: nil)
     }
@@ -236,7 +235,6 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     
     func onCancelInvitationButtonClick() {
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallCancelButtonPressed?()
-        ZegoUIKitPrebuiltCallInvitationService.shared.isCalling = false
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         ZegoCallAudioPlayerTool.stopPlay()
         waitingVC?.dismiss(animated: true, completion: nil)
@@ -254,7 +252,7 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
                 ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
                 
                 let callee = self.getCallUser(invitee)
-                let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.callID
+                let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID
                 ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallAccepted?(callID ?? "", callee: callee)
             })
         }
