@@ -9,23 +9,6 @@ import UIKit
 import ZegoUIKit
 import ZegoPluginAdapter
 
-@objc public protocol ZegoUIKitPrebuiltCallInvitationServiceDelegate: AnyObject {
-    func requireConfig(_ data: ZegoCallInvitationData) -> ZegoUIKitPrebuiltCallConfig
-    
-    @objc optional func onIncomingCallDeclineButtonPressed()
-    @objc optional func onIncomingCallAcceptButtonPressed()
-    @objc optional func onOutgoingCallCancelButtonPressed()
-    @objc optional func onIncomingCallReceived(_ callID: String, caller: ZegoCallUser, callType: ZegoCallType, callees: [ZegoCallUser]?)
-    @objc optional func onIncomingCallCanceled(_ callID: String, caller: ZegoCallUser)
-    @objc optional func onOutgoingCallAccepted(_ callID: String, callee: ZegoCallUser)
-    @objc optional func onOutgoingCallRejectedCauseBusy(_ callID: String, callee: ZegoCallUser)
-    @objc optional func onOutgoingCallDeclined(_ callID: String, callee: ZegoCallUser)
-    @objc optional func onIncomingCallTimeout(_ callID: String,  caller: ZegoCallUser)
-    @objc optional func onOutgoingCallTimeout(_ callID: String, callees: [ZegoCallUser])
-    
-    @objc optional func onCallTimeUpdate(_ duration: Int)
-    
-}
 
 public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     
@@ -71,55 +54,6 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
         }
     }
     
-    public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String, config: ZegoUIKitPrebuiltCallInvitationConfig) {
-        self.config = config
-        self.userID = userID
-        self.userName = userName
-        
-        ZegoUIKit.getSignalingPlugin().enableNotifyWhenAppRunningInBackgroundOrQuit(config.notifyWhenAppRunningInBackgroundOrQuit, isSandboxEnvironment: config.isSandboxEnvironment, certificateIndex: config.certificateIndex)
-        
-        ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
-        ZegoUIKit.shared.enableCustomVideoRender(enable: true)
-        ZegoUIKitSignalingPluginImpl.shared.initWithAppID(appID: appID, appSign: appSign)
-        ZegoUIKit.shared.login(userID, userName: userName)
-        ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
-    }
-    
-    public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String) {
-        self.userID = userID
-        self.userName = userName
-        ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
-        ZegoUIKitSignalingPluginImpl.shared.initWithAppID(appID: appID, appSign: appSign)
-        ZegoUIKit.shared.login(userID, userName: userName)
-        ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
-    }
-    
-    public func unInit() {
-        ZegoUIKit.shared.uninit()
-        ZegoUIKitSignalingPluginImpl.shared.uninit()
-        ZegoUIKit.shared.enableCustomVideoRender(enable: false)
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    public func getPrebuiltCallVC()-> ZegoUIKitPrebuiltCallVC? {
-        if let vc = self.callVC, vc.isKind(of: ZegoUIKitPrebuiltCallVC.classForCoder()) {
-            return vc as? ZegoUIKitPrebuiltCallVC
-        } else {
-            return nil
-        }
-    }
-    
-    public static func setRemoteNotificationsDeviceToken(_ deviceToken: Data) {
-        ZegoUIKit.getSignalingPlugin().setRemoteNotificationsDeviceToken(deviceToken)
-    }
-    
-    public func endCall() {
-        if let vc = self.callVC, vc.isKind(of: ZegoUIKitPrebuiltCallVC.classForCoder()) {
-            (vc as! ZegoUIKitPrebuiltCallVC).finish()
-        }
-        self.invitationData = nil
-    }
-    
     func startIncomingRing() {
         var ringResourcePath: String? = self.config?.incomingCallRingtone
         if ringResourcePath == nil {
@@ -149,6 +83,61 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     }
     
 }
+
+extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
+    
+    public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String, config: ZegoUIKitPrebuiltCallInvitationConfig) {
+        self.config = config
+        self.userID = userID
+        self.userName = userName
+        
+        ZegoUIKit.getSignalingPlugin().enableNotifyWhenAppRunningInBackgroundOrQuit(config.notifyWhenAppRunningInBackgroundOrQuit, isSandboxEnvironment: config.isSandboxEnvironment, certificateIndex: config.certificateIndex)
+        
+        ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
+        ZegoUIKit.shared.enableCustomVideoRender(enable: true)
+        ZegoUIKitSignalingPluginImpl.shared.initWithAppID(appID: appID, appSign: appSign)
+        ZegoUIKit.shared.login(userID, userName: userName)
+        ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
+    }
+    
+    public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String) {
+        self.userID = userID
+        self.userName = userName
+        ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
+        ZegoUIKitSignalingPluginImpl.shared.initWithAppID(appID: appID, appSign: appSign)
+        ZegoUIKit.shared.login(userID, userName: userName)
+        ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
+    }
+    
+    public func unInit() {
+        ZegoUIKit.shared.uninit()
+        ZegoUIKitSignalingPluginImpl.shared.uninit()
+        ZegoUIKit.shared.enableCustomVideoRender(enable: false)
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    public func getPrebuiltCallVC()-> ZegoUIKitPrebuiltCallVC? {
+        if let vc = self.callVC, vc.isKind(of: ZegoUIKitPrebuiltCallVC.classForCoder()) {
+            return vc as? ZegoUIKitPrebuiltCallVC
+        } else {
+            return nil
+        }
+    }
+    
+
+    public static func setRemoteNotificationsDeviceToken(_ deviceToken: Data) {
+        ZegoUIKit.getSignalingPlugin().setRemoteNotificationsDeviceToken(deviceToken)
+    }
+    
+    
+    public func endCall() {
+        if let vc = self.callVC, vc.isKind(of: ZegoUIKitPrebuiltCallVC.classForCoder()) {
+            (vc as! ZegoUIKitPrebuiltCallVC).finish()
+        }
+        self.invitationData = nil
+    }
+}
+
 
 class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandle, ZegoUIKitPrebuiltCallVCDelegate {
     

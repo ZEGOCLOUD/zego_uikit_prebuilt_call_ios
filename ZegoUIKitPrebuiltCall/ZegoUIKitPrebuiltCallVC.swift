@@ -8,21 +8,25 @@
 import UIKit
 import ZegoUIKit
 
-@objc public protocol ZegoUIKitPrebuiltCallVCDelegate: AnyObject {
-    @objc optional func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView?
-    @objc optional func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell?
-    @objc optional func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView?
-    @objc optional func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat
-    @objc optional func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat
-    @objc optional func onHangUp(_ isHandup: Bool)
-    @objc optional func onOnlySelfInRoom()
+extension ZegoUIKitPrebuiltCallVC: CallVCApi {
     
-    //MARK: - ZegoInRoomChatViewDelegate
-    @objc optional func getChatViewItemView(_ tableView: UITableView, indexPath: IndexPath, message: ZegoInRoomMessage) -> UITableViewCell?
-    @objc optional func getChatViewItemHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, message: ZegoInRoomMessage) -> CGFloat
+    public func addButtonToBottomMenuBar(_ button: UIButton) {
+        if self.config.bottomMenuBarConfig.style == .dark {
+            self.menuBar.addButtonToMenuBar(button)
+        } else {
+            self.lightMenuBar.addButtonToMenuBar(button)
+        }
+    }
     
-    @objc optional func onCallTimeUpdate(_ duration: Int)
+    public func addButtonToTopMenuBar(_ button: UIButton) {
+        self.topBar.addButtonToMenuBar(button)
+    }
+    
+    public func finish() {
+        self.dismiss(animated: true, completion: nil)
+    }
 }
+
 
 open class ZegoUIKitPrebuiltCallVC: UIViewController {
     
@@ -102,6 +106,15 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         return label
     }()
     
+    
+    /// Initialization of call page
+    /// - Parameters:
+    ///   - appID: Your appID
+    ///   - appSign: Your appSign
+    ///   - userID: User unique identification
+    ///   - userName: userName
+    ///   - callID: call id
+    ///   - config: call personalized configuration
     public init(_ appID: UInt32, appSign: String, userID: String, userName: String, callID: String, config: ZegoUIKitPrebuiltCallConfig?) {
         super.init(nibName: nil, bundle: nil)
         self.help.callVC = self
@@ -115,6 +128,11 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         }
     }
     
+    
+    /// Initialization of call page
+    /// - Parameters:
+    ///   - data: Call invitation data
+    ///   - config: call personalized configuration
     public init(_ data: ZegoCallInvitationData, config: ZegoUIKitPrebuiltCallConfig?) {
         super.init(nibName: nil, bundle: nil)
         self.help.callVC = self
@@ -179,22 +197,6 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
             self.menuBar.addCorner(conrners: [.topLeft,.topRight], radius: 16)
             self.lastFrame = self.view.frame
         }
-    }
-
-    public func addButtonToBottomMenuBar(_ button: UIButton) {
-        if self.config.bottomMenuBarConfig.style == .dark {
-            self.menuBar.addButtonToMenuBar(button)
-        } else {
-            self.lightMenuBar.addButtonToMenuBar(button)
-        }
-    }
-    
-    public func addButtonToTopMenuBar(_ button: UIButton) {
-        self.topBar.addButtonToMenuBar(button)
-    }
-    
-    public func finish() {
-        self.dismiss(animated: true, completion: nil)
     }
     
     func setupLayout() {
