@@ -14,6 +14,7 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     
     public static let shared = ZegoUIKitPrebuiltCallInvitationService()
     public weak var delegate: ZegoUIKitPrebuiltCallInvitationServiceDelegate?
+    public weak var callVCDelegate: ZegoUIKitPrebuiltCallVCDelegate?
     
     let help = ZegoUIKitPrebuiltCallInvitationService_Help()
     var config: ZegoUIKitPrebuiltCallInvitationConfig?
@@ -273,6 +274,27 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         ZegoUIKitPrebuiltCallInvitationService.shared.pluginConnectState = state
     }
     
+    // MARK: ZegoUIKitPrebuiltCallVCDelegate
+    func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView? {
+        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.getForegroundView?(userInfo)
+    }
+    
+    func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell? {
+        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.getMemberListItemView?(tableView, indexPath: indexPath, userInfo: userInfo)
+    }
+    
+    func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView? {
+        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.getMemberListviewForHeaderInSection?(tableView, section: section)
+    }
+    
+    func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat {
+        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.getMemberListItemHeight?(userInfo) ?? 54
+    }
+    
+    func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat {
+        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.getMemberListHeaderHeight?(tableView, section: section) ?? 0
+    }
+    
     func onHangUp(_ isHandup: Bool) {
         reportCallEnded()
         if isHandup {
@@ -295,6 +317,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             }
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         }
+        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onHangUp?(isHandup)
     }
     
     func onOnlySelfInRoom() {
@@ -305,6 +328,15 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             reportCallEnded()
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         }
+        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onOnlySelfInRoom?()
+    }
+    
+    func getChatViewItemView(_ tableView: UITableView, indexPath: IndexPath, message: ZegoInRoomMessage) -> UITableViewCell? {
+        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.getChatViewItemView?(tableView, indexPath: indexPath, message: message)
+    }
+    
+    func getChatViewItemHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, message: ZegoInRoomMessage) -> CGFloat {
+        return ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.getChatViewItemHeight?(tableView, heightForRowAt: indexPath, message: message) ?? -1
     }
     
     func onCallTimeUpdate(_ duration: Int) {
