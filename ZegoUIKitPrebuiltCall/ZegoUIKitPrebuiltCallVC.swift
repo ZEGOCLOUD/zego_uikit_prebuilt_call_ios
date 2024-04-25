@@ -408,6 +408,22 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallDarkBottomMenuBarDelegate,ZegoCallLig
         self.dismiss(animated: false)
     }
     
+    func onSwitchCameraButtonClick(_ isFrontFacing: Bool) {
+        delegate?.onSwitchCameraButtonClick?(isFrontFacing)
+    }
+    
+    func onToggleCameraButtonClick(_ isOn: Bool) {
+        delegate?.onToggleCameraButtonClick?(isOn)
+    }
+    
+    func onToggleMicButtonClick(_ isOn: Bool) {
+        delegate?.onToggleMicButtonClick?(isOn)
+    }
+    
+    func onAudioOutputButtonClick(_ isSpeaker: Bool) {
+        delegate?.onAudioOutputButtonClick?(isSpeaker)
+    }
+    
     func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell? {
         return self.delegate?.getMemberListItemView?(tableView, indexPath: indexPath, userInfo: userInfo)
     }

@@ -12,6 +12,10 @@ protocol ZegoCallLightBottomMenuBarDelegate: AnyObject {
     func onMenuBarMoreButtonClick(_ buttonList: [UIView])
     func onHangUp(_ isHandup: Bool)
     func onMinimizationButtonDidClick()
+    func onSwitchCameraButtonClick(_ isFrontFacing: Bool)
+    func onToggleCameraButtonClick(_ isOn: Bool)
+    func onToggleMicButtonClick(_ isOn: Bool)
+    func onAudioOutputButtonClick(_ isSpeaker: Bool)
 }
 
 extension ZegoCallLightBottomMenuBarDelegate {
@@ -176,20 +180,24 @@ class ZegoCallLightBottomMenuBar: UIView {
             switch item {
             case .switchCameraButton:
                 let flipCameraComponent: ZegoSwitchCameraButton = ZegoSwitchCameraButton()
+                flipCameraComponent.delegate = self
                 saveButton(flipCameraComponent, index: index)
             case .toggleCameraButton:
                 let switchCameraComponent: ZegoToggleCameraButton = ZegoToggleCameraButton()
                 switchCameraComponent.isOn = self.config.turnOnCameraWhenJoining
                 switchCameraComponent.userID = ZegoUIKit.shared.localUserInfo?.userID
+                switchCameraComponent.delegate = self
                 saveButton(switchCameraComponent, index: index)
             case .toggleMicrophoneButton:
                 let micButtonComponent: ZegoToggleMicrophoneButton = ZegoToggleMicrophoneButton()
                 micButtonComponent.userID = ZegoUIKit.shared.localUserInfo?.userID
                 micButtonComponent.isOn = self.config.turnOnMicrophoneWhenJoining
+                micButtonComponent.delegate = self
                 saveButton(micButtonComponent, index: index)
             case .swtichAudioOutputButton:
                 let audioOutputButtonComponent: ZegoSwitchAudioOutputButton = ZegoSwitchAudioOutputButton()
                 audioOutputButtonComponent.useSpeaker = self.config.useSpeakerWhenJoining
+                audioOutputButtonComponent.delegate = self
                 saveButton(audioOutputButtonComponent, index: index)
             case .hangUpButton:
                 let endButtonComponent: ZegoLeaveButton = ZegoLeaveButton()
@@ -261,7 +269,12 @@ class ZegoCallLightBottomMenuBar: UIView {
     
 }
 
-extension ZegoCallLightBottomMenuBar: LeaveButtonDelegate, ZegoMinimizationButtonDelegate {
+extension ZegoCallLightBottomMenuBar: LeaveButtonDelegate,
+                                      ZegoMinimizationButtonDelegate,
+                                      ZegoSwitchCameraButtonDelegate,
+                                      ZegoToggleCameraButtonDelegate,
+                                      ToggleMicrophoneButtonDelegate,
+                                      ToggleAudioOutputButtonDelegate {
     func onLeaveButtonClick(_ isLeave: Bool) {
         delegate?.onHangUp(isLeave)
         if isLeave {
@@ -271,6 +284,22 @@ extension ZegoCallLightBottomMenuBar: LeaveButtonDelegate, ZegoMinimizationButto
     
     func onMinimizationButtonDidClick() {
         delegate?.onMinimizationButtonDidClick()
+    }
+    
+    func onSwitchCameraButtonClick(_ isFrontFacing: Bool) {
+        delegate?.onSwitchCameraButtonClick(isFrontFacing)
+    }
+    
+    func onToggleCameraButtonClick(_ isOn: Bool) {
+        delegate?.onToggleCameraButtonClick(isOn)
+    }
+    
+    func onToggleMicButtonClick(_ isOn: Bool) {
+        delegate?.onToggleMicButtonClick(isOn)
+    }
+    
+    func onAudioOutputButtonClick(_ isSpeaker: Bool) {
+        delegate?.onAudioOutputButtonClick(isSpeaker)
     }
 }
 

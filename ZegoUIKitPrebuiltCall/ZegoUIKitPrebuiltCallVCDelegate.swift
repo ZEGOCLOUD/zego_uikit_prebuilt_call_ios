@@ -16,6 +16,10 @@ import ZegoUIKit
     @objc optional func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat
     @objc optional func onHangUp(_ isHandup: Bool)
     @objc optional func onOnlySelfInRoom()
+    @objc optional func onSwitchCameraButtonClick(_ isFrontFacing: Bool)
+    @objc optional func onToggleCameraButtonClick(_ isOn: Bool)
+    @objc optional func onToggleMicButtonClick(_ isOn: Bool)
+    @objc optional func onAudioOutputButtonClick(_ isSpeaker: Bool)
     
     //MARK: - ZegoInRoomChatViewDelegate
     @objc optional func getChatViewItemView(_ tableView: UITableView, indexPath: IndexPath, message: ZegoInRoomMessage) -> UITableViewCell?
