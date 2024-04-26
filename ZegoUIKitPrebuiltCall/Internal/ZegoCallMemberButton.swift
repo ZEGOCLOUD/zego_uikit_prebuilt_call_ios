@@ -9,6 +9,12 @@ import UIKit
 
 class ZegoCallMemberButton: UIButton {
     
+    public var iconMember: UIImage = ZegoUIKitCallIconSetType.icon_member_normal.load() {
+        didSet {
+            self.setImage(iconMember, for: .normal)
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setImage(ZegoUIKitCallIconSetType.icon_member_normal.load(), for: .normal)

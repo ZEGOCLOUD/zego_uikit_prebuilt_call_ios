@@ -8,6 +8,12 @@
 import UIKit
 
 class ZegoCallChatButton: UIButton {
+    
+    public var iconChat: UIImage = ZegoUIKitCallIconSetType.icon_message_normal.load() {
+        didSet {
+            self.setImage(iconChat, for: .normal)
+        }
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)

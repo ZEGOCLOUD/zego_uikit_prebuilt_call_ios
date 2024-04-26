@@ -137,7 +137,7 @@ public class ZegoBottomMenuBarConfig: NSObject {
     /// Whether the user can click the position of the non-responsive area of the screen, and fold up the top and bottom
     public var hideByClick: Bool = true
     public var style: ZegoMenuBarStyle = .dark
-
+    public var buttonConfig = ZegoMenuBarButtonConfig()
 }
 
 public class ZegoMemberListConfig: NSObject {
@@ -151,6 +151,23 @@ public class ZegoTopMenuBarConfig: NSObject {
     public var hideByClick: Bool = true
     public var style: ZegoMenuBarStyle = .dark
     public var isVisible: Bool = false
+    public var buttonConfig = ZegoMenuBarButtonConfig()
 }
 
+
+public class ZegoMenuBarButtonConfig {
+    public var toggleCameraOnImage: UIImage?
+    public var toggleCameraOffImage: UIImage?
+    public var toggleMicrophoneOnImage: UIImage?
+    public var toggleMicrophoneOffImage: UIImage?
+    public var hangUpButtonImage: UIImage?
+    public var switchCameraFrontImage: UIImage?
+    public var switchCameraBackImage: UIImage?
+    public var showMemberListButtonImage: UIImage?
+    public var chatButtonImage: UIImage?
+    public var minimizingButtonImage: UIImage?
+    public var audioOutputSpeakerImage: UIImage?
+    public var audioOutputEarSpeakerImage: UIImage?
+    public var audioOutputBluetoothImage: UIImage?
+}
 

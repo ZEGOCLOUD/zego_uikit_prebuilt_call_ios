@@ -64,8 +64,8 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         return container
     }()
     
-    lazy var menuBar: ZegoCallDarkBottomMenuBar = {
-        let menuBar = ZegoCallDarkBottomMenuBar()
+    lazy var menuBar: ZegoCallBottomMenuBar = {
+        let menuBar = ZegoCallBottomMenuBar()
         menuBar.showQuitDialogVC = self
         menuBar.config = self.config
         menuBar.delegate = self
@@ -73,8 +73,8 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         return menuBar
     }()
     
-    lazy var lightMenuBar: ZegoCallLightBottomMenuBar = {
-        let menuBar = ZegoCallLightBottomMenuBar()
+    lazy var lightMenuBar: ZegoCallBottomMenuBar = {
+        let menuBar = ZegoCallBottomMenuBar()
         menuBar.showQuitDialogVC = self
         menuBar.config = self.config
         menuBar.delegate = self
@@ -386,7 +386,7 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
     }
 }
 
-extension ZegoUIKitPrebuiltCallVC: ZegoCallDarkBottomMenuBarDelegate,ZegoCallLightBottomMenuBarDelegate, ZegoCallMemberListDelegate, ZegoCallChatViewDelegate, ZegoTopMenuBarDelegate {
+extension ZegoUIKitPrebuiltCallVC: ZegoCallBottomMenuBarDelegate, ZegoCallMemberListDelegate, ZegoCallChatViewDelegate, ZegoTopMenuBarDelegate {
     
     func onMenuBarMoreButtonClick(_ buttonList: [UIView]) {
         let newList:[UIView] = buttonList

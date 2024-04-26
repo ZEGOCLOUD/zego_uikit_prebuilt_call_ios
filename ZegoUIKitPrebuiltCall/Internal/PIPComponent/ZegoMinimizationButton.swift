@@ -18,6 +18,12 @@ extension ZegoMinimizationButtonDelegate {
 class ZegoMinimizationButton: UIButton {
     
     weak var delegate: ZegoMinimizationButtonDelegate?
+    
+    public var iconMinimize: UIImage = ZegoUIKitCallIconSetType.minimizing_icon.load() {
+        didSet {
+            self.setImage(iconMinimize, for: .normal)
+        }
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
