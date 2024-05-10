@@ -40,6 +40,7 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     
     public override init() {
         ZegoUIKit.shared.addEventHandler(self.help)
+        ZegoPluginAdapter.callkitPlugin?.registerPluginEventHandler(self.help)
         super.init()
         NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
@@ -82,7 +83,6 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
         let bundle = Bundle(path: bundlePath)
         return bundle
     }
-    
 }
 
 extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
@@ -91,8 +91,17 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         self.config = config
         self.userID = userID
         self.userName = userName
-        
+        // Update UIKit Language
+        let zegoLanguage: ZegoLanguage = config.languageCode
+        let zegoUIKitLanguage = ZegoUIKitLanguage(rawValue: zegoLanguage.rawValue)!
+        ZegoUIKitTranslationTextConfig.shared.languageCode = zegoUIKitLanguage;
+      
         ZegoUIKit.getSignalingPlugin().enableNotifyWhenAppRunningInBackgroundOrQuit(config.notifyWhenAppRunningInBackgroundOrQuit, isSandboxEnvironment: config.isSandboxEnvironment, certificateIndex: config.certificateIndex)
+        
+        if config.notifyWhenAppRunningInBackgroundOrQuit {
+//            try to enable voip if import
+            ZegoPluginAdapter.callkitPlugin?.enableVoIP(config.isSandboxEnvironment)
+        }
         
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
         ZegoUIKit.shared.enableCustomVideoRender(enable: true)
@@ -139,8 +148,8 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
     }
 }
 
+class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandle, ZegoUIKitPrebuiltCallVCDelegate, ZegoCallKitPluginEventHandler {
 
-class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandle, ZegoUIKitPrebuiltCallVCDelegate {
     
     private let uikitEventDelegates: NSHashTable<ZegoUIKitEventHandle> = NSHashTable(options: .weakMemory)
     
@@ -165,18 +174,25 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             let needReportCall = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.invitationID == nil
             
             let callData = buildCallInvitationData(type: type, invitationID: pluginInvitationID, dataDict: dataDic)
+//            callData.inviter = inviter;
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = callData
             
             if needReportCall {
                 let uuid = UUID()
-                ZegoUIKitPrebuiltCallInvitationService.shared.currentCallUUID = uuid
-                ZegoPluginAdapter.signalingPlugin?.reportIncomingCall(with: uuid, title: inviter.userName ?? "", hasVideo: type == 1)
+                if UIApplication.shared.applicationState == .active {
+                  ZegoUIKitPrebuiltCallInvitationService.shared.currentCallUUID = uuid
+  //                ZegoPluginAdapter.signalingPlugin?.reportIncomingCall(with: uuid, title: inviter.userName ?? "", hasVideo: type == 1)
+                  ZegoPluginAdapter.callkitPlugin?.reportIncomingCall(with: uuid, title: inviter.userName ?? "", hasVideo: type == 1)
+                }
             }
             
             ZegoUIKitPrebuiltCallInvitationService.shared.isCallInviting = true
             
-//            _ = ZegoCallInvitationDialog.show(callData)
-//            ZegoUIKitPrebuiltCallInvitationService.shared.startIncomingRing()
+            if (ZegoPluginAdapter.callkitPlugin == nil){
+                _ = ZegoCallInvitationDialog.show(callData)
+                ZegoUIKitPrebuiltCallInvitationService.shared.startIncomingRing()
+            }
+
             
             let callUser: ZegoCallUser = getCallUser(inviter)
             
@@ -195,10 +211,20 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         if (ZegoUIKitPrebuiltCallInvitationService.shared.invitationData == nil) {
             return
         }
+      
+        let dataDic: Dictionary? = data?.call_convertStringToDictionary()
+        let pluginInvitationID: String? = dataDic?["invitationID"] as? String
+        // 同一个邀请的事件
+      if (ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.invitationID != nil && ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.invitationID == pluginInvitationID) {
+        // 房主
+        if ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.inviter?.userID == ZegoUIKitPrebuiltCallInvitationService.shared.userID {
+          ZegoCallAudioPlayerTool.stopPlay()
+        }
+      }
 //        let callee = getCallUser(invitee)
 //        let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.callID
 //        ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallAccepted?(callID ?? "", callee: callee)
-        ZegoCallAudioPlayerTool.stopPlay()
+//          ZegoCallAudioPlayerTool.stopPlay()
 //        ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
     }
     
@@ -211,6 +237,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallCanceled?(callID ?? "", caller: callUser)
         ZegoCallAudioPlayerTool.stopPlay()
         ZegoCallInvitationDialog.hide()
+        currentViewController()?.dismiss(animated: true, completion: nil)
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         reportCallEnded()
     }
@@ -254,6 +281,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         ZegoCallAudioPlayerTool.stopPlay()
         ZegoCallInvitationDialog.hide()
+        currentViewController()?.dismiss(animated: true, completion: nil)
         reportCallEnded()
     }
     
@@ -519,7 +547,29 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     
     func reportCallEnded() {
         if let uuid = ZegoUIKitPrebuiltCallInvitationService.shared.currentCallUUID {
-            ZegoPluginAdapter.signalingPlugin?.reportCallEnded(with: uuid, reason: 2)
+//            ZegoPluginAdapter.signalingPlugin?.reportCallEnded(with: uuid, reason: 2)
+            ZegoPluginAdapter.callkitPlugin?.reportCallEnded(with: uuid, reason: 2)
         }
     }
+    
+    func onCallKitStartCall(_ action: CallKitAction) {
+        // nothing
+    }
+    
+    func onCallKitSetHeldCall(_ action: CallKitAction) {
+        // nothing
+    }
+    
+    func onCallKitSetGroupCall(_ action: CallKitAction) {
+        // nothing
+    }
+    
+    func onCallKitPlayDTMFCall(_ action: CallKitAction) {
+        // nothing
+    }
+    
+    func onCallKitTimeOutPerforming(_ action: CallKitAction) {
+        // nothing
+    }
+    
 }

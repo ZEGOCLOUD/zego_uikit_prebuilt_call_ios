@@ -75,7 +75,7 @@ class ZegoCallInvitationDialog: UIView {
         tipView.setHeadUserName(callInvitationData.inviter?.userName)
         tipView.userNameLabel.text = callInvitationData.inviter?.userName
         tipView.refuseButton.isHidden = !(ZegoUIKitPrebuiltCallInvitationService.shared.config?.showDeclineButton ?? true)
-        let innerText: ZegoInnerText? = ZegoUIKitPrebuiltCallInvitationService.shared.config?.innerText
+        let innerText: ZegoTranslationText? = ZegoUIKitPrebuiltCallInvitationService.shared.config?.translationText
         switch callInvitationData.type {
         case .voiceCall:
 //            tipView.messageLabel.text = callInvitationData.invitees?.count ?? 0 > 1 ? "Group voice call" : "Voice call"

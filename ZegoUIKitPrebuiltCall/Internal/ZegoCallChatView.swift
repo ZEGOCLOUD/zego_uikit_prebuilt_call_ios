@@ -20,7 +20,7 @@ class ZegoCallChatView: UIView {
     let help: ZegoCallChatView_Help = ZegoCallChatView_Help()
     
     var lastFrame: CGRect = CGRect.zero
-    
+    var languageCode: ZegoLanguage = .english
     lazy var backgroundView: UIView = {
         let view: UIView = UIView()
         view.backgroundColor = UIColor.colorWithHexString("#171821", alpha: 0.6)
@@ -32,7 +32,7 @@ class ZegoCallChatView: UIView {
     lazy var messageInputView: ZegoInRoomMessageInput = {
         let inputView = ZegoInRoomMessageInput()
         inputView.minHeight = 55
-        inputView.placeHolder = "Send a message to everyone"
+        inputView.placeHolder = self.languageCode == .english ? "Send a message to everyone" : "向所有人发送信息"
         return inputView
     }()
     
@@ -52,9 +52,13 @@ class ZegoCallChatView: UIView {
         return chatView
     }()
 
-    override init(frame: CGRect) {
+    public init(frame: CGRect,languageCode: ZegoLanguage?) {
         super.init(frame: frame)
         self.help.chatView = self
+        if let languageCode = languageCode {
+          self.languageCode = languageCode
+          self.help.languageCode = languageCode;
+        }
         self.addSubview(self.backgroundView)
         self.addSubview(self.bottomMaskView)
         self.addSubview(self.messageView)
@@ -131,11 +135,11 @@ class ZegoCallChatView: UIView {
 class ZegoCallChatView_Help: NSObject, ZegoInRoomChatViewDelegate {
     
     weak var chatView: ZegoCallChatView?
-    
+  var languageCode: ZegoLanguage = .english
     func getChatViewHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat {
         return 49.0
     }
-    
+  
     func getChatViewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView? {
         let view = UIView()
         view.backgroundColor = UIColor.colorWithHexString("#222222")
@@ -147,7 +151,7 @@ class ZegoCallChatView_Help: NSObject, ZegoInRoomChatViewDelegate {
         let label: UILabel = UILabel()
         label.frame = CGRect(x: closeButton.frame.maxX + 5, y: 11, width: 100, height: 27)
         label.font = UIFont.systemFont(ofSize: 18)
-        label.text = "Chat"
+        label.text = self.languageCode == .english ? "Chat" : "聊天"
         label.textColor = UIColor.white
         view.addSubview(label)
         return view

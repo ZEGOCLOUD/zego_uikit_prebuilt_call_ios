@@ -106,19 +106,19 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
             
             if !self.isInviter {
                 if callInvitationData?.type == .videoCall {
-                    userNameTextFormat = callInvitationData?.invitees?.count ?? 0 > 1 ? config?.innerText.incomingGroupVideoCallPageTitle ?? "%@" : config?.innerText.incomingVideoCallPageTitle ?? "%@"
+                    userNameTextFormat = callInvitationData?.invitees?.count ?? 0 > 1 ? config?.translationText.incomingGroupVideoCallPageTitle ?? "%@" : config?.translationText.incomingVideoCallPageTitle ?? "%@"
                 } else {
-                    userNameTextFormat = callInvitationData?.invitees?.count ?? 0 > 1 ? config?.innerText.incomingGroupVoiceCallPageTitle ?? "@" : config?.innerText.incomingVoiceCallPageTitle ?? "%@"
+                    userNameTextFormat = callInvitationData?.invitees?.count ?? 0 > 1 ? config?.translationText.incomingGroupVoiceCallPageTitle ?? "@" : config?.translationText.incomingVoiceCallPageTitle ?? "%@"
                 }
                 self.userNameLabel.text = String(format: userNameTextFormat , callInvitationData?.inviter?.userName ?? "")
                 self.setHeadUserName(callInvitationData?.inviter?.userName)
-                self.callStatusLabel.text = callInvitationData?.invitees?.count ?? 0 > 1 ? (callInvitationData?.type == .videoCall ? config?.innerText.incomingGroupVideoCallPageMessage : config?.innerText.incomingGroupVoiceCallPageMessage) : (callInvitationData?.type == .videoCall ? config?.innerText.incomingVideoCallPageMessage : config?.innerText.incomingVoiceCallPageMessage)
+                self.callStatusLabel.text = callInvitationData?.invitees?.count ?? 0 > 1 ? (callInvitationData?.type == .videoCall ? config?.translationText.incomingGroupVideoCallPageMessage : config?.translationText.incomingGroupVoiceCallPageMessage) : (callInvitationData?.type == .videoCall ? config?.translationText.incomingVideoCallPageMessage : config?.translationText.incomingVoiceCallPageMessage)
             } else {
 //                self.userNameLabel.text = callInvitationData?.invitees?.first?.userName
-                userNameTextFormat = callInvitationData?.type == .videoCall ? config?.innerText.outgoingVideoCallPageTitle ?? "%@" : config?.innerText.outgoingVoiceCallPageTitle ?? "%@"
+                userNameTextFormat = callInvitationData?.type == .videoCall ? config?.translationText.outgoingVideoCallPageTitle ?? "%@" : config?.translationText.outgoingVoiceCallPageTitle ?? "%@"
                 self.userNameLabel.text = String(format: userNameTextFormat, callInvitationData?.invitees?.first?.userName ?? "")
                 self.setHeadUserName(callInvitationData?.invitees?.first?.userName)
-                self.callStatusLabel.text = callInvitationData?.type == .videoCall ? config?.innerText.outgoingVideoCallPageMessage : config?.innerText.outgoingVoiceCallPageMessage
+                self.callStatusLabel.text = callInvitationData?.type == .videoCall ? config?.translationText.outgoingVideoCallPageMessage : config?.translationText.outgoingVoiceCallPageMessage
             }
             
             if let invitees = callInvitationData?.invitees {
@@ -149,8 +149,8 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
                 videoPreviewView.isHidden = true
                 switchFacingCameraButton.isHidden = true
             }
-            self.acceptButtonLabel.text = config?.innerText.incomingCallPageAcceptButton
-            self.declineButtonLabel.text = config?.innerText.incomingCallPageDeclineButton
+            self.acceptButtonLabel.text = config?.translationText.incomingCallPageAcceptButton
+            self.declineButtonLabel.text = config?.translationText.incomingCallPageDeclineButton
         }
     }
     
@@ -250,7 +250,6 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
                 callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help
                 currentViewController()?.present(callVC, animated: false, completion: nil)
                 ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
-                
                 let callee = self.getCallUser(invitee)
                 let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID
                 ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallAccepted?(callID ?? "", callee: callee)

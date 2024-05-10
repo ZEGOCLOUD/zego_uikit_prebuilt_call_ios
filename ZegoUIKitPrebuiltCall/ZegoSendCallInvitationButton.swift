@@ -103,8 +103,8 @@ public class ZegoSendCallInvitationButton: UIButton {
         
         let config: ZegoUIKitPrebuiltCallInvitationConfig? = ZegoUIKitPrebuiltCallInvitationService.shared.config
         let resourceID: String = self.resourceID ?? ""
-        let notificationTitle: String = callData.type == .videoCall ? String(format: config?.innerText.incomingVideoCallDialogTitle ?? "%@", callData.inviter?.userName ?? "") : String(format: config?.innerText.incomingVoiceCallDialogTitle ?? "%@", callData.inviter?.userName ?? "")
-        let notificationMessage: String = (callData.invitees?.count ?? 0 > 1 ? (callData.type == .videoCall ? config?.innerText.incomingGroupVideoCallDialogMessage : config?.innerText.incomingGroupVoiceCallDialogMessage) : (callData.type == .videoCall ? config?.innerText.incomingVideoCallDialogMessage : config?.innerText.incomingVoiceCallDialogMessage))!
+        let notificationTitle: String = callData.type == .videoCall ? String(format: config?.translationText.incomingVideoCallDialogTitle ?? "%@", callData.inviter?.userName ?? "") : String(format: config?.translationText.incomingVoiceCallDialogTitle ?? "%@", callData.inviter?.userName ?? "")
+        let notificationMessage: String = (callData.invitees?.count ?? 0 > 1 ? (callData.type == .videoCall ? config?.translationText.incomingGroupVideoCallDialogMessage : config?.translationText.incomingGroupVoiceCallDialogMessage) : (callData.type == .videoCall ? config?.translationText.incomingVideoCallDialogMessage : config?.translationText.incomingVoiceCallDialogMessage))!
         
         let notificationConfig: ZegoSignalingPluginNotificationConfig = ZegoSignalingPluginNotificationConfig.init(resourceID: resourceID, title: notificationTitle, message: notificationMessage)
         ZegoUIKitSignalingPluginImpl.shared.sendInvitation(self.invitees, timeout: self.timeout, type: self.type, data: self.data, notificationConfig: notificationConfig) { data in
@@ -127,6 +127,7 @@ public class ZegoSendCallInvitationButton: UIButton {
                         //all invitees offline
                         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
                     } else {
+                        ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.invitationID = data["callID"] as? String
                         self.startCall(callData)
                     }
                     ZegoUIKitPrebuiltCallInvitationService.shared.help.checkInviteesState()

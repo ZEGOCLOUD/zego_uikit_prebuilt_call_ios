@@ -8,6 +8,69 @@
 import UIKit
 import ZegoUIKit
 
+class ZegoAudioCallWaitView : UIView {
+  
+    lazy var backgroundImage: UIImageView = {
+      let bgImage = UIImageView()
+      bgImage.contentMode = .scaleAspectFill
+      return bgImage
+    }()
+
+   lazy var callStatusLabel: UILabel = {
+     let label = UILabel()
+     label.frame.size = CGSize(width: 100, height: 23)
+     label.frame.origin.y = self.audioUserNameLabel.frame.origin.y + self.audioUserNameLabel.frame.size.height + 25
+     label.center.x = UIScreen.main.bounds.width / 2
+     label.font = UIFont.systemFont(ofSize: 16)
+     label.textColor = UIColor.white
+     label.textAlignment = .center
+     return label
+    }()
+    
+    lazy var audioUserIconLabel: UILabel = {
+        let topPadding: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
+        let label = UILabel()
+        label.backgroundColor = UIColor.colorWithHexString("#DBDDE3")
+        label.frame.size = CGSize(width: 100, height: 100)
+        label.frame.origin.y = topPadding + 138
+        label.center.x = UIScreen.main.bounds.width / 2
+        label.clipsToBounds = true
+        label.layer.cornerRadius = 50
+        label.font = UIFont.systemFont(ofSize: 23)
+        label.textColor = UIColor.black
+        label.textAlignment = .center
+        return label
+    }()
+  
+    lazy var audioUserNameLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 21)
+        label.frame.size = CGSize(width: 200, height: 30)
+        label.frame.origin.y = self.audioUserIconLabel.frame.origin.y + self.audioUserIconLabel.frame.size.height + 5
+        label.center.x = UIScreen.main.bounds.width / 2
+        label.textColor = UIColor.white
+        label.textAlignment = .center
+        return label
+    }()
+  
+    public init(frame: CGRect, userName:String, bgImage:UIImage, callingString:String) {
+      super.init(frame: frame)
+      self.addSubview(self.backgroundImage)
+      self.addSubview(self.audioUserIconLabel)
+      self.addSubview(self.audioUserNameLabel)
+      self.addSubview(self.callStatusLabel)
+      self.audioUserIconLabel.text = String(userName.prefix(1))
+      self.audioUserNameLabel.text = userName
+      self.callStatusLabel.text = callingString
+      self.backgroundImage.frame = CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height)
+      self.backgroundImage.image = bgImage
+    }
+  
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+      }
+}
+
 extension ZegoUIKitPrebuiltCallVC: CallVCApi {
     
     public func addButtonToBottomMenuBar(_ button: UIButton) {
@@ -106,6 +169,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         return label
     }()
     
+    var waitingView: ZegoAudioCallWaitView?
     
     /// Initialization of call page
     /// - Parameters:
@@ -118,6 +182,11 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     public init(_ appID: UInt32, appSign: String, userID: String, userName: String, callID: String, config: ZegoUIKitPrebuiltCallConfig?) {
         super.init(nibName: nil, bundle: nil)
         self.help.callVC = self
+      
+        let zegoLanguage: ZegoLanguage = config?.languageCode ?? .english
+        let zegoUIKitLanguage = ZegoUIKitLanguage(rawValue: zegoLanguage.rawValue)!
+        ZegoUIKitTranslationTextConfig.shared.languageCode = zegoUIKitLanguage;
+      
         ZegoUIKit.shared.addEventHandler(self.help)
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
         self.userID = userID
@@ -153,6 +222,9 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         self.view.backgroundColor = UIColor.black
+        if self.config.turnOnCameraWhenJoining == false {
+          self.joinRoomAudioWaitingView()
+        }
         self.view.addSubview(self.avContainer.view)
         self.view.addSubview(self.callTimeLabel)
         self.view.addSubview(self.topBar)
@@ -295,11 +367,18 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         else { return }
         ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID)
         ZegoUIKit.shared.turnCameraOn(userID, isOn: self.config.turnOnCameraWhenJoining)
+        ZegoUIKit.shared.startPreview(self.view, videoMode: .aspectFill)
         ZegoUIKit.shared.turnMicrophoneOn(userID, isOn: self.config.turnOnMicrophoneWhenJoining)
         callDuration.delegate = self
         callDuration.startTheTimer()
     }
     
+    private func joinRoomAudioWaitingView() {
+       let topPadding: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
+       let bottomPadding: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
+      self.waitingView = ZegoAudioCallWaitView.init(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height + topPadding + bottomPadding), userName: self.userName ?? "",bgImage: ZegoUIKitCallIconSetType.call_waiting_bg.load(), callingString: self.config.languageCode == .chinese ? "正在呼叫..." : "Calling...")
+      self.view.addSubview(self.waitingView!)
+    }
     deinit {
         callDuration.stopTheTimer()
         ZegoUIKit.shared.leaveRoom()
@@ -312,6 +391,10 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
     
     weak var callVC: ZegoUIKitPrebuiltCallVC?
     
+    func onUserCountOrPropertyChanged(_ userList: [ZegoUIKitUser]?) {
+      callVC?.waitingView?.removeFromSuperview()
+    }
+  
     func sortAudioVideo(_ userList: [ZegoUIKitUser]) -> [ZegoUIKitUser]? {
         if callVC?.config.layout.mode == .pictureInPicture {
             var tempList: [ZegoUIKitUser] = []

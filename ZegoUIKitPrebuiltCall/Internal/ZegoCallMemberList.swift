@@ -25,7 +25,7 @@ extension ZegoCallMemberListDelegate {
 }
 
 class ZegoCallMemberList: UIView {
-    
+  public var isEnglishLanguage : Bool = true
     var showMicroPhoneStateOnMemberList: Bool = true {
         didSet {
             self.memberList.showMicrophoneState = showMicroPhoneStateOnMemberList
@@ -101,6 +101,7 @@ extension ZegoCallMemberList: ZegoMemberListDelegate, ZegoMemberListHeaderViewDe
         } else {
             let headView: ZegoMemberListHeaderView = ZegoMemberListHeaderView()
             headView.delegate = self
+            headView.isEnglish = self.isEnglishLanguage
             return headView
         }
     }
@@ -125,17 +126,17 @@ protocol ZegoMemberListHeaderViewDelegate: AnyObject {
 class ZegoMemberListHeaderView: UIView {
     
     weak var delegate: ZegoMemberListHeaderViewDelegate?
-    
+    public var isEnglish : Bool = true
     lazy var closeButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(buttonClick), for: .touchUpInside)
         button.setImage(ZegoUIKitCallIconSetType.icon_back.load(), for: .normal)
         return button
     }()
-    
+
     lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Member"
+      label.text = self.isEnglish ? "Member" : "成员"
         label.font = UIFont.systemFont(ofSize: 18, weight: .regular)
         label.textColor = UIColor.colorWithHexString("#FFFFFF")
         return label

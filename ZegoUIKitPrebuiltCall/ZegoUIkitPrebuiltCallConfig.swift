@@ -29,6 +29,8 @@ public class ZegoUIKitPrebuiltCallConfig: NSObject {
     
     public var showCallDuration: Bool = true
     
+    public var languageCode: ZegoLanguage = .english
+  
     public static func oneOnOneVideoCall() -> ZegoUIKitPrebuiltCallConfig {
         let config = ZegoUIKitPrebuiltCallConfig()
         config.turnOnCameraWhenJoining = true

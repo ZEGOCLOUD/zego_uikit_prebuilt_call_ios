@@ -9,6 +9,11 @@ import UIKit
 import ZegoUIKit
 import ZegoPluginAdapter
 
+@objc public enum ZegoLanguage : UInt32 {
+    case english
+    case chinese
+}
+
 @objcMembers
 public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
     public var incomingCallRingtone: String?
@@ -17,9 +22,16 @@ public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
     public var notifyWhenAppRunningInBackgroundOrQuit: Bool = true
     public var isSandboxEnvironment: Bool = true
     public var certificateIndex: ZegoSignalingPluginMultiCertificate = .firstCertificate
-    
-    public var innerText: ZegoInnerText = ZegoInnerText()
-        
+    var translationText: ZegoTranslationText = ZegoTranslationText();
+    public var languageCode: ZegoLanguage = .english {
+      didSet{
+        if languageCode == .chinese {
+            translationText = ZegoTranslationTextZH();
+        } else {
+            translationText = ZegoTranslationText();
+        }
+      }
+    }
     public init(notifyWhenAppRunningInBackgroundOrQuit: Bool = true,
                 isSandboxEnvironment: Bool = true,
                 certificateIndex: ZegoSignalingPluginMultiCertificate = .firstCertificate) {
@@ -31,7 +43,7 @@ public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
 }
 
 
-public class ZegoInnerText: NSObject {
+public class ZegoTranslationText: NSObject {
     
     public var incomingVideoCallDialogTitle: String = "%@"
     public var incomingVideoCallDialogMessage: String = "Incoming video call..."
@@ -58,5 +70,36 @@ public class ZegoInnerText: NSObject {
     
     public var incomingCallPageDeclineButton: String = "Decline"
     public var incomingCallPageAcceptButton: String = "Accept"
+}
+
+public class ZegoTranslationTextZH :ZegoTranslationText {
+    override public init() {
+        super.init()
+        incomingVideoCallDialogTitle = "%@"
+        incomingVideoCallDialogMessage = "视频来电..."
+        incomingVoiceCallDialogTitle = "%@"
+        incomingVoiceCallDialogMessage = "语音来电..."
+        incomingVideoCallPageTitle = "%@"
+        incomingVideoCallPageMessage = "视频来电..."
+        incomingVoiceCallPageTitle = "%@"
+        incomingVoiceCallPageMessage = "语音来电..."
+        incomingGroupVideoCallDialogTitle = "%@"
+        incomingGroupVideoCallDialogMessage = "群组视频来电..."
+        incomingGroupVoiceCallDialogTitle = "%@"
+        incomingGroupVoiceCallDialogMessage = "来电群组语音呼叫..."
+        incomingGroupVideoCallPageTitle = "%@"
+        incomingGroupVideoCallPageMessage = "群组视频来电..."
+        incomingGroupVoiceCallPageTitle = "%@"
+        incomingGroupVoiceCallPageMessage = "来电群组语音呼叫..."
+        
+        
+        outgoingVideoCallPageTitle = "%@"
+        outgoingVideoCallPageMessage = "正在呼叫..."
+        outgoingVoiceCallPageTitle = "%@"
+        outgoingVoiceCallPageMessage = "正在呼叫..."
+        
+        incomingCallPageDeclineButton = "拒绝"
+        incomingCallPageAcceptButton = "接受"
     
+    }
 }
