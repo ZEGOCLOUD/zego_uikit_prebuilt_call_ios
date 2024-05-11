@@ -22,7 +22,7 @@ public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
     public var notifyWhenAppRunningInBackgroundOrQuit: Bool = true
     public var isSandboxEnvironment: Bool = true
     public var certificateIndex: ZegoSignalingPluginMultiCertificate = .firstCertificate
-    var translationText: ZegoTranslationText = ZegoTranslationText();
+    public var translationText: ZegoTranslationText = ZegoTranslationText();
     public var languageCode: ZegoLanguage = .english {
       didSet{
         if languageCode == .chinese {
