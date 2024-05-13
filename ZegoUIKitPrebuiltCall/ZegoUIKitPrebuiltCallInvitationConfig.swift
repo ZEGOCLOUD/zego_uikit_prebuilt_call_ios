@@ -9,10 +9,6 @@ import UIKit
 import ZegoUIKit
 import ZegoPluginAdapter
 
-@objc public enum ZegoLanguage : UInt32 {
-    case english
-    case chinese
-}
 
 @objcMembers
 public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
@@ -22,7 +18,7 @@ public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
     public var notifyWhenAppRunningInBackgroundOrQuit: Bool = true
     public var isSandboxEnvironment: Bool = true
     public var certificateIndex: ZegoSignalingPluginMultiCertificate = .firstCertificate
-    public var translationText: ZegoTranslationText = ZegoTranslationText(language: .english);
+    public var translationText: ZegoTranslationText = ZegoTranslationText(language: .ENGLISH);
    
     public init(notifyWhenAppRunningInBackgroundOrQuit: Bool = true,
                 isSandboxEnvironment: Bool = true,
@@ -37,7 +33,7 @@ public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
 
 public class ZegoTranslationText: NSObject {
     
-    var language :ZegoLanguage  = .english
+    var language :ZegoUIKitLanguage  = .ENGLISH
   
     public var incomingVideoCallDialogTitle: String = "%@"
     public var incomingVideoCallDialogMessage: String = "Incoming video call..."
@@ -65,10 +61,10 @@ public class ZegoTranslationText: NSObject {
     public var incomingCallPageDeclineButton: String = "Decline"
     public var incomingCallPageAcceptButton: String = "Accept"
   
-    public init(language:ZegoLanguage) {
+    public init(language:ZegoUIKitLanguage) {
       super.init()
       self.language = language
-      if language == .chinese {
+      if language == .CHS {
         incomingVideoCallDialogTitle = "%@"
         incomingVideoCallDialogMessage = "视频来电..."
         incomingVoiceCallDialogTitle = "%@"
@@ -98,7 +94,7 @@ public class ZegoTranslationText: NSObject {
       }
     }
   
-    public func getLanguage() -> ZegoLanguage {
+    public func getLanguage() -> ZegoUIKitLanguage {
       return self.language
     }
 }

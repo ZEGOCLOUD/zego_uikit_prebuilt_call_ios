@@ -183,7 +183,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         super.init(nibName: nil, bundle: nil)
         self.help.callVC = self
       
-        let zegoLanguage: ZegoLanguage = config?.zegoCallText.getLanguage() ?? .english
+        let zegoLanguage: ZegoUIKitLanguage = config?.zegoCallText.getLanguage() ?? .ENGLISH
         let zegoUIKitLanguage = ZegoUIKitLanguage(rawValue: zegoLanguage.rawValue)!
         ZegoUIKitTranslationTextConfig.shared.translationText = ZegoUIKitTranslationText(language: zegoUIKitLanguage);
       

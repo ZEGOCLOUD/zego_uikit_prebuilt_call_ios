@@ -92,7 +92,7 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         self.userID = userID
         self.userName = userName
         // Update UIKit Language
-        let zegoLanguage: ZegoLanguage = config.translationText.getLanguage()
+        let zegoLanguage: ZegoUIKitLanguage = config.translationText.getLanguage()
         let zegoUIKitLanguage = ZegoUIKitLanguage(rawValue: zegoLanguage.rawValue)!
         ZegoUIKitTranslationTextConfig.shared.translationText = ZegoUIKitTranslationText(language: zegoUIKitLanguage);
       

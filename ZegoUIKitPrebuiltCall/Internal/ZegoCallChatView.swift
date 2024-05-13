@@ -20,7 +20,7 @@ class ZegoCallChatView: UIView {
     let help: ZegoCallChatView_Help = ZegoCallChatView_Help()
     
     var lastFrame: CGRect = CGRect.zero
-    var zegoCallText: ZegoCallText = ZegoCallText(language: .english)
+    var zegoCallText: ZegoCallText = ZegoCallText(language: .ENGLISH)
     lazy var backgroundView: UIView = {
         let view: UIView = UIView()
         view.backgroundColor = UIColor.colorWithHexString("#171821", alpha: 0.6)
@@ -135,7 +135,7 @@ class ZegoCallChatView: UIView {
 class ZegoCallChatView_Help: NSObject, ZegoInRoomChatViewDelegate {
     
     weak var chatView: ZegoCallChatView?
-    var zegoCallText: ZegoCallText = ZegoCallText(language: .english)
+    var zegoCallText: ZegoCallText = ZegoCallText(language: .ENGLISH)
     func getChatViewHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat {
         return 49.0
     }
