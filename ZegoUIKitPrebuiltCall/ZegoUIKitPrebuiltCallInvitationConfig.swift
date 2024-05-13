@@ -22,16 +22,8 @@ public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
     public var notifyWhenAppRunningInBackgroundOrQuit: Bool = true
     public var isSandboxEnvironment: Bool = true
     public var certificateIndex: ZegoSignalingPluginMultiCertificate = .firstCertificate
-    public var translationText: ZegoTranslationText = ZegoTranslationText();
-    public var languageCode: ZegoLanguage = .english {
-      didSet{
-        if languageCode == .chinese {
-            translationText = ZegoTranslationTextZH();
-        } else {
-            translationText = ZegoTranslationText();
-        }
-      }
-    }
+    public var translationText: ZegoTranslationText = ZegoTranslationText(language: .english);
+   
     public init(notifyWhenAppRunningInBackgroundOrQuit: Bool = true,
                 isSandboxEnvironment: Bool = true,
                 certificateIndex: ZegoSignalingPluginMultiCertificate = .firstCertificate) {
@@ -45,6 +37,8 @@ public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
 
 public class ZegoTranslationText: NSObject {
     
+    var language :ZegoLanguage  = .english
+  
     public var incomingVideoCallDialogTitle: String = "%@"
     public var incomingVideoCallDialogMessage: String = "Incoming video call..."
     public var incomingVoiceCallDialogTitle: String = "%@"
@@ -70,11 +64,11 @@ public class ZegoTranslationText: NSObject {
     
     public var incomingCallPageDeclineButton: String = "Decline"
     public var incomingCallPageAcceptButton: String = "Accept"
-}
-
-public class ZegoTranslationTextZH :ZegoTranslationText {
-    override public init() {
-        super.init()
+  
+    public init(language:ZegoLanguage) {
+      super.init()
+      self.language = language
+      if language == .chinese {
         incomingVideoCallDialogTitle = "%@"
         incomingVideoCallDialogMessage = "视频来电..."
         incomingVoiceCallDialogTitle = "%@"
@@ -100,6 +94,11 @@ public class ZegoTranslationTextZH :ZegoTranslationText {
         
         incomingCallPageDeclineButton = "拒绝"
         incomingCallPageAcceptButton = "接受"
-    
+     
+      }
+    }
+  
+    public func getLanguage() -> ZegoLanguage {
+      return self.language
     }
 }

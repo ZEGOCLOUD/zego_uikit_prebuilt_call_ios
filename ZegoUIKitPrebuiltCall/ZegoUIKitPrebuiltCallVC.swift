@@ -183,9 +183,9 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         super.init(nibName: nil, bundle: nil)
         self.help.callVC = self
       
-        let zegoLanguage: ZegoLanguage = config?.languageCode ?? .english
+        let zegoLanguage: ZegoLanguage = config?.zegoCallText.getLanguage() ?? .english
         let zegoUIKitLanguage = ZegoUIKitLanguage(rawValue: zegoLanguage.rawValue)!
-        ZegoUIKitTranslationTextConfig.shared.languageCode = zegoUIKitLanguage;
+        ZegoUIKitTranslationTextConfig.shared.translationText = ZegoUIKitTranslationText(language: zegoUIKitLanguage);
       
         ZegoUIKit.shared.addEventHandler(self.help)
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
@@ -376,8 +376,8 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     private func joinRoomAudioWaitingView() {
        let topPadding: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
        let bottomPadding: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
-      self.waitingView = ZegoAudioCallWaitView.init(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height + topPadding + bottomPadding), userName: self.userName ?? "",bgImage: ZegoUIKitCallIconSetType.call_waiting_bg.load(), callingString: self.config.languageCode == .chinese ? "正在呼叫..." : "Calling...")
-      self.view.addSubview(self.waitingView!)
+       self.waitingView = ZegoAudioCallWaitView.init(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height + topPadding + bottomPadding), userName: self.userName ?? "",bgImage: ZegoUIKitCallIconSetType.call_waiting_bg.load(), callingString: self.config.zegoCallText.outgoingAudioCallPageMessage)
+       self.view.addSubview(self.waitingView!)
     }
     deinit {
         callDuration.stopTheTimer()

@@ -29,8 +29,8 @@ public class ZegoUIKitPrebuiltCallConfig: NSObject {
     
     public var showCallDuration: Bool = true
     
-    public var languageCode: ZegoLanguage = .english
-  
+    public var zegoCallText: ZegoCallText = ZegoCallText(language: .english);
+
     public static func oneOnOneVideoCall() -> ZegoUIKitPrebuiltCallConfig {
         let config = ZegoUIKitPrebuiltCallConfig()
         config.turnOnCameraWhenJoining = true
@@ -173,3 +173,31 @@ public class ZegoMenuBarButtonConfig {
     public var audioOutputBluetoothImage: UIImage?
 }
 
+public class ZegoCallText: NSObject {
+    var language :ZegoLanguage  = .english
+  
+    public var outgoingAudioCallPageMessage: String = "Calling..."
+    public var leaveRoomTextDialogTitle: String = "Leave the room"
+    public var leaveRoomTextDialogMessage: String = "Are you sure to leave room?"
+    public var cancelDialogMessage: String = "Cancel"
+    public var confirmDialogMessage: String = "Confirm"
+    public var chatViewHeaderTitle: String = "Chat"
+    public var sendMessageAllPeopleMessage: String = "Send a message to everyone"
+  
+    public init(language:ZegoLanguage) {
+      super.init()
+      self.language = language
+      if language == .chinese {
+        outgoingAudioCallPageMessage = "正在呼叫..."
+        leaveRoomTextDialogTitle = "离开房间"
+        leaveRoomTextDialogMessage = "您确定要离开房间吗?"
+        cancelDialogMessage = "取消"
+        confirmDialogMessage = "确认"
+        chatViewHeaderTitle = "聊天"
+        sendMessageAllPeopleMessage = "向所有人发送信息"
+      }
+    }
+    public func getLanguage() -> ZegoLanguage {
+      return self.language
+    }
+}

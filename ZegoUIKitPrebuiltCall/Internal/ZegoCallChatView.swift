@@ -20,7 +20,7 @@ class ZegoCallChatView: UIView {
     let help: ZegoCallChatView_Help = ZegoCallChatView_Help()
     
     var lastFrame: CGRect = CGRect.zero
-    var languageCode: ZegoLanguage = .english
+    var zegoCallText: ZegoCallText = ZegoCallText(language: .english)
     lazy var backgroundView: UIView = {
         let view: UIView = UIView()
         view.backgroundColor = UIColor.colorWithHexString("#171821", alpha: 0.6)
@@ -32,7 +32,7 @@ class ZegoCallChatView: UIView {
     lazy var messageInputView: ZegoInRoomMessageInput = {
         let inputView = ZegoInRoomMessageInput()
         inputView.minHeight = 55
-        inputView.placeHolder = self.languageCode == .english ? "Send a message to everyone" : "向所有人发送信息"
+        inputView.placeHolder = self.zegoCallText.sendMessageAllPeopleMessage
         return inputView
     }()
     
@@ -52,12 +52,12 @@ class ZegoCallChatView: UIView {
         return chatView
     }()
 
-    public init(frame: CGRect,languageCode: ZegoLanguage?) {
+    public init(frame: CGRect,zegoCallText: ZegoCallText?) {
         super.init(frame: frame)
         self.help.chatView = self
-        if let languageCode = languageCode {
-          self.languageCode = languageCode
-          self.help.languageCode = languageCode;
+        if let zegoCallText = zegoCallText {
+          self.zegoCallText = zegoCallText
+          self.help.zegoCallText = zegoCallText;
         }
         self.addSubview(self.backgroundView)
         self.addSubview(self.bottomMaskView)
@@ -135,7 +135,7 @@ class ZegoCallChatView: UIView {
 class ZegoCallChatView_Help: NSObject, ZegoInRoomChatViewDelegate {
     
     weak var chatView: ZegoCallChatView?
-  var languageCode: ZegoLanguage = .english
+    var zegoCallText: ZegoCallText = ZegoCallText(language: .english)
     func getChatViewHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat {
         return 49.0
     }
@@ -151,7 +151,7 @@ class ZegoCallChatView_Help: NSObject, ZegoInRoomChatViewDelegate {
         let label: UILabel = UILabel()
         label.frame = CGRect(x: closeButton.frame.maxX + 5, y: 11, width: 100, height: 27)
         label.font = UIFont.systemFont(ofSize: 18)
-        label.text = self.languageCode == .english ? "Chat" : "聊天"
+        label.text = self.zegoCallText.chatViewHeaderTitle
         label.textColor = UIColor.white
         view.addSubview(label)
         return view

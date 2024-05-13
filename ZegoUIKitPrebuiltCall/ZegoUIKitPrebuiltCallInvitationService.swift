@@ -92,9 +92,9 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         self.userID = userID
         self.userName = userName
         // Update UIKit Language
-        let zegoLanguage: ZegoLanguage = config.languageCode
+        let zegoLanguage: ZegoLanguage = config.translationText.getLanguage()
         let zegoUIKitLanguage = ZegoUIKitLanguage(rawValue: zegoLanguage.rawValue)!
-        ZegoUIKitTranslationTextConfig.shared.languageCode = zegoUIKitLanguage;
+        ZegoUIKitTranslationTextConfig.shared.translationText = ZegoUIKitTranslationText(language: zegoUIKitLanguage);
       
         ZegoUIKit.getSignalingPlugin().enableNotifyWhenAppRunningInBackgroundOrQuit(config.notifyWhenAppRunningInBackgroundOrQuit, isSandboxEnvironment: config.isSandboxEnvironment, certificateIndex: config.certificateIndex)
         

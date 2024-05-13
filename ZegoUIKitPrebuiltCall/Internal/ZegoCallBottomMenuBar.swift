@@ -236,17 +236,16 @@ class ZegoCallBottomMenuBar: UIView {
                 let endButtonComponent: ZegoLeaveButton = ZegoLeaveButton()
                 if let leaveConfirmDialogInfo = self.config.hangUpConfirmDialogInfo {
                     if leaveConfirmDialogInfo.title == "" || leaveConfirmDialogInfo.title == nil {
-                        leaveConfirmDialogInfo.title = self.config.languageCode == .english ? "Leave the room" : "离开房间"
+                        leaveConfirmDialogInfo.title = self.config.zegoCallText.leaveRoomTextDialogTitle
                     }
                     if leaveConfirmDialogInfo.message == "" || leaveConfirmDialogInfo.title == nil {
-                        leaveConfirmDialogInfo.message = self.config.languageCode == .english ? "Are you sure to leave the room?" : "您确定要离开房间吗？"
+                        leaveConfirmDialogInfo.message = self.config.zegoCallText.leaveRoomTextDialogMessage
                     }
                     if leaveConfirmDialogInfo.cancelButtonName == "" || leaveConfirmDialogInfo.cancelButtonName == nil  {
-                        leaveConfirmDialogInfo.cancelButtonName = self.config.languageCode == .english ? "Cancel" : "取消"
+                        leaveConfirmDialogInfo.cancelButtonName = self.config.zegoCallText.cancelDialogMessage
                     }
                     if leaveConfirmDialogInfo.confirmButtonName == "" || leaveConfirmDialogInfo.confirmButtonName == nil  {
-                        leaveConfirmDialogInfo.confirmButtonName = self.config.languageCode == .english ? "Confirm" : "确认"
-                    }
+                        leaveConfirmDialogInfo.confirmButtonName = self.config.zegoCallText.confirmDialogMessage                    }
                     if leaveConfirmDialogInfo.dialogPresentVC == nil  {
                         leaveConfirmDialogInfo.dialogPresentVC = self.showQuitDialogVC
                     }
@@ -305,7 +304,7 @@ class ZegoCallBottomMenuBar: UIView {
     }
     
     @objc func messageButtonClick() {
-        let messageView: ZegoCallChatView = ZegoCallChatView(frame: CGRectZero, languageCode: self.config.languageCode)
+      let messageView: ZegoCallChatView = ZegoCallChatView(frame: CGRectZero, zegoCallText: self.config.zegoCallText)
         messageView.delegate = self.showQuitDialogVC as? ZegoCallChatViewDelegate
         messageView.frame = CGRect(x: 0, y: 0, width:self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIkitScreenHeight )
         self.showQuitDialogVC?.view.addSubview(messageView)
