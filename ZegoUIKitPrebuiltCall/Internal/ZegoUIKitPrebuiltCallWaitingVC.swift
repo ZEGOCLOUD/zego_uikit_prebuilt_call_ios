@@ -142,6 +142,9 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
                 }
             }
             if self.isInviter && callInvitationData?.type == .videoCall {
+                if let videoConfig = ZegoUIKitPrebuiltCallInvitationService.shared.config?.videoConfig {
+                    ZegoUIKit.shared.setVideoConfig(config: videoConfig.resolution)
+                }
                 videoPreviewView.userID = callInvitationData?.inviter?.userID
                 videoPreviewView.isHidden = false
                 switchFacingCameraButton.isHidden = false

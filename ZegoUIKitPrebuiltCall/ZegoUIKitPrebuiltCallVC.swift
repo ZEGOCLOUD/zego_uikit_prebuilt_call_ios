@@ -193,6 +193,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         self.userName = userName
         self.roomID = callID
         if let config = config {
+            ZegoUIKit.shared.setVideoConfig(config: config.videoConfig.resolution)
             self.config = config
         }
     }
@@ -210,6 +211,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         self.userName = ZegoUIKit.shared.localUserInfo?.userName
         self.roomID = data.callID
         if let config = config {
+            ZegoUIKit.shared.setVideoConfig(config: config.videoConfig.resolution)
             self.config = config
         }
     }

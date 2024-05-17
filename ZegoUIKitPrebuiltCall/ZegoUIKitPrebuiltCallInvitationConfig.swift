@@ -19,7 +19,8 @@ public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
     public var isSandboxEnvironment: Bool = true
     public var certificateIndex: ZegoSignalingPluginMultiCertificate = .firstCertificate
     public var translationText: ZegoTranslationText = ZegoTranslationText(language: .ENGLISH);
-   
+    public var videoConfig :ZegoPrebuiltCallVideoConfig = ZegoPrebuiltCallVideoConfig(resolution: .PRESET_360P)
+
     public init(notifyWhenAppRunningInBackgroundOrQuit: Bool = true,
                 isSandboxEnvironment: Bool = true,
                 certificateIndex: ZegoSignalingPluginMultiCertificate = .firstCertificate) {

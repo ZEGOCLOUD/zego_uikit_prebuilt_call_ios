@@ -30,7 +30,7 @@ public class ZegoUIKitPrebuiltCallConfig: NSObject {
     public var showCallDuration: Bool = true
     
     public var zegoCallText: ZegoCallText = ZegoCallText(language: .ENGLISH);
-
+    public var videoConfig: ZegoPrebuiltCallVideoConfig = ZegoPrebuiltCallVideoConfig(resolution: .PRESET_360P)
     public static func oneOnOneVideoCall() -> ZegoUIKitPrebuiltCallConfig {
         let config = ZegoUIKitPrebuiltCallConfig()
         config.turnOnCameraWhenJoining = true
@@ -114,6 +114,14 @@ public class ZegoUIKitPrebuiltCallConfig: NSObject {
         
         return config
     }
+}
+
+
+@objc public class ZegoPrebuiltCallVideoConfig: NSObject {
+  public var resolution:ZegoPresetResolution = ZegoPresetResolution.PRESET_360P
+  public init(resolution: ZegoPresetResolution = .PRESET_360P) {
+    self.resolution = resolution
+  }
 }
 
 public class ZegoPrebuiltAudioVideoViewConfig: NSObject {
