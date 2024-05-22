@@ -11,11 +11,11 @@ import ZegoUIKit
 @objc public protocol ZegoUIKitPrebuiltCallVCDelegate: AnyObject {
     @objc optional func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView?
     @objc optional func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell?
-    @objc optional func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView?
+    @objc optional func getMemberListViewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView?
     @objc optional func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat
     @objc optional func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat
-    @objc optional func onHangUp(_ isHandup: Bool)
-    @objc optional func onOnlySelfInRoom()
+    @objc optional func onOnlySelfInRoom(_ userList:[ZegoUIKitUser])
+    @objc optional func onCallEnd(_ endEvent: ZegoCallEndEvent)
     @objc optional func onSwitchCameraButtonClick(_ isFrontFacing: Bool)
     @objc optional func onToggleCameraButtonClick(_ isOn: Bool)
     @objc optional func onToggleMicButtonClick(_ isOn: Bool)

@@ -159,7 +159,7 @@ class ZegoTopMenuBar: UIView {
                 }
                 self.buttons.append(micButtonComponent)
                 self.addSubview(micButtonComponent)
-            case .swtichAudioOutputButton:
+            case .switchAudioOutputButton:
                 let audioOutputButtonComponent: ZegoSwitchAudioOutputButton = ZegoSwitchAudioOutputButton()
                 audioOutputButtonComponent.delegate = self
                 if let audioOutputSpeakerImage = buttonConfig.audioOutputSpeakerImage {

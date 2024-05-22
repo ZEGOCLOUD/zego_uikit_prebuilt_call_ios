@@ -14,7 +14,7 @@ public enum ZegoMenuBarButtonName: Int {
     case toggleCameraButton
     case toggleMicrophoneButton
     case switchCameraButton
-    case swtichAudioOutputButton
+    case switchAudioOutputButton
     case showMemberListButton
     case chatButton
     case minimizingButton

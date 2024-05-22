@@ -331,8 +331,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.getMemberListItemView?(tableView, indexPath: indexPath, userInfo: userInfo)
     }
     
-    func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView? {
-        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.getMemberListviewForHeaderInSection?(tableView, section: section)
+    func getMemberListViewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView? {
+        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.getMemberListViewForHeaderInSection?(tableView, section: section)
     }
     
     func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat {
@@ -343,29 +343,9 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.getMemberListHeaderHeight?(tableView, section: section) ?? 0
     }
     
-    func onHangUp(_ isHandup: Bool) {
+    func onCallEnd(_ endEvent: ZegoCallEndEvent) {
         reportCallEnded()
-        if isHandup {
-            ZegoCallAudioPlayerTool.stopPlay()
-            guard let invitationData = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData else { return }
-            var needCancel: Bool = true
-            if let invitees = ZegoUIKitPrebuiltCallInvitationService.shared.invitees {
-                var cancelInvitees: [String] = []
-                if invitationData.inviter?.userID == ZegoUIKit.shared.localUserInfo?.userID {
-                    for user in invitees {
-                        if user.state == .accept {
-                            needCancel = false
-                        }
-                        cancelInvitees.append(user.user?.userID ?? "")
-                    }
-                }
-                if needCancel {
-                    ZegoUIKitSignalingPluginImpl.shared.cancelInvitation(cancelInvitees, data: nil, callback: nil)
-                }
-            }
-            ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
-        }
-        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onHangUp?(isHandup)
+        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onCallEnd?(endEvent)
     }
     
     func onSwitchCameraButtonClick(_ isFrontFacing: Bool) {
@@ -384,7 +364,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onAudioOutputButtonClick?(isSpeaker)
     }
     
-    func onOnlySelfInRoom() {
+    func onOnlySelfInRoom(_ userList:[ZegoUIKitUser]) {
         if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall {
             ZegoMinimizeManager.shared.stopPiP()
             ZegoMinimizeManager.shared.callVC = nil
@@ -392,7 +372,17 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             reportCallEnded()
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         }
-        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onOnlySelfInRoom?()
+        let endEvent:ZegoCallEndEvent = ZegoCallEndEvent()
+        endEvent.reason = .remoteHangUp
+        endEvent.kickerUserID = userList.first?.userID ?? ""
+        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onCallEnd?(endEvent)
+    }
+  
+    func onMeRemovedFromRoom() {
+      let endEvent:ZegoCallEndEvent = ZegoCallEndEvent()
+      endEvent.reason = .kickOut
+      endEvent.kickerUserID = ZegoUIKitPrebuiltCallInvitationService.shared.userID ?? ""
+      ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onCallEnd?(endEvent)
     }
     
     func getChatViewItemView(_ tableView: UITableView, indexPath: IndexPath, message: ZegoInRoomMessage) -> UITableViewCell? {

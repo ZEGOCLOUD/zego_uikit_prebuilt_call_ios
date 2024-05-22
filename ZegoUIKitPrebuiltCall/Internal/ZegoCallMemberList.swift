@@ -11,7 +11,7 @@ import ZegoUIKit
 protocol ZegoCallMemberListDelegate: AnyObject {
     func getForegroundView(_ userInfo: ZegoUIKitUser?) -> UIView?
     func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell?
-    func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView?
+    func getMemberListViewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView?
     func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat
     func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat
 }
@@ -19,7 +19,7 @@ protocol ZegoCallMemberListDelegate: AnyObject {
 extension ZegoCallMemberListDelegate {
     func getForegroundView(_ userInfo: ZegoUIKitUser?) -> UIView? {nil}
     func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell? { return nil }
-    func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView? { return nil}
+    func getMemberListViewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView? { return nil}
     func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat { 54 }
     func getMemberListHeaderHeight(_ tableView: UITableView, section: Int) -> CGFloat { return 65 }
 }
@@ -95,8 +95,8 @@ extension ZegoCallMemberList: ZegoMemberListDelegate, ZegoMemberListHeaderViewDe
         }
     }
     
-    func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView? {
-        if let headView = self.delegate?.getMemberListviewForHeaderInSection(tableView, section: section) {
+    func getMemberListViewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView? {
+        if let headView = self.delegate?.getMemberListViewForHeaderInSection(tableView, section: section) {
             return headView
         } else {
             let headView: ZegoMemberListHeaderView = ZegoMemberListHeaderView()

@@ -218,7 +218,7 @@ class ZegoCallBottomMenuBar: UIView {
                     micButtonComponent.iconMicrophoneOff = toggleMicrophoneOffImage
                 }
                 saveButton(micButtonComponent, index: index)
-            case .swtichAudioOutputButton:
+            case .switchAudioOutputButton:
                 let audioOutputButtonComponent: ZegoSwitchAudioOutputButton = ZegoSwitchAudioOutputButton()
                 audioOutputButtonComponent.delegate = self
                 if let audioOutputSpeakerImage = buttonConfig.audioOutputSpeakerImage {

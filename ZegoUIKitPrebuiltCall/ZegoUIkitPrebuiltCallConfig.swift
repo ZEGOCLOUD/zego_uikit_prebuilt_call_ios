@@ -8,6 +8,17 @@
 import UIKit
 import ZegoUIKit
 
+public enum ZegoCallEndReason: Int {
+ /// the call ended due to a local hang-up
+  case localHangUp
+
+ /// the call ended when the remote user hung up, leaving only one local user in the call
+  case remoteHangUp
+
+ /// the call ended due to being kicked out
+  case kickOut
+}
+
 public class ZegoUIKitPrebuiltCallConfig: NSObject {
     public var audioVideoViewConfig: ZegoPrebuiltAudioVideoViewConfig = ZegoPrebuiltAudioVideoViewConfig()
     public var bottomMenuBarConfig: ZegoBottomMenuBarConfig = ZegoBottomMenuBarConfig()
@@ -43,7 +54,7 @@ public class ZegoUIKitPrebuiltCallConfig: NSObject {
         layout.config = pipConfig
         config.layout = layout
         let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
-        bottomMenuBarConfig.buttons = [.toggleCameraButton,.switchCameraButton,.hangUpButton,.toggleMicrophoneButton,.swtichAudioOutputButton]
+        bottomMenuBarConfig.buttons = [.toggleCameraButton,.switchCameraButton,.hangUpButton,.toggleMicrophoneButton,.switchAudioOutputButton]
         bottomMenuBarConfig.style = .light
         config.bottomMenuBarConfig = bottomMenuBarConfig
         let topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
@@ -65,7 +76,7 @@ public class ZegoUIKitPrebuiltCallConfig: NSObject {
         layout.config = pipConfig
         config.layout = layout
         let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
-        bottomMenuBarConfig.buttons = [.toggleMicrophoneButton,.hangUpButton,.swtichAudioOutputButton]
+        bottomMenuBarConfig.buttons = [.toggleMicrophoneButton,.hangUpButton,.switchAudioOutputButton]
         bottomMenuBarConfig.style = .light
         config.bottomMenuBarConfig = bottomMenuBarConfig
         let topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
@@ -85,7 +96,7 @@ public class ZegoUIKitPrebuiltCallConfig: NSObject {
         layout.config = ZegoLayoutGalleryConfig()
         config.layout = layout
         let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
-        bottomMenuBarConfig.buttons = [.toggleMicrophoneButton,.hangUpButton, .swtichAudioOutputButton]
+        bottomMenuBarConfig.buttons = [.toggleMicrophoneButton,.hangUpButton, .switchAudioOutputButton]
         config.bottomMenuBarConfig = bottomMenuBarConfig
         let topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
         topMenuBarConfig.buttons = [.showMemberListButton]
@@ -105,7 +116,7 @@ public class ZegoUIKitPrebuiltCallConfig: NSObject {
         layout.config = ZegoLayoutGalleryConfig()
         config.layout = layout
         let bottomMenuBarConfig = ZegoBottomMenuBarConfig()
-        bottomMenuBarConfig.buttons = [.toggleCameraButton,.switchCameraButton,.hangUpButton, .toggleMicrophoneButton,.swtichAudioOutputButton]
+        bottomMenuBarConfig.buttons = [.toggleCameraButton,.switchCameraButton,.hangUpButton, .toggleMicrophoneButton,.switchAudioOutputButton]
         config.bottomMenuBarConfig = bottomMenuBarConfig
         let topMenuBarConfig: ZegoTopMenuBarConfig = ZegoTopMenuBarConfig()
         topMenuBarConfig.isVisible = true
@@ -139,7 +150,7 @@ public class ZegoPrebuiltAudioVideoViewConfig: NSObject {
 
 public class ZegoBottomMenuBarConfig: NSObject {
     /// Buttons that need to be displayed on the MenuBar are displayed in the order of the actual List
-    public var buttons: [ZegoMenuBarButtonName] = [.toggleCameraButton,.switchCameraButton,.hangUpButton,.toggleMicrophoneButton,.swtichAudioOutputButton]
+    public var buttons: [ZegoMenuBarButtonName] = [.toggleCameraButton,.switchCameraButton,.hangUpButton,.toggleMicrophoneButton,.switchAudioOutputButton]
     /// 在MenuBar最多能显示的按钮数量，该值最大为5。如果超过了该值，则显示“更多”按钮.注意这个值是包含“更多”按钮。
     public var maxCount: UInt = 5
     /// Yes no operation on the screen for 5 seconds, or if the user clicks the position of the non-response area on the screen, the top and bottom will be folded up
@@ -208,4 +219,16 @@ public class ZegoCallText: NSObject {
     public func getLanguage() -> ZegoUIKitLanguage {
       return self.language
     }
+}
+
+public class ZegoCallEndEvent :NSObject {
+ /// the user ID of who kick you out
+  public var kickerUserID:String = ""
+
+ /// end reason
+  public var reason:ZegoCallEndReason?
+  public override init() {
+    super.init()
+  }
+
 }

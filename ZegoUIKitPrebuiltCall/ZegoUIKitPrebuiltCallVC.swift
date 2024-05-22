@@ -111,8 +111,8 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     private var userID: String?
     private var userName: String?
     private var roomID: String?
-    private var isHidenMenuBar: Bool = false
-    private var isHidenTopMenuBar: Bool = false
+    private var isHiddenMenuBar: Bool = false
+    private var isHiddenTopMenuBar: Bool = false
     private var timer: ZegoTimer? = ZegoTimer(1000)
     private var timerCount: Int = 3
     private var currentBottomMenuBar: UIView?
@@ -296,12 +296,12 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         timer.setEventHandler {
             if self.timerCount == 0 {
                 if self.config.bottomMenuBarConfig.hideAutomatically {
-                    if !self.isHidenMenuBar {
+                    if !self.isHiddenMenuBar {
                         self.hiddenMenuBar(true)
                     }
                 }
                 if self.config.topMenuBarConfig.hideAutomatically {
-                    if !self.isHidenTopMenuBar {
+                    if !self.isHiddenTopMenuBar {
                         self.hiddenTopMenuBar(isHidden: true)
                     }
                 }
@@ -315,10 +315,10 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     @objc func tapClick() {
         if self.config.bottomMenuBarConfig.hideByClick || self.config.topMenuBarConfig.hideByClick {
             if self.config.bottomMenuBarConfig.hideByClick {
-                self.hiddenMenuBar(!self.isHidenMenuBar)
+                self.hiddenMenuBar(!self.isHiddenMenuBar)
             }
             if self.config.topMenuBarConfig.hideByClick {
-                self.hiddenTopMenuBar(isHidden: !self.isHidenTopMenuBar)
+                self.hiddenTopMenuBar(isHidden: !self.isHiddenTopMenuBar)
             }
             guard let timer = timer else {
                 return
@@ -339,7 +339,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     }
     
     private func hiddenMenuBar(_ isHidden: Bool) {
-        self.isHidenMenuBar = isHidden
+        self.isHiddenMenuBar = isHidden
         UIView.animate(withDuration: 0.5) {
             if self.config.bottomMenuBarConfig.hideAutomatically {
                 let bottomY: CGFloat = isHidden ? UIScreen.main.bounds.size.height:UIScreen.main.bounds.size.height - self.bottomBarHeight
@@ -349,7 +349,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     }
     
     private func hiddenTopMenuBar(isHidden: Bool) {
-        self.isHidenTopMenuBar = isHidden
+        self.isHiddenTopMenuBar = isHidden
         UIView.animate(withDuration: 0.5) {
             if self.config.topMenuBarConfig.hideAutomatically {
                 let topY: CGFloat = isHidden ? -self.topMenuBarHeight : 0
@@ -441,8 +441,8 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
         }
     }
     
-    func onOnlySelfInRoom() {
-        self.callVC?.delegate?.onOnlySelfInRoom?()
+    func onOnlySelfInRoom(_ userList:[ZegoUIKitUser]) {
+        self.callVC?.delegate?.onOnlySelfInRoom?(userList)
     }
     
     func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView? {
@@ -484,8 +484,29 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallBottomMenuBarDelegate, ZegoCallMember
     func onHangUp(_ isHandup: Bool) {
         if isHandup {
             self.dismiss(animated: true, completion: nil)
+            ZegoCallAudioPlayerTool.stopPlay()
+            guard let invitationData = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData else { return }
+            var needCancel: Bool = true
+            if let invitees = ZegoUIKitPrebuiltCallInvitationService.shared.invitees {
+                var cancelInvitees: [String] = []
+                if invitationData.inviter?.userID == ZegoUIKit.shared.localUserInfo?.userID {
+                    for user in invitees {
+                        if user.state == .accept {
+                            needCancel = false
+                        }
+                        cancelInvitees.append(user.user?.userID ?? "")
+                    }
+                }
+                if needCancel {
+                    ZegoUIKitSignalingPluginImpl.shared.cancelInvitation(cancelInvitees, data: nil, callback: nil)
+                }
+            }
+            ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         }
-        self.delegate?.onHangUp?(isHandup)
+        let endEvent:ZegoCallEndEvent = ZegoCallEndEvent()
+        endEvent.reason = .localHangUp
+        endEvent.kickerUserID = ZegoUIKitPrebuiltCallInvitationService.shared.userID ?? ""
+        self.delegate?.onCallEnd?(endEvent)
     }
     
     func onMinimizationButtonDidClick() {
@@ -513,8 +534,8 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallBottomMenuBarDelegate, ZegoCallMember
         return self.delegate?.getMemberListItemView?(tableView, indexPath: indexPath, userInfo: userInfo)
     }
     
-    func getMemberListviewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView? {
-        return self.delegate?.getMemberListviewForHeaderInSection?(tableView, section: section)
+    func getMemberListViewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView? {
+        return self.delegate?.getMemberListViewForHeaderInSection?(tableView, section: section)
     }
     
     func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat {
