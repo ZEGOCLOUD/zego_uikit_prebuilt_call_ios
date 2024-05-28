@@ -144,6 +144,10 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         if let vc = self.callVC, vc.isKind(of: ZegoUIKitPrebuiltCallVC.classForCoder()) {
             (vc as! ZegoUIKitPrebuiltCallVC).finish()
         }
+        var endEvent:ZegoCallEndEvent = ZegoCallEndEvent()
+        endEvent.reason = .localHangUp
+        endEvent.kickerUserID = ZegoUIKitPrebuiltCallInvitationService.shared.userID ?? ""
+        self.help.onCallEnd(endEvent)
         self.invitationData = nil
     }
 }
