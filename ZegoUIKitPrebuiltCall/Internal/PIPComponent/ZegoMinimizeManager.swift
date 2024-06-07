@@ -41,7 +41,7 @@ class ZegoMinimizeManager: NSObject {
         return narrow
     }()
     
-    var isOnevOneVideo: Bool = true
+    var isOneOnOneVideo: Bool = true
     
     var callVC: ZegoUIKitPrebuiltCallVC?
     var pipVC: AVPictureInPictureController?
@@ -70,16 +70,16 @@ class ZegoMinimizeManager: NSObject {
         }
     }
     
-    func setupPipControllerWithSourceView(sourceView: UIView, isOnevOneVideo: Bool) {
-        self.isOnevOneVideo = isOnevOneVideo
+    func setupPipControllerWithSourceView(sourceView: UIView, isOneOnOneVideo: Bool) {
+        self.isOneOnOneVideo = isOneOnOneVideo
         if let _ = pipVC {
             destroy()
         }
         if #available(iOS 15.0, *) {
             ZegoUIKit.shared.addEventHandler(self)
-            if isOnevOneVideo {
+            if isOneOnOneVideo {
                 let callViewController = AVPictureInPictureVideoCallViewController();
-                callViewController.preferredContentSize = CGSize(width: isOnevOneVideo ? 9 : 1, height: isOnevOneVideo ? 16 : 1)
+                callViewController.preferredContentSize = CGSize(width: isOneOnOneVideo ? 9 : 1, height: isOneOnOneVideo ? 16 : 1)
                 
                 let pipContentSource = AVPictureInPictureController.ContentSource(activeVideoCallSourceView: sourceView, contentViewController: callViewController)
                 
@@ -137,7 +137,7 @@ class ZegoMinimizeManager: NSObject {
     
     func stopPiP() {
         if #available(iOS 15.0, *) {
-            if isOnevOneVideo {
+            if isOneOnOneVideo {
                 guard let pipVC = pipVC else { return }
                 if pipVC.isPictureInPictureActive {
                     isNarrow = false
@@ -151,7 +151,7 @@ class ZegoMinimizeManager: NSObject {
     }
     func startPip() {
         if #available(iOS 15.0, *) {
-            if isOnevOneVideo {
+            if isOneOnOneVideo {
                 guard let pipVC = pipVC else { return }
                 pipVC.startPictureInPicture()
             } else {

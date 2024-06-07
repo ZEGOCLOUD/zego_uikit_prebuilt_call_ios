@@ -90,7 +90,7 @@ extension ZegoUIKitPrebuiltCallVC: CallVCApi {
     }
 }
 
-
+@objcMembers
 open class ZegoUIKitPrebuiltCallVC: UIViewController {
     
     var bottomBarHeight: CGFloat = adaptLandscapeHeight(61) + UIKitBottomSafeAreaHeight
@@ -243,9 +243,9 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         ZegoMinimizeManager.shared.pipConfig = config.layout.config
         if config.topMenuBarConfig.buttons.contains(.minimizingButton) || config.bottomMenuBarConfig.buttons.contains(.minimizingButton) {
             if config.turnOnCameraWhenJoining && config.layout.mode == .pictureInPicture {
-                ZegoMinimizeManager.shared.setupPipControllerWithSourceView(sourceView: view, isOnevOneVideo: true)
+                ZegoMinimizeManager.shared.setupPipControllerWithSourceView(sourceView: view, isOneOnOneVideo: true)
             } else {
-                ZegoMinimizeManager.shared.setupPipControllerWithSourceView(sourceView: view, isOnevOneVideo: false)
+                ZegoMinimizeManager.shared.setupPipControllerWithSourceView(sourceView: view, isOneOnOneVideo: false)
             }
         }
         self.setupLayout()
@@ -482,6 +482,11 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallBottomMenuBarDelegate, ZegoCallMember
     }
     
     func onHangUp(_ isHandup: Bool) {
+        let endEvent:ZegoCallEndEvent = ZegoCallEndEvent()
+        endEvent.reason = .localHangUp
+        endEvent.kickerUserID = ZegoUIKitPrebuiltCallInvitationService.shared.userID ?? ""
+        self.delegate?.onCallEnd?(endEvent)
+      
         if isHandup {
             self.dismiss(animated: true, completion: nil)
             ZegoCallAudioPlayerTool.stopPlay()
@@ -503,10 +508,6 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallBottomMenuBarDelegate, ZegoCallMember
             }
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         }
-        let endEvent:ZegoCallEndEvent = ZegoCallEndEvent()
-        endEvent.reason = .localHangUp
-        endEvent.kickerUserID = ZegoUIKitPrebuiltCallInvitationService.shared.userID ?? ""
-        self.delegate?.onCallEnd?(endEvent)
     }
     
     func onMinimizationButtonDidClick() {

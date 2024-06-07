@@ -17,7 +17,7 @@ extension ZegoSendCallInvitationButtonDelegate {
 //    func onPressed(_ errorCode: Int, errorMessage: String?, errorInvitees: [ZegoCallUser?]?){ }
 }
 
-public class ZegoSendCallInvitationButton: UIButton {
+@objc public class ZegoSendCallInvitationButton: UIButton {
     
     @objc public var icon: UIImage? {
         didSet {

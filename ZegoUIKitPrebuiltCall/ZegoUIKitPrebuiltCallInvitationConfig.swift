@@ -31,7 +31,7 @@ public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
     }
 }
 
-
+@objcMembers
 public class ZegoTranslationText: NSObject {
     
     var language :ZegoUIKitLanguage  = .ENGLISH

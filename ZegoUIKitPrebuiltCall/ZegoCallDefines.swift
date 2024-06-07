@@ -9,7 +9,8 @@ import Foundation
 import UIKit
 import ZegoUIKit
 
-public enum ZegoMenuBarButtonName: Int {
+
+@objc public enum ZegoMenuBarButtonName: Int {
     case hangUpButton
     case toggleCameraButton
     case toggleMicrophoneButton
@@ -18,13 +19,6 @@ public enum ZegoMenuBarButtonName: Int {
     case showMemberListButton
     case chatButton
     case minimizingButton
-}
-
-public enum ZegoViewPosition: Int {
-    case topLeft
-    case topRight
-    case bottomLeft
-    case bottomRight
 }
 
 //public enum ZegoCallType: Int {
@@ -44,10 +38,10 @@ public class ZegoCallUser: NSObject {
     public var name: String?
 }
 
-
+@objcMembers
 public class ZegoCallInvitationData: NSObject {
     public var callID: String?
-    public var type: ZegoInvitationType?
+    public var type: ZegoInvitationType = .voiceCall
     public var invitees: [ZegoUIKitUser]?
     public var inviter: ZegoUIKitUser?
     public var invitationID: String?
@@ -60,7 +54,8 @@ public class ZegoCallInvitationData: NSObject {
     case videoCall = 1
 }
 
-public enum ZegoMenuBarStyle: Int {
+
+@objc public enum ZegoMenuBarStyle: Int {
     case light
     case dark
 }

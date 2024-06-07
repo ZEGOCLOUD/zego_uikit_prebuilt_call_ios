@@ -71,7 +71,7 @@ class ZegoCallInvitationDialog: UIView {
         tipView.invitationData = callInvitationData
         tipView.layer.masksToBounds = true
         tipView.layer.cornerRadius = 8
-        tipView.type = callInvitationData.type ?? .voiceCall
+        tipView.type = callInvitationData.type
         tipView.setHeadUserName(callInvitationData.inviter?.userName)
         tipView.userNameLabel.text = callInvitationData.inviter?.userName
         tipView.refuseButton.isHidden = !(ZegoUIKitPrebuiltCallInvitationService.shared.config?.showDeclineButton ?? true)
@@ -86,10 +86,6 @@ class ZegoCallInvitationDialog: UIView {
             tipView.messageLabel.text = callInvitationData.invitees?.count ?? 0 > 1 ? innerText?.incomingGroupVideoCallDialogMessage : innerText?.incomingVideoCallDialogMessage
             tipView.userNameLabel.text = callInvitationData.invitees?.count ?? 0 > 1 ? String(format: innerText?.incomingGroupVideoCallDialogTitle ?? "%@", callInvitationData.inviter?.userName ?? "") : String(format: innerText?.incomingVideoCallDialogTitle ?? "%@", callInvitationData.inviter?.userName ?? "")
             tipView.acceptButton.icon  = ZegoUIKitCallIconSetType.call_video_icon.load()
-        case .none:
-            break
-        case .some(_):
-            break
         }
         tipView.showTip()
         return tipView

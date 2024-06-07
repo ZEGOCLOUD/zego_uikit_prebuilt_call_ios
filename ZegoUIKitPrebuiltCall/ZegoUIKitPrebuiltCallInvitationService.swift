@@ -10,11 +10,11 @@ import ZegoUIKit
 import ZegoPluginAdapter
 
 
-public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
+@objc public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     
-    public static let shared = ZegoUIKitPrebuiltCallInvitationService()
-    public weak var delegate: ZegoUIKitPrebuiltCallInvitationServiceDelegate?
-    public weak var callVCDelegate: ZegoUIKitPrebuiltCallVCDelegate?
+    @objc public static let shared = ZegoUIKitPrebuiltCallInvitationService()
+    @objc public weak var delegate: ZegoUIKitPrebuiltCallInvitationServiceDelegate?
+    @objc public weak var callVCDelegate: ZegoUIKitPrebuiltCallVCDelegate?
     
     let help = ZegoUIKitPrebuiltCallInvitationService_Help()
     var config: ZegoUIKitPrebuiltCallInvitationConfig?
@@ -87,7 +87,7 @@ public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
 
 extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
     
-    public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String, config: ZegoUIKitPrebuiltCallInvitationConfig) {
+    @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String, config: ZegoUIKitPrebuiltCallInvitationConfig) {
         self.config = config
         self.userID = userID
         self.userName = userName
@@ -110,7 +110,7 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
     }
     
-    public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String) {
+    @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String) {
         self.userID = userID
         self.userName = userName
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
@@ -119,14 +119,14 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
     }
     
-    public func unInit() {
+    @objc public func unInit() {
         ZegoUIKit.shared.uninit()
         ZegoUIKitSignalingPluginImpl.shared.uninit()
         ZegoUIKit.shared.enableCustomVideoRender(enable: false)
         NotificationCenter.default.removeObserver(self)
     }
 
-    public func getPrebuiltCallVC()-> ZegoUIKitPrebuiltCallVC? {
+    @objc public func getPrebuiltCallVC()-> ZegoUIKitPrebuiltCallVC? {
         if let vc = self.callVC, vc.isKind(of: ZegoUIKitPrebuiltCallVC.classForCoder()) {
             return vc as? ZegoUIKitPrebuiltCallVC
         } else {
@@ -135,19 +135,15 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
     }
     
 
-    public static func setRemoteNotificationsDeviceToken(_ deviceToken: Data) {
+    @objc public static func setRemoteNotificationsDeviceToken(_ deviceToken: Data) {
         ZegoUIKit.getSignalingPlugin().setRemoteNotificationsDeviceToken(deviceToken)
     }
     
     
-    public func endCall() {
+    @objc public func endCall() {
         if let vc = self.callVC, vc.isKind(of: ZegoUIKitPrebuiltCallVC.classForCoder()) {
             (vc as! ZegoUIKitPrebuiltCallVC).finish()
         }
-        var endEvent:ZegoCallEndEvent = ZegoCallEndEvent()
-        endEvent.reason = .localHangUp
-        endEvent.kickerUserID = ZegoUIKitPrebuiltCallInvitationService.shared.userID ?? ""
-        self.help.onCallEnd(endEvent)
         self.invitationData = nil
     }
 }
@@ -280,6 +276,9 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             return
         }
         let caller = getCallUser(inviter)
+        if caller.id == nil {
+          caller.id = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.inviter?.userID
+        }
         let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallTimeout?(callID ?? "", caller: caller)
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
@@ -435,7 +434,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             callData.inviter = ZegoUIKitUser(inviterID, inviterName)
         }
         callData.invitationID = invitationID
-        callData.type = ZegoInvitationType.init(rawValue: type)
+        callData.type = ZegoInvitationType.init(rawValue: type) ?? .voiceCall
         
         return callData
     }
