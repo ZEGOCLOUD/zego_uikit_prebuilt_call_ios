@@ -37,8 +37,10 @@ class ZegoMinimizationButton: UIButton {
     
     @objc func buttonClick() {
         if #available(iOS 15.0, *) {
+          DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
             ZegoMinimizeManager.shared.isNarrow = true
             delegate?.onMinimizationButtonDidClick()
+          }
         }
     }
     
