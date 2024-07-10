@@ -131,17 +131,17 @@ extension ZegoCallInvitationDialog: ZegoAcceptInvitationButtonDelegate {
         guard let invitationData = invitationData else {
             return
         }
-        var nomalConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
+        var normalConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
         if invitationData.invitees?.count ?? 0 > 1 {
             //group call
 //            nomalConfig = ZegoUIKitPrebuiltCallConfig(invitationData.type == .videoCall ? .groupVideoCall : .groupVoiceCall)
-            nomalConfig = invitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.groupVideoCall() : ZegoUIKitPrebuiltCallConfig.groupVoiceCall()
+            normalConfig = invitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.groupVideoCall() : ZegoUIKitPrebuiltCallConfig.groupVoiceCall()
         } else {
             //one on one call
 //            nomalConfig = ZegoUIKitPrebuiltCallConfig(invitationData.type == .videoCall ? .oneOnOneVideoCall : .oneOnOneVoiceCall)
-            nomalConfig =  invitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall() : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
+            normalConfig =  invitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall() : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
         }
-        let config = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(invitationData) ?? nomalConfig
+        let config = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(invitationData) ?? normalConfig
         let callVC: ZegoUIKitPrebuiltCallVC = ZegoUIKitPrebuiltCallVC.init(invitationData, config: config)
         callVC.modalPresentationStyle = .fullScreen
         callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help

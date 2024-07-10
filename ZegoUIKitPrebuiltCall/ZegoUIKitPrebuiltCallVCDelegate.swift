@@ -26,4 +26,6 @@ import ZegoUIKit
     @objc optional func getChatViewItemHeight(_ tableView: UITableView, heightForRowAt indexPath: IndexPath, message: ZegoInRoomMessage) -> CGFloat
     
     @objc optional func onCallTimeUpdate(_ duration: Int)
+  
+    @objc optional func onAudioOutputDeviceChanged(_ audioOutput: ZegoUIKitAudioOutputDevice)
 }

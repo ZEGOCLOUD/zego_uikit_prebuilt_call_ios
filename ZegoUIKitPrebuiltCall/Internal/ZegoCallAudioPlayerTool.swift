@@ -10,12 +10,12 @@ import AVFAudio
 
 class ZegoCallAudioPlayerTool: NSObject {
         
-      static var backgrndSound: AVAudioPlayer?
+      static var backgroundSound: AVAudioPlayer?
     
      // AVAudioPlayer already has an isPlaying property
        class func isMusicPlaying() -> Bool
        {
-          return backgrndSound?.isPlaying ?? false
+          return backgroundSound?.isPlaying ?? false
        }
        
        class func startPlay(_ resourcePath: String)
@@ -23,11 +23,11 @@ class ZegoCallAudioPlayerTool: NSObject {
           let url = URL(fileURLWithPath: resourcePath)
           do
           {
-             backgrndSound = try AVAudioPlayer(contentsOf: url)
-             backgrndSound?.numberOfLoops = -1
-             backgrndSound?.currentTime = 0
-             backgrndSound?.prepareToPlay()
-             backgrndSound?.play()
+             backgroundSound = try AVAudioPlayer(contentsOf: url)
+             backgroundSound?.numberOfLoops = -1
+             backgroundSound?.currentTime = 0
+             backgroundSound?.prepareToPlay()
+             backgroundSound?.play()
           }
           catch
           {
@@ -38,8 +38,8 @@ class ZegoCallAudioPlayerTool: NSObject {
        class func stopPlay()
        {
            if isMusicPlaying() {
-               backgrndSound?.pause()
-               backgrndSound?.stop()
+               backgroundSound?.pause()
+               backgroundSound?.stop()
            }
        }
 

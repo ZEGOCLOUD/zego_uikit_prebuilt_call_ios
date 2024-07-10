@@ -11,13 +11,13 @@ import ZegoUIKit
 class ZegoCallNomalForegroundView: ZegoBaseAudioVideoForegroundView {
     
     let userNameLabel: UILabel = UILabel()
-    let camerStateIcon: ZegoCameraStateIcon = ZegoCameraStateIcon(frame: .zero)
+    let cameraStateIcon: ZegoCameraStateIcon = ZegoCameraStateIcon(frame: .zero)
     let micStateIcon: ZegoMicrophoneStateIcon = ZegoMicrophoneStateIcon(frame: .zero)
     lazy var bottomView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.colorWithHexString("#2A2A2A", alpha: 0.5)
         view.addSubview(self.userNameLabel)
-        view.addSubview(self.camerStateIcon)
+        view.addSubview(self.cameraStateIcon)
         view.addSubview(self.micStateIcon)
         view.layer.masksToBounds = true
         view.layer.cornerRadius = 6
@@ -34,7 +34,7 @@ class ZegoCallNomalForegroundView: ZegoBaseAudioVideoForegroundView {
             self.userNameLabel.text = userInfo.userName
             self.userNameLabel.textColor = UIColor.colorWithHexString("#FFFFFF")
             self.userNameLabel.font = UIFont.systemFont(ofSize: 12)
-            self.camerStateIcon.userID = userInfo.userID
+            self.cameraStateIcon.userID = userInfo.userID
             self.micStateIcon.userID = userInfo.userID
             self.setupLayOut()
         }
@@ -85,9 +85,9 @@ class ZegoCallNomalForegroundView: ZegoBaseAudioVideoForegroundView {
             self.micStateIcon.frame = CGRect.init(x: bottomWidth - 5 , y: 0, width: 0, height: 0)
         }
         if config.audioVideoViewConfig.showCameraStateOnView {
-            self.camerStateIcon.frame = CGRect.init(x: bottomWidth - 5 - self.micStateIcon.bounds.size.width - 5 - 18, y: 2.5, width: 18, height: 18)
+            self.cameraStateIcon.frame = CGRect.init(x: bottomWidth - 5 - self.micStateIcon.bounds.size.width - 5 - 18, y: 2.5, width: 18, height: 18)
         } else {
-            self.camerStateIcon.frame = CGRect.init(x: bottomWidth - 5 - self.micStateIcon.bounds.size.width, y: 0, width: 0, height: 0)
+            self.cameraStateIcon.frame = CGRect.init(x: bottomWidth - 5 - self.micStateIcon.bounds.size.width, y: 0, width: 0, height: 0)
         }
         if config.audioVideoViewConfig.showUserNameOnView {
             var rightMargin : CGFloat = 0

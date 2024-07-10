@@ -218,15 +218,15 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
         ZegoCallAudioPlayerTool.stopPlay()
         guard let callInvitationData = self.waitingVC?.callInvitationData else { return }
         self.waitingVC?.dismiss(animated: false, completion: {
-            var nomalConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
+            var normalConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
             if callInvitationData.invitees?.count ?? 0 > 1 {
                 //group call
-                nomalConfig = callInvitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.groupVideoCall() : ZegoUIKitPrebuiltCallConfig.groupVoiceCall()
+                normalConfig = callInvitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.groupVideoCall() : ZegoUIKitPrebuiltCallConfig.groupVoiceCall()
             } else {
                 //one on one call
-                nomalConfig =  callInvitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall() :  ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
+                normalConfig =  callInvitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall() :  ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
             }
-            let config: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(callInvitationData) ?? nomalConfig
+            let config: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(callInvitationData) ?? normalConfig
             let callVC: ZegoUIKitPrebuiltCallVC = ZegoUIKitPrebuiltCallVC.init(callInvitationData, config: config)
             callVC.modalPresentationStyle = .fullScreen
             callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help

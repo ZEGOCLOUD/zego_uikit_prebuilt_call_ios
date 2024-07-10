@@ -42,7 +42,7 @@ class ZegoCallMemberList: UIView {
     lazy var backgroundView: UIView = {
         let view: UIView = UIView()
         view.backgroundColor = UIColor.colorWithHexString("#171821", alpha: 0.6)
-        let tapClick: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(hidenMemberList))
+        let tapClick: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(hiddenMemberList))
         view.addGestureRecognizer(tapClick)
         return view
     }()
@@ -76,7 +76,7 @@ class ZegoCallMemberList: UIView {
         self.memberList.addCorner(conrners: [.topLeft,.topRight], radius: 23)
     }
     
-    @objc func hidenMemberList() {
+    @objc func hiddenMemberList() {
         self.removeFromSuperview()
     }
     
@@ -115,7 +115,7 @@ extension ZegoCallMemberList: ZegoMemberListDelegate, ZegoMemberListHeaderViewDe
     }
     
     func closeMemberListDidClick() {
-        self.hidenMemberList()
+        self.hiddenMemberList()
     }
 }
 

@@ -144,7 +144,19 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         if let vc = self.callVC, vc.isKind(of: ZegoUIKitPrebuiltCallVC.classForCoder()) {
             (vc as! ZegoUIKitPrebuiltCallVC).finish()
         }
+        let endEvent:ZegoCallEndEvent = ZegoCallEndEvent()
+        endEvent.reason = .localHangUp
+        endEvent.kickerUserID = ZegoUIKitPrebuiltCallInvitationService.shared.userID ?? ""
+        self.help.onCallEnd(endEvent)
         self.invitationData = nil
+    }
+  
+    @objc public func setAudioOutputToSpeaker(outputToSpeaker: Bool) {
+        ZegoUIKit.shared.setAudioOutputToSpeaker(enable: outputToSpeaker)
+    }
+  
+    @objc public func getAudioRouteType() -> ZegoUIKitAudioOutputDevice {
+        ZegoUIKit.shared.getAudioRouteType()
     }
 }
 
@@ -366,7 +378,11 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     func onAudioOutputButtonClick(_ isSpeaker: Bool) {
         ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onAudioOutputButtonClick?(isSpeaker)
     }
-    
+
+    func onAudioOutputDeviceChanged(_ audioOutput: ZegoUIKitAudioOutputDevice) {
+      ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onAudioOutputDeviceChanged?(audioOutput)
+    }
+   
     func onOnlySelfInRoom(_ userList:[ZegoUIKitUser]) {
         if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall {
             ZegoMinimizeManager.shared.stopPiP()

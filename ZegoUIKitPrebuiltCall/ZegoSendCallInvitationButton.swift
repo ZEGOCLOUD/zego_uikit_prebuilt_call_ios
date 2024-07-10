@@ -146,9 +146,9 @@ extension ZegoSendCallInvitationButtonDelegate {
         if isVideoCall { ZegoUIKit.shared.turnCameraOn(ZegoUIKit.shared.localUserInfo?.userID ?? "", isOn: true) }
         if self.invitees.count > 1 {
             //group call
-//            let nomalConfig: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallConfig(isVideoCall ? .groupVideoCall : .groupVoiceCall)
-            let nomalConfig: ZegoUIKitPrebuiltCallConfig = isVideoCall ? ZegoUIKitPrebuiltCallConfig.groupVideoCall() : ZegoUIKitPrebuiltCallConfig.groupVoiceCall()
-            let config: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(callData) ?? nomalConfig
+//            let normalConfig: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallConfig(isVideoCall ? .groupVideoCall : .groupVoiceCall)
+            let normalConfig: ZegoUIKitPrebuiltCallConfig = isVideoCall ? ZegoUIKitPrebuiltCallConfig.groupVideoCall() : ZegoUIKitPrebuiltCallConfig.groupVoiceCall()
+            let config: ZegoUIKitPrebuiltCallConfig = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(callData) ?? normalConfig
             let callVC: ZegoUIKitPrebuiltCallVC = ZegoUIKitPrebuiltCallVC.init(callData, config: config)
             callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help
             callVC.modalPresentationStyle = .fullScreen
