@@ -8,8 +8,9 @@
 import Foundation
 
 @objc public protocol ZegoUIKitPrebuiltCallInvitationServiceDelegate: AnyObject {
-    func requireConfig(_ data: ZegoCallInvitationData) -> ZegoUIKitPrebuiltCallConfig
-    
+    @objc func requireConfig(_ data: ZegoCallInvitationData) -> ZegoUIKitPrebuiltCallConfig
+    @objc func onPressed(_ errorCode: Int, errorMessage: String?, errorInvitees: [ZegoCallUser]?)
+  
     @objc optional func onIncomingCallDeclineButtonPressed()
     @objc optional func onIncomingCallAcceptButtonPressed()
     @objc optional func onOutgoingCallCancelButtonPressed()

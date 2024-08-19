@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import ZegoUIKit
+import ZegoPluginAdapter
 
 public protocol CallInvitationServiceApi {
     
@@ -24,6 +26,10 @@ public protocol CallInvitationServiceApi {
     ///   - userID: User unique identification
     ///   - userName: userName
     func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String)
+  
+  
+   func sendInvitation(_ invitees: [ZegoPluginCallUser], invitationType: ZegoPluginCallType,timeout: Int, customerData: String?, notificationConfig: ZegoSignalingPluginNotificationConfig, callback: PluginCallBack?)
+  
     /// Deinitialize call service
     func unInit()
     /// Obtain the call page controller
