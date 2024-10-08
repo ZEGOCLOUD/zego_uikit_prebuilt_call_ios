@@ -34,6 +34,7 @@ extension ZegoSendCallInvitationButtonDelegate {
     }
     @objc public var invitees: [String] = []
     @objc public var data: String?
+    @objc public var callID: String?
     @objc public var timeout: UInt32 = 60
     @objc public var type: Int = 0
     @objc public weak var delegate: ZegoSendCallInvitationButtonDelegate?
@@ -78,17 +79,17 @@ extension ZegoSendCallInvitationButtonDelegate {
     }
     
     @objc func buttonClick() {
-      if ZegoUIKitPrebuiltCallInvitationService.shared.invitationData != nil || invitees.count == 0 { return }
-      guard let userID = ZegoUIKit.shared.localUserInfo?.userID else { return }
-      guard let resourceID = self.resourceID else { return }
+        if ZegoUIKitPrebuiltCallInvitationService.shared.invitationData != nil || invitees.count == 0 { return }
+        guard let userID = ZegoUIKit.shared.localUserInfo?.userID else { return }
+        guard let resourceID = self.resourceID else { return }
       
-      let inviteArr:[ZegoPluginCallUser] = inviteeList.map { model in
-        ZegoPluginCallUser(userID: model.userID ?? "", userName:model.userName ?? "", avatar: "")
-      }
-    
-      ZegoUIKitPrebuiltCallInvitationService.shared.sendInvitation(inviteArr, invitationType: isVideoCall ? .videoCall : .voiceCall, timeout: 60, customerData: "", notificationConfig: ZegoSignalingPluginNotificationConfig(resourceID: resourceID, title: "", message: "")) { data in
-        
-      }
+        let inviteArr:[ZegoPluginCallUser] = inviteeList.map { model in
+            ZegoPluginCallUser(userID: model.userID ?? "", userName:model.userName ?? "", avatar: "")
+        }
+        ZegoUIKitPrebuiltCallInvitationService.shared.callID = self.callID;
+        ZegoUIKitPrebuiltCallInvitationService.shared.sendInvitation(inviteArr, invitationType: isVideoCall ? .videoCall : .voiceCall, timeout: 60, customerData: "", notificationConfig: ZegoSignalingPluginNotificationConfig(resourceID: resourceID, title: "", message: "")) { data in
+
+        }
     }
     
 }
