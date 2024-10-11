@@ -367,8 +367,8 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
               let userID = self.userID,
               let userName = self.userName
         else { return }
-        ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID) {[self] code in
-
+        ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID) { code in
+          
         }
         
         ZegoUIKit.shared.turnCameraOn(userID, isOn: self.config.turnOnCameraWhenJoining)

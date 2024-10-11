@@ -17,6 +17,7 @@ public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
     public var showDeclineButton: Bool = true
     public var notifyWhenAppRunningInBackgroundOrQuit: Bool = true
     public var isSandboxEnvironment: Bool = true
+    public var exitRoomWhenOnlySelfInGroupRoom: Bool = false
     public var certificateIndex: ZegoSignalingPluginMultiCertificate = .firstCertificate
     public var translationText: ZegoTranslationText = ZegoTranslationText(language: .ENGLISH);
     public var videoConfig :ZegoPrebuiltCallVideoConfig = ZegoPrebuiltCallVideoConfig(resolution: .PRESET_360P)

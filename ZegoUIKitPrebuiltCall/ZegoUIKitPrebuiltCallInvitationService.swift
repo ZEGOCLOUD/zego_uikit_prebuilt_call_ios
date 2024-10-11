@@ -177,7 +177,7 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
     }
     
     @objc public func sendInvitation(_ invitees: [ZegoPluginCallUser], invitationType: ZegoPluginCallType,timeout: Int, customerData: String?, notificationConfig: ZegoSignalingPluginNotificationConfig, callback: PluginCallBack?) {
-      
+        inviteIDArray = []
         if ZegoUIKitPrebuiltCallInvitationService.shared.invitationData != nil || invitees.count == 0 { return }
         
         guard let userID = ZegoUIKit.shared.localUserInfo?.userID else { return }
@@ -583,7 +583,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
    
     func onOnlySelfInRoom(_ userList:[ZegoUIKitUser]) {
-        if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall {
+        if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall ||
+          (ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall && ZegoUIKitPrebuiltCallInvitationService.shared.config?.exitRoomWhenOnlySelfInGroupRoom == true) {
             ZegoMinimizeManager.shared.stopPiP()
             ZegoMinimizeManager.shared.callVC = nil
             ZegoUIKitPrebuiltCallInvitationService.shared.callVC?.dismiss(animated: true, completion: nil)
