@@ -367,15 +367,15 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
               let userID = self.userID,
               let userName = self.userName
         else { return }
-        ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID) { code in
-          
+        ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID) {[self] code in
+          if code == 0 {
+            ZegoUIKit.shared.turnCameraOn(userID, isOn: self.config.turnOnCameraWhenJoining)
+            ZegoUIKit.shared.startPreview(self.view, videoMode: .aspectFill)
+            ZegoUIKit.shared.turnMicrophoneOn(userID, isOn: self.config.turnOnMicrophoneWhenJoining)
+            callDuration.delegate = self
+            callDuration.startTheTimer()
+          }
         }
-        
-        ZegoUIKit.shared.turnCameraOn(userID, isOn: self.config.turnOnCameraWhenJoining)
-        ZegoUIKit.shared.startPreview(self.view, videoMode: .aspectFill)
-        ZegoUIKit.shared.turnMicrophoneOn(userID, isOn: self.config.turnOnMicrophoneWhenJoining)
-        callDuration.delegate = self
-        callDuration.startTheTimer()
     }
     
     private func joinRoomAudioWaitingView() {

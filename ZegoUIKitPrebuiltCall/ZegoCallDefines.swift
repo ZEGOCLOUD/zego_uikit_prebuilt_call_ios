@@ -46,6 +46,7 @@ public class ZegoCallInvitationData: NSObject {
     public var inviter: ZegoUIKitUser?
     public var invitationID: String?
     public var customData: String?
+    public var appLogoUrl: String?
     
 }
 

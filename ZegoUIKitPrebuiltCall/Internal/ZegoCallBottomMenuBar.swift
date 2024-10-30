@@ -143,7 +143,7 @@ class ZegoCallBottomMenuBar: UIView {
         }
     }
     
-    private func replayAddAllView() {
+    private func replyAddAllView() {
         for view in self.subviews {
             view.removeFromSuperview()
         }

@@ -39,6 +39,13 @@ class ZegoCallInvitationDialog: UIView {
         }
     }
     
+    lazy var appIconImage: UIImageView = {
+        let imageView: UIImageView = UIImageView()
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 21;
+        return imageView
+    }()
+    
     weak var delegate: CallAcceptTipViewDelegate?
 //    static var showDeclineButton: Bool = true
     private var invitationData: ZegoCallInvitationData? {
@@ -47,7 +54,29 @@ class ZegoCallInvitationDialog: UIView {
             self.refuseButton.inviterID = invitationData?.inviter?.userID
             let refuseData: [String : AnyObject] = ["reason": "decline" as AnyObject, "invitationID": invitationData?.invitationID as AnyObject]
             self.refuseButton.data = refuseData.call_jsonString
+            if ((invitationData?.appLogoUrl?.isEmpty) != nil) {
+                loadImage(imageUrl: (invitationData?.appLogoUrl)!)
+            }
         }
+    }
+    
+    private func loadImage(imageUrl:String) {
+        let url = URL(string: imageUrl)
+        let session = URLSession.shared
+        let task = session.dataTask(with: url!) { (data, response, error) in
+            if let error = error {
+                print("加载图片出错: \(error)")
+                return
+            }
+            if let data = data {
+                if let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.appIconImage.image = image
+                    }
+                }
+            }
+        }
+        task.resume()
     }
     
     private var type: ZegoInvitationType = .voiceCall
@@ -57,6 +86,8 @@ class ZegoCallInvitationDialog: UIView {
         super.awakeFromNib()
         let tapClick: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(viewTap))
         self.addGestureRecognizer(tapClick)
+        appIconImage.frame = self.headLabel.frame
+        addSubview(appIconImage)
     }
     
     public static func show(_ callInvitationData: ZegoCallInvitationData) -> ZegoCallInvitationDialog {
@@ -75,6 +106,14 @@ class ZegoCallInvitationDialog: UIView {
         tipView.setHeadUserName(callInvitationData.inviter?.userName)
         tipView.userNameLabel.text = callInvitationData.inviter?.userName
         tipView.refuseButton.isHidden = !(ZegoUIKitPrebuiltCallInvitationService.shared.config?.showDeclineButton ?? true)
+        
+        if callInvitationData.appLogoUrl?.count ?? 0 > 0 {
+            tipView.appIconImage.isHidden = false
+            tipView.headLabel.isHidden = true
+        } else {
+            tipView.headLabel.isHidden = false
+            tipView.appIconImage.isHidden = true
+        }
         let innerText: ZegoTranslationText? = ZegoUIKitPrebuiltCallInvitationService.shared.config?.translationText
         switch callInvitationData.type {
         case .voiceCall:

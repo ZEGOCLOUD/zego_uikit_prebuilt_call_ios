@@ -385,7 +385,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             let needReportCall = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.invitationID == nil
             
             let callData = buildCallInvitationData(type: type, invitationID: pluginInvitationID, dataDict: dataDic)
-//            callData.inviter = inviter;
+            callData.appLogoUrl = ZegoUIKitPrebuiltCallInvitationService.shared.config?.logoImageName;
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = callData
             
             if needReportCall {
