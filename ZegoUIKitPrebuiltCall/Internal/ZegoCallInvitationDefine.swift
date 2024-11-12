@@ -10,7 +10,7 @@ import ZegoUIKit
 
 enum ZegoCallInvitationState: Int {
     case error
-    case wating
+    case waiting
     case accept
     case refuse
     case cancel

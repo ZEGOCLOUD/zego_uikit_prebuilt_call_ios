@@ -135,7 +135,7 @@ import ZegoPluginAdapter
         }
         var invitationUsers: [ZegoCallPrebuiltInvitationUser] = []
         for user in invitees {
-            let invitationUser = ZegoCallPrebuiltInvitationUser.init(user, state: .wating)
+            let invitationUser = ZegoCallPrebuiltInvitationUser.init(user, state: .waiting)
             invitationUsers.append(invitationUser)
         }
         return invitationUsers
@@ -660,7 +660,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         else { return }
         var needClear: Bool = true
         for user in inviteesList {
-            if user.state == .wating {
+            if user.state == .waiting {
                 needClear = false
                 break
             }

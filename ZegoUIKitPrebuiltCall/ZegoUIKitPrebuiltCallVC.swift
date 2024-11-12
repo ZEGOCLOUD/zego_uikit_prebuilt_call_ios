@@ -459,10 +459,10 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
         if let foregroundView = foregroundView {
             return foregroundView
         } else {
-            // user nomal foregroundView
-            let nomalForegroundView: ZegoCallNomalForegroundView = ZegoCallNomalForegroundView.init(callVC.config, userID: userInfo.userID, frame: .zero)
-            nomalForegroundView.userInfo = userInfo
-            return nomalForegroundView
+            // user normal foregroundView
+            let normalForegroundView: ZegoCallNormalForegroundView = ZegoCallNormalForegroundView.init(callVC.config, userID: userInfo.userID, frame: .zero)
+            normalForegroundView.userInfo = userInfo
+            return normalForegroundView
         }
     }
     

@@ -8,7 +8,7 @@
 import UIKit
 import ZegoUIKit
 
-class ZegoCallNomalForegroundView: ZegoBaseAudioVideoForegroundView {
+class ZegoCallNormalForegroundView: ZegoBaseAudioVideoForegroundView {
     
     let userNameLabel: UILabel = UILabel()
     let cameraStateIcon: ZegoCameraStateIcon = ZegoCameraStateIcon(frame: .zero)
