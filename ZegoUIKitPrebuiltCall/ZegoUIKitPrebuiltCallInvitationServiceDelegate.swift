@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import ZegoUIKit
 
 @objc public protocol ZegoUIKitPrebuiltCallInvitationServiceDelegate: AnyObject {
     @objc func requireConfig(_ data: ZegoCallInvitationData) -> ZegoUIKitPrebuiltCallConfig
-    @objc func onPressed(_ errorCode: Int, errorMessage: String?, errorInvitees: [ZegoCallUser]?)
-  
+    @objc optional func onPressed(_ errorCode: Int, errorMessage: String?, errorInvitees: [ZegoCallUser]?)
+    // update User Avatar
+    @objc optional func onUserIDUpdated(user: ZegoUIKitUser) -> NSString?
     @objc optional func onIncomingCallDeclineButtonPressed()
     @objc optional func onIncomingCallAcceptButtonPressed()
     @objc optional func onOutgoingCallCancelButtonPressed()

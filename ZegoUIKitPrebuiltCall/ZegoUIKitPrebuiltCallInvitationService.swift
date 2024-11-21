@@ -236,9 +236,9 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
                 } else {
                     self.startCall(callData,isVideoCall:(invitationType == .videoCall) ? true : false)
                 }
-                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onPressed(code, errorMessage: message, errorInvitees: errorUsers as? [ZegoCallUser])
+                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onPressed?(code, errorMessage: message, errorInvitees: errorUsers as? [ZegoCallUser])
             } else {
-                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onPressed(code, errorMessage: message, errorInvitees: errorUsers as? [ZegoCallUser])
+                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onPressed?(code, errorMessage: message, errorInvitees: errorUsers as? [ZegoCallUser])
                 ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
             }
             callback?(data)
@@ -307,9 +307,9 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
                     ZegoUIKitPrebuiltCallInvitationService.shared.help.checkInviteesState()
                 } else {
                 }
-                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onPressed(code, errorMessage: message, errorInvitees: errorUsers as? [ZegoCallUser])
+                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onPressed?(code, errorMessage: message, errorInvitees: errorUsers as? [ZegoCallUser])
             } else {
-                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onPressed(code, errorMessage: message, errorInvitees: errorUsers as? [ZegoCallUser])
+                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onPressed?(code, errorMessage: message, errorInvitees: errorUsers as? [ZegoCallUser])
                 ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
             }
             callback?(data)
@@ -385,7 +385,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             let needReportCall = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.invitationID == nil
             
             let callData = buildCallInvitationData(type: type, invitationID: pluginInvitationID, dataDict: dataDic)
-            callData.appLogoUrl = ZegoUIKitPrebuiltCallInvitationService.shared.config?.logoImageName;
+            let userAvatar:String = (ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onUserIDUpdated?(user: inviter) ?? "") as String
+            callData.userAvatar = userAvatar
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = callData
             
             if needReportCall {

@@ -54,8 +54,8 @@ class ZegoCallInvitationDialog: UIView {
             self.refuseButton.inviterID = invitationData?.inviter?.userID
             let refuseData: [String : AnyObject] = ["reason": "decline" as AnyObject, "invitationID": invitationData?.invitationID as AnyObject]
             self.refuseButton.data = refuseData.call_jsonString
-            if ((invitationData?.appLogoUrl?.isEmpty) != nil) {
-                loadImage(imageUrl: (invitationData?.appLogoUrl)!)
+            if (invitationData?.userAvatar != nil && invitationData?.userAvatar != "") {
+                loadImage(imageUrl: (invitationData?.userAvatar)!)
             }
         }
     }
@@ -107,7 +107,7 @@ class ZegoCallInvitationDialog: UIView {
         tipView.userNameLabel.text = callInvitationData.inviter?.userName
         tipView.refuseButton.isHidden = !(ZegoUIKitPrebuiltCallInvitationService.shared.config?.showDeclineButton ?? true)
         
-        if callInvitationData.appLogoUrl?.count ?? 0 > 0 {
+        if callInvitationData.userAvatar?.count ?? 0 > 0 {
             tipView.appIconImage.isHidden = false
             tipView.headLabel.isHidden = true
         } else {
