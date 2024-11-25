@@ -120,7 +120,12 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     private var topBarY: CGFloat = 0
     var lastFrame: CGRect = CGRect.zero
     let callDuration: ZegoCallDuration = ZegoCallDuration()
-    
+    lazy var callRoomForegroundBaseView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .clear
+        return view
+    }()
     lazy var avContainer: ZegoAudioVideoContainer = {
         let container: ZegoAudioVideoContainer = ZegoAudioVideoContainer()
         container.delegate = self.help
@@ -239,6 +244,20 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
             self.bottomBarHeight = adaptLandscapeHeight(61) + UIKitBottomSafeAreaHeight
             self.view.addSubview(self.lightMenuBar)
         }
+        let callRoomForegroundView: UIView? = delegate?.requireRoomForegroundView?()
+        
+        if let callRoomForegroundView = callRoomForegroundView {
+            self.callRoomForegroundBaseView.addSubview(callRoomForegroundView)
+            
+            NSLayoutConstraint.activate([
+                self.callRoomForegroundBaseView.leftAnchor.constraint(equalTo: callRoomForegroundView.leftAnchor,constant: 0),
+                self.callRoomForegroundBaseView.rightAnchor.constraint(equalTo: callRoomForegroundView.rightAnchor,constant: 0),
+                self.callRoomForegroundBaseView.topAnchor.constraint(equalTo: callRoomForegroundView.topAnchor,constant: 0),
+                self.callRoomForegroundBaseView.bottomAnchor.constraint(equalTo: callRoomForegroundView.bottomAnchor,constant: 0),
+            ])
+            view.insertSubview(self.callRoomForegroundBaseView, aboveSubview: self.avContainer.view!)
+        }
+        
         ZegoMinimizeManager.shared.delegate = self
         ZegoMinimizeManager.shared.pipConfig = config.layout.config
         if config.topMenuBarConfig.buttons.contains(.minimizingButton) || config.bottomMenuBarConfig.buttons.contains(.minimizingButton) {

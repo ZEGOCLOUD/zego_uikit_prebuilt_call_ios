@@ -143,6 +143,9 @@ import ZegoPluginAdapter
 }
 
 extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
+    @objc public func sendInRoomCommand(_ command: String, toUserIDs: [String], callback: ZegoSendInRoomCommandCallback?) {
+        ZegoUIKit.shared.sendInRoomCommand(command: command, toUserIDs: toUserIDs, callback: callback)
+    }
     
     @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String, config: ZegoUIKitPrebuiltCallInvitationConfig) {
         self.config = config
@@ -538,6 +541,10 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     // MARK: ZegoUIKitPrebuiltCallVCDelegate
+    func requireRoomForegroundView() -> UIView? {
+        return ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.requireRoomForegroundView?()
+    }
+    
     func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView? {
         ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.getForegroundView?(userInfo)
     }

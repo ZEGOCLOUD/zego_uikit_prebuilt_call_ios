@@ -10,6 +10,7 @@ import ZegoUIKit
 
 @objc public protocol ZegoUIKitPrebuiltCallVCDelegate: AnyObject {
     @objc optional func getForegroundView(_ userInfo: ZegoUIKitUser?) -> ZegoBaseAudioVideoForegroundView?
+    @objc optional func requireRoomForegroundView() -> UIView?
     @objc optional func getMemberListItemView(_ tableView: UITableView, indexPath: IndexPath, userInfo: ZegoUIKitUser) -> UITableViewCell?
     @objc optional func getMemberListViewForHeaderInSection(_ tableView: UITableView, section: Int) -> UIView?
     @objc optional func getMemberListItemHeight(_ userInfo: ZegoUIKitUser) -> CGFloat

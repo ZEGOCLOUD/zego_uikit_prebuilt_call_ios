@@ -42,4 +42,7 @@ public protocol CallInvitationServiceApi {
     /// Set the device Token to be pushed offline
     /// - Parameter deviceToken: device token
     static func setRemoteNotificationsDeviceToken(_ deviceToken: Data)
+    /// Send custom command.
+    /// Keys cannot use the "zego_" prefix
+    func sendInRoomCommand(_ command: String, toUserIDs: [String], callback: ZegoSendInRoomCommandCallback?)
 }
