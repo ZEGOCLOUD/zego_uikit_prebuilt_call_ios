@@ -279,7 +279,28 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     func onInvitationRefused(_ invitee: ZegoUIKitUser, data: String?) {
         if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall {
             self.waitingVC?.dismiss(animated: true, completion: nil)
+            if (ZegoUIKitPrebuiltCallInvitationService.shared.invitationData == nil) {
+                return
+            }
+            let callee = getCallUser(invitee)
+            let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID
+            let callData: [String: AnyObject]? = data?.call_convertStringToDictionary()
+            if let callData = callData, callData["reason"] as? String ?? "" == "busy" {
+                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallRejectedCauseBusy?(callID ?? "", callee: callee)
+            } else {
+                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallDeclined?(callID ?? "", callee: callee)
+            }
+            
+            if let invitationInvitees = ZegoUIKitPrebuiltCallInvitationService.shared.invitees
+            {
+                for invitationUser in invitationInvitees {
+                    if invitee.userID == invitationUser.user?.userID {
+                        invitationUser.state = .refuse
+                    }
+                }
+            }
         }
+        
     }
     
     func onInvitationTimeout(_ inviter: ZegoUIKitUser, data: String?) {
