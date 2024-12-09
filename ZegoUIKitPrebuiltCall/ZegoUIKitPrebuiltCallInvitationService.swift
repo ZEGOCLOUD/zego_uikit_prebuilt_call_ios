@@ -163,7 +163,7 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
             ZegoPluginAdapter.callkitPlugin?.enableVoIP(config.isSandboxEnvironment)
         }
         
-        ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
+        ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign, scenario: UInt(config.scenario.rawValue))
         ZegoUIKit.shared.enableCustomVideoRender(enable: true)
         ZegoUIKitSignalingPluginImpl.shared.initWithAppID(appID: appID, appSign: appSign)
         ZegoUIKit.shared.login(userID, userName: userName)

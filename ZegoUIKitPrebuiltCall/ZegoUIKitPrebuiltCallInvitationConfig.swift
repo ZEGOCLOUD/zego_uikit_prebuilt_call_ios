@@ -9,9 +9,23 @@ import UIKit
 import ZegoUIKit
 import ZegoPluginAdapter
 
+@objc public enum ZegoPrebuildCallScenario: Int {
+    case general
+    case communication
+    case live
+    case def
+    case standardVideoCall
+    case highQualityVideoCall
+    case standardChatroom
+    case highQualityChatroom
+    case broadcast
+    case karaoke
+    case standardVoiceCall
+}
 
 @objcMembers
 public class ZegoUIKitPrebuiltCallInvitationConfig: NSObject {
+    public var scenario:ZegoPrebuildCallScenario = .general
     public var incomingCallRingtone: String?
     public var outgoingCallRingtone: String?
     public var showDeclineButton: Bool = true
