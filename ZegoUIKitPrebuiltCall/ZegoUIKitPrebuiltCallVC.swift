@@ -52,6 +52,14 @@ class ZegoAudioCallWaitView : UIView {
         label.textAlignment = .center
         return label
     }()
+    
+    lazy var userAvatarImage: UIImageView = {
+        let userImage: UIImageView = UIImageView()
+        userImage.clipsToBounds = true
+        userImage.layer.cornerRadius = 50
+        userImage.isHidden = true
+        return userImage
+    }()
   
     public init(frame: CGRect, userName:String, bgImage:UIImage, callingString:String) {
       super.init(frame: frame)
@@ -59,11 +67,13 @@ class ZegoAudioCallWaitView : UIView {
       self.addSubview(self.audioUserIconLabel)
       self.addSubview(self.audioUserNameLabel)
       self.addSubview(self.callStatusLabel)
+      self.addSubview(self.userAvatarImage)
       self.audioUserIconLabel.text = String(userName.prefix(1))
       self.audioUserNameLabel.text = userName
       self.callStatusLabel.text = callingString
       self.backgroundImage.frame = CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height)
       self.backgroundImage.image = bgImage
+      self.userAvatarImage.frame = self.audioUserIconLabel.frame
     }
   
     required init?(coder aDecoder: NSCoder) {
@@ -312,7 +322,8 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         guard let timer = timer else {
             return
         }
-        timer.setEventHandler {
+        timer.setEventHandler {[weak self] in
+            guard let self = self else { return }
             if self.timerCount == 0 {
                 if self.config.bottomMenuBarConfig.hideAutomatically {
                     if !self.isHiddenMenuBar {
@@ -359,7 +370,8 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     
     private func hiddenMenuBar(_ isHidden: Bool) {
         self.isHiddenMenuBar = isHidden
-        UIView.animate(withDuration: 0.5) {
+        UIView.animate(withDuration: 0.5) {[weak self] in
+            guard let self = self else { return }
             if self.config.bottomMenuBarConfig.hideAutomatically {
                 let bottomY: CGFloat = isHidden ? UIScreen.main.bounds.size.height:UIScreen.main.bounds.size.height - self.bottomBarHeight
                 self.currentBottomMenuBar?.frame = CGRect.init(x: 0, y: bottomY, width: UIScreen.main.bounds.size.width, height: self.bottomBarHeight)
@@ -369,7 +381,8 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     
     private func hiddenTopMenuBar(isHidden: Bool) {
         self.isHiddenTopMenuBar = isHidden
-        UIView.animate(withDuration: 0.5) {
+        UIView.animate(withDuration: 0.5) {[weak self] in
+            guard let self = self else { return }
             if self.config.topMenuBarConfig.hideAutomatically {
                 let topY: CGFloat = isHidden ? -self.topMenuBarHeight : 0
                 self.topBar.frame = CGRect.init(x: 0, y: topY, width: UIScreen.main.bounds.size.width, height: self.topMenuBarHeight)
@@ -386,13 +399,14 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
               let userID = self.userID,
               let userName = self.userName
         else { return }
-        ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID) {[self] code in
+        ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID) {[weak self] code in
+            guard let self = self else { return }
           if code == 0 {
-            ZegoUIKit.shared.turnCameraOn(userID, isOn: self.config.turnOnCameraWhenJoining)
-            ZegoUIKit.shared.startPreview(self.view, videoMode: .aspectFill)
-            ZegoUIKit.shared.turnMicrophoneOn(userID, isOn: self.config.turnOnMicrophoneWhenJoining)
-            callDuration.delegate = self
-            callDuration.startTheTimer()
+              ZegoUIKit.shared.turnCameraOn(userID, isOn: self.config.turnOnCameraWhenJoining)
+              ZegoUIKit.shared.turnMicrophoneOn(userID, isOn: self.config.turnOnMicrophoneWhenJoining)
+              ZegoUIKit.shared.startPreview(self.view, videoMode: .aspectFill)
+             callDuration.delegate = self
+             callDuration.startTheTimer()
           }
         }
     }
@@ -401,7 +415,57 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
        let topPadding: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
        let bottomPadding: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
        self.waitingView = ZegoAudioCallWaitView.init(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height + topPadding + bottomPadding), userName: self.userName ?? "",bgImage: ZegoUIKitCallIconSetType.call_waiting_bg.load(), callingString: self.config.zegoCallText.outgoingAudioCallPageMessage)
+        let user: ZegoUIKitUser = ZegoUIKitUser(ZegoUIKit.shared.localUserInfo?.userID ?? "", ZegoUIKit.shared.localUserInfo?.userName ?? "")
+        let userAvatar:String = (ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onUserIDUpdated?(user: user) ?? "") as String
+        if userAvatar != ""{
+            loadImage(imageUrl: userAvatar)
+        }
        self.view.addSubview(self.waitingView!)
+    }
+    
+    private func loadImage(imageUrl: String) {
+        guard !imageUrl.isEmpty else {
+            print("提供的图片 URL 为空")
+            return
+        }
+        
+        // 安全创建 URL 对象
+        guard let url = URL(string: imageUrl) else {
+            print("无效的图片 URL: \(imageUrl)")
+            return
+        }
+        
+        // 创建 URLSession 数据任务
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            // 检查是否有错误发生
+            if let error = error {
+                print("加载图片出错: \(error)")
+                return
+            }
+            
+            // 检查是否有数据返回
+            guard let data = data else {
+                print("没有接收到数据")
+                return
+            }
+            
+            // 尝试将数据转换为 UIImage
+            guard let image = UIImage(data: data) else {
+                print("数据转换为 UIImage 失败")
+                return
+            }
+            
+            // 在主线程更新 UI
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.waitingView?.userAvatarImage.isHidden = false
+                self.waitingView?.audioUserIconLabel.isHidden = true
+                self.waitingView?.userAvatarImage.image = image
+            }
+        }
+        
+        // 启动数据任务
+        task.resume()
     }
     deinit {
         callDuration.stopTheTimer()
@@ -411,12 +475,16 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
 }
 
 class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, ZegoUIKitEventHandle {
-    
-    
+
     weak var callVC: ZegoUIKitPrebuiltCallVC?
     
     func onUserCountOrPropertyChanged(_ userList: [ZegoUIKitUser]?) {
       callVC?.waitingView?.removeFromSuperview()
+    }
+    
+    func onUserIDUpdated(userID: String) -> String? {
+        let userAvatar:String = (ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onUserIDUpdated?(user: ZegoUIKitUser(userID, "")) ?? "") as String
+        return userAvatar as String
     }
   
     func sortAudioVideo(_ userList: [ZegoUIKitUser]) -> [ZegoUIKitUser]? {
@@ -425,6 +493,8 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
             if userList.count > 1 {
                 var index = 0
                 for user in userList {
+                    let userAvatar:String = (ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onUserIDUpdated?(user: user) ?? "") as String
+                    user.userAvatar = userAvatar
                     if index == 0 {
                         tempList.append(user)
                     } else {
@@ -437,6 +507,10 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
                     index = index + 1
                 }
             } else {
+                for user in userList {
+                    let userAvatar:String = (ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onUserIDUpdated?(user: user) ?? "") as String
+                    user.userAvatar = userAvatar
+                }
                 tempList.append(contentsOf: userList)
             }
             return tempList
@@ -447,6 +521,8 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
             for user in tempList {
                 if user.userID == ZegoUIKit.shared.localUserInfo?.userID {
                     localUser = user
+                    let userAvatar:String = (ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onUserIDUpdated?(user: user) ?? "") as String
+                    localUser?.userAvatar = userAvatar
                     tempList.remove(at: index)
                     break
                 }
@@ -529,6 +605,7 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallBottomMenuBarDelegate, ZegoCallMember
                 }
             }
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
+            ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil
         }
     }
     

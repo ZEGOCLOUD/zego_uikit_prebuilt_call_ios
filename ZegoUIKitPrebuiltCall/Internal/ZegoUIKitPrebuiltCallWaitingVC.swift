@@ -98,6 +98,7 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
         }
     }
     
+    @IBOutlet weak var userAvatarView: UIImageView!
     
     var callInvitationData: ZegoCallInvitationData? {
         didSet {
@@ -154,8 +155,17 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
             }
             self.acceptButtonLabel.text = config?.translationText.incomingCallPageAcceptButton
             self.declineButtonLabel.text = config?.translationText.incomingCallPageDeclineButton
+            if let inviter = callInvitationData?.inviter {
+                let userAvatar:String = (ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onUserIDUpdated?(user: inviter) ?? "") as String
+                if userAvatar != "" {
+                    loadImage(imageUrl: (userAvatar))
+                    videoPreviewView.avatarUrl = userAvatar
+                }
+            }
+            
         }
     }
+    
     
     var isInviter: Bool = false {
         didSet {
@@ -193,6 +203,29 @@ class ZegoUIKitPrebuiltCallWaitingVC: UIViewController {
         self.help.waitingVC = self
     }
     
+    private func loadImage(imageUrl:String) {
+        let url = URL(string: imageUrl)
+        let session = URLSession.shared
+        let task = session.dataTask(with: url!) { (data, response, error) in
+            if let error = error {
+                print("加载图片出错: \(error)")
+                return
+            }
+            if let data = data {
+                if let image = UIImage(data: data) {
+                    DispatchQueue.main.async {[weak self] in
+                        guard let self = self else { return }
+                        self.userAvatarView.isHidden = false
+                        self.headLabel.isHidden = true
+                        self.userAvatarView.image = image
+                    }
+                }
+            }
+        }
+        task.resume()
+        
+    }
+    
     private func setHeadUserName(_ userName: String?) {
         guard let userName = userName else { return }
         if userName.count > 0 {
@@ -210,6 +243,7 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     func onRefuseInvitationButtonClick() {
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallDeclineButtonPressed?()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
+        ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil
         ZegoCallAudioPlayerTool.stopPlay()
         waitingVC?.dismiss(animated: true, completion: nil)
     }
@@ -239,6 +273,7 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     func onCancelInvitationButtonClick() {
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallCancelButtonPressed?()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
+        ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil
         ZegoCallAudioPlayerTool.stopPlay()
         waitingVC?.dismiss(animated: true, completion: nil)
     }
@@ -247,7 +282,7 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
         if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall {
             guard let callInvitationData = self.waitingVC?.callInvitationData else { return }
             self.waitingVC?.dismiss(animated: false, completion: {
-                
+                ZegoCallAudioPlayerTool.stopPlay()
                 var normalConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
                 if callInvitationData.invitees?.count ?? 0 > 1 {
                     //group call
@@ -266,6 +301,7 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
                 let callee = self.getCallUser(invitee)
                 let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID
                 ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallAccepted?(callID ?? "", callee: callee)
+                ZegoUIKitPrebuiltCallInvitationService.shared.state = .accept
             })
         }
     }
@@ -273,15 +309,13 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     func onInvitationCanceled(_ inviter: ZegoUIKitUser, data: String?) {
         if self.waitingVC?.callInvitationData?.inviter?.userID == inviter.userID {
             self.waitingVC?.dismiss(animated: true, completion: nil)
+            ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
+            ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil
         }
     }
     
     func onInvitationRefused(_ invitee: ZegoUIKitUser, data: String?) {
         if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall {
-            self.waitingVC?.dismiss(animated: true, completion: nil)
-            if (ZegoUIKitPrebuiltCallInvitationService.shared.invitationData == nil) {
-                return
-            }
             let callee = getCallUser(invitee)
             let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID
             let callData: [String: AnyObject]? = data?.call_convertStringToDictionary()
@@ -299,13 +333,19 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
                     }
                 }
             }
+            self.waitingVC?.dismiss(animated: true, completion: nil)
+            ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
+            ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil
+            ZegoCallAudioPlayerTool.stopPlay()
         }
-        
     }
     
     func onInvitationTimeout(_ inviter: ZegoUIKitUser, data: String?) {
         if inviter.userID == self.waitingVC?.callInvitationData?.inviter?.userID {
             self.waitingVC?.dismiss(animated: true, completion: nil)
+            ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
+            ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil
+            ZegoCallAudioPlayerTool.stopPlay()
         }
     }
     
@@ -314,6 +354,8 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
         let timeoutInvitee = invitees.first
         if curInvitee?.userID == timeoutInvitee?.userID {
             self.waitingVC?.dismiss(animated: true, completion: nil)
+            ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
+            ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil
         }
     }
     

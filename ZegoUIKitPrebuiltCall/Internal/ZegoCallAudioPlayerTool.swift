@@ -20,10 +20,8 @@ class ZegoCallAudioPlayerTool: NSObject {
        
        class func startPlay(_ resourcePath: String)
        {
-           if isMusicPlaying() {
-               backgroundSound?.pause()
-               backgroundSound?.stop()
-           }
+           backgroundSound?.pause()
+           backgroundSound?.stop()
           let url = URL(fileURLWithPath: resourcePath)
           do
           {
@@ -41,10 +39,8 @@ class ZegoCallAudioPlayerTool: NSObject {
        
        class func stopPlay()
        {
-           if isMusicPlaying() {
-               backgroundSound?.pause()
-               backgroundSound?.stop()
-           }
+           backgroundSound?.pause()
+           backgroundSound?.stop()
        }
 
 }

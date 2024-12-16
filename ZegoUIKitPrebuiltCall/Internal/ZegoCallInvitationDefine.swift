@@ -15,6 +15,7 @@ enum ZegoCallInvitationState: Int {
     case refuse
     case cancel
     case timeout
+    case normal
 }
 
 class ZegoCallPrebuiltInvitationUser: NSObject {

@@ -39,7 +39,7 @@ class ZegoCallInvitationDialog: UIView {
         }
     }
     
-    lazy var appIconImage: UIImageView = {
+    lazy var userAvatarImage: UIImageView = {
         let imageView: UIImageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 21;
@@ -61,21 +61,45 @@ class ZegoCallInvitationDialog: UIView {
     }
     
     private func loadImage(imageUrl:String) {
-        let url = URL(string: imageUrl)
-        let session = URLSession.shared
-        let task = session.dataTask(with: url!) { (data, response, error) in
+        guard !imageUrl.isEmpty else {
+            print("提供的图片 URL 为空")
+            return
+        }
+        
+        // 安全创建 URL 对象
+        guard let url = URL(string: imageUrl) else {
+            print("无效的图片 URL: \(imageUrl)")
+            return
+        }
+        
+        // 创建 URLSession 数据任务
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            // 检查是否有错误发生
             if let error = error {
                 print("加载图片出错: \(error)")
                 return
             }
-            if let data = data {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self.appIconImage.image = image
-                    }
-                }
+            
+            // 检查是否有数据返回
+            guard let data = data else {
+                print("没有接收到数据")
+                return
+            }
+            
+            // 尝试将数据转换为 UIImage
+            guard let image = UIImage(data: data) else {
+                print("数据转换为 UIImage 失败")
+                return
+            }
+            
+            // 在主线程更新 UI
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.userAvatarImage.image = image
             }
         }
+        
+        // 启动数据任务
         task.resume()
     }
     
@@ -86,8 +110,8 @@ class ZegoCallInvitationDialog: UIView {
         super.awakeFromNib()
         let tapClick: UITapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(viewTap))
         self.addGestureRecognizer(tapClick)
-        appIconImage.frame = self.headLabel.frame
-        addSubview(appIconImage)
+        userAvatarImage.frame = self.headLabel.frame
+        addSubview(userAvatarImage)
     }
     
     public static func show(_ callInvitationData: ZegoCallInvitationData) -> ZegoCallInvitationDialog {
@@ -108,11 +132,11 @@ class ZegoCallInvitationDialog: UIView {
         tipView.refuseButton.isHidden = !(ZegoUIKitPrebuiltCallInvitationService.shared.config?.showDeclineButton ?? true)
         
         if callInvitationData.userAvatar?.count ?? 0 > 0 {
-            tipView.appIconImage.isHidden = false
+            tipView.userAvatarImage.isHidden = false
             tipView.headLabel.isHidden = true
         } else {
             tipView.headLabel.isHidden = false
-            tipView.appIconImage.isHidden = true
+            tipView.userAvatarImage.isHidden = true
         }
         let innerText: ZegoTranslationText? = ZegoUIKitPrebuiltCallInvitationService.shared.config?.translationText
         switch callInvitationData.type {
@@ -189,7 +213,8 @@ extension ZegoCallInvitationDialog: ZegoAcceptInvitationButtonDelegate {
         ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallAcceptButtonPressed?()
         ZegoCallAudioPlayerTool.stopPlay()
-        ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
+        ZegoUIKitPrebuiltCallInvitationService.shared.state = .accept
+//        ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
         
     }
 }
@@ -199,6 +224,8 @@ extension ZegoCallInvitationDialog: ZegoRefuseInvitationButtonDelegate {
         ZegoCallAudioPlayerTool.stopPlay()
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallDeclineButtonPressed?()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
+        ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil
         ZegoCallInvitationDialog.hide()
+        ZegoUIKitPrebuiltCallInvitationService.shared.state = .normal
     }
 }
