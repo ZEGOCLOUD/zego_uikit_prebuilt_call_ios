@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "ZegoUIKitPrebuiltCall"
-  spec.version      = "2.13.3"
+  spec.version      = "2.13.4"
   spec.summary      = "ZegoUIKitPrebuiltCall iOS SDK"
 
   # This description is used to generate tags and improve search results.
@@ -64,7 +64,7 @@ Pod::Spec.new do |spec|
   #
 
   # spec.platform     = :ios
-  spec.platform     = :ios, "12.0"
+  spec.platform     = :ios, "13.0"
 
   #  When using multiple platforms
   # spec.ios.deployment_target = "5.0"
@@ -138,6 +138,6 @@ Pod::Spec.new do |spec|
 
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   # spec.dependency "JSONKit", "~> 1.4"
-  spec.dependency 'ZegoUIKit','>= 2.12.8'
+  spec.dependency 'ZegoUIKit','>=2.12.9'
 
 end

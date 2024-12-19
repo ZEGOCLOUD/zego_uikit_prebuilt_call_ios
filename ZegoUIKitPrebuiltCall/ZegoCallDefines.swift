@@ -10,6 +10,19 @@ import UIKit
 import ZegoUIKit
 
 
+let callInitReportString = "call/init"
+let callUnInitReportString = "call/unInit"
+let callStartCallReportString = "call/invite"
+let callReceiveCallReportString = "call/invitationReceived"
+let callReceiveCallAlertReportString = "call/displayNotification"
+let callResponseCallReportString = "call/respondInvitation"
+let callLoginReportString = "call/login"
+let callInvitationAcceptedReportString = "call/invitationAccepted"
+let callInvitationRefusedReportString = "call/invitationRefused"
+let callInvitationResponseTimeoutReportString = "call/invitationResponseTimeout"
+let callConnectStateReportString = "call/connectStateChanged"
+let callHangUpString = "call/hangUp"
+
 @objc public enum ZegoMenuBarButtonName: Int {
     case hangUpButton
     case toggleCameraButton
@@ -87,8 +100,9 @@ enum ZegoUIKitCallIconSetType: String, Hashable {
 
 let UIkitScreenHeight = UIScreen.main.bounds.size.height
 let UIKitScreenWidth = UIScreen.main.bounds.size.width
-let UIKitBottomSafeAreaHeight = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
-let UIKitTopSafeAreaHeight = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
+let UIKitKeyWindow = UIApplication.shared.windows.first { $0.isKeyWindow }
+let UIKitBottomSafeAreaHeight = UIKitKeyWindow?.safeAreaInsets.bottom ?? 0
+let UIKitTopSafeAreaHeight = UIKitKeyWindow?.safeAreaInsets.top ?? 0
 
 func adaptLandscapeWidth(_ x: CGFloat) -> CGFloat {
     return x * (UIKitScreenWidth / 375.0)
@@ -99,7 +113,7 @@ func adaptLandscapeHeight(_ x: CGFloat) -> CGFloat {
 }
 
 func currentViewController() -> (UIViewController?) {
-   var window = UIApplication.shared.keyWindow
+   var window = UIKitKeyWindow
    if window?.windowLevel != UIWindow.Level.normal{
      let windows = UIApplication.shared.windows
      for  windowTemp in windows{

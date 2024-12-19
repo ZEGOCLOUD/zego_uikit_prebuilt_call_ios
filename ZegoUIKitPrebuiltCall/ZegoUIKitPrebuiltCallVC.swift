@@ -412,8 +412,8 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
     }
     
     private func joinRoomAudioWaitingView() {
-       let topPadding: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
-       let bottomPadding: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
+       let topPadding: CGFloat = UIKitKeyWindow?.safeAreaInsets.top ?? 0
+       let bottomPadding: CGFloat = UIKitKeyWindow?.safeAreaInsets.bottom ?? 0
        self.waitingView = ZegoAudioCallWaitView.init(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height + topPadding + bottomPadding), userName: self.userName ?? "",bgImage: ZegoUIKitCallIconSetType.call_waiting_bg.load(), callingString: self.config.zegoCallText.outgoingAudioCallPageMessage)
         let user: ZegoUIKitUser = ZegoUIKitUser(ZegoUIKit.shared.localUserInfo?.userID ?? "", ZegoUIKit.shared.localUserInfo?.userName ?? "")
         let userAvatar:String = (ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onUserIDUpdated?(user: user) ?? "") as String
@@ -584,8 +584,8 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallBottomMenuBarDelegate, ZegoCallMember
         endEvent.reason = .localHangUp
         endEvent.kickerUserID = ZegoUIKitPrebuiltCallInvitationService.shared.userID ?? ""
         self.delegate?.onCallEnd?(endEvent)
-      
         if isHandup {
+            ReportUtil.sharedInstance().reportEvent(callHangUpString, paramsDict: [:])
             self.dismiss(animated: true, completion: nil)
             ZegoCallAudioPlayerTool.stopPlay()
             guard let invitationData = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData else { return }

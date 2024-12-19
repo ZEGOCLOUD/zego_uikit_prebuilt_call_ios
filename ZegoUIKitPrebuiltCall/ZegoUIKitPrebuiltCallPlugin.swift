@@ -58,9 +58,9 @@ class ZegoUIKitPrebuiltCallPlugin: ZegoCallPluginProtocol {
   ///   - notificationConfig: 离线通知信息
   ///   - callback: 回调callback
     func sendInvitationWithUIChange( invitees:[ZegoPluginCallUser],invitationType: ZegoPluginCallType,
-                                     customData: String, timeout: Int, notificationConfig: ZegoSignalingPluginNotificationConfig,
+                                     customData: String, timeout: Int, notificationConfig: ZegoSignalingPluginNotificationConfig,source: String,
                                      callback: ZegoPluginCallback?) {
-        service.sendInvitation(invitees, invitationType: invitationType, timeout: timeout, customerData: customData, notificationConfig: notificationConfig) { data in
+        service.sendInvitation(invitees, invitationType: invitationType, timeout: timeout, customerData: customData, notificationConfig: notificationConfig,source: source) { data in
             callback?(data)
         }
     }

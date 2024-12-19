@@ -28,9 +28,9 @@ public protocol CallInvitationServiceApi {
     func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String)
   
   
-   func sendInvitation(_ invitees: [ZegoPluginCallUser], invitationType: ZegoPluginCallType,timeout: Int, customerData: String?, notificationConfig: ZegoSignalingPluginNotificationConfig, callback: PluginCallBack?)
+    func sendInvitation(_ invitees: [ZegoPluginCallUser], invitationType: ZegoPluginCallType,timeout: Int, customerData: String?, notificationConfig: ZegoSignalingPluginNotificationConfig,source: String, callback: PluginCallBack?)
     
-    func sendInvitationNoStartCall(_ invitees: [ZegoPluginCallUser], invitationType: ZegoPluginCallType,timeout: Int, customerData: String?, notificationConfig: ZegoSignalingPluginNotificationConfig, callback: PluginCallBack?)
+    func sendInvitationNoStartCall(_ invitees: [ZegoPluginCallUser], invitationType: ZegoPluginCallType,timeout: Int, customerData: String?, notificationConfig: ZegoSignalingPluginNotificationConfig,source: String, callback: PluginCallBack?)
   
     /// Deinitialize call service
     func unInit()

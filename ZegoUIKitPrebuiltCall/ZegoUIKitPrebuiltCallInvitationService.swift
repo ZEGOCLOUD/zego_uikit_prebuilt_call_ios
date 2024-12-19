@@ -101,7 +101,14 @@ import ZegoPluginAdapter
         return bundle
     }
     
-    private func startCall(_ callData: ZegoCallInvitationData,isVideoCall:Bool) {
+    private func startCall(_ callData: ZegoCallInvitationData, isVideoCall: Bool, source: String) {
+        
+        let reportData = ["call_id": callData.callID as AnyObject,
+                          "room_id": callData.callID as AnyObject,
+                          "source": source as AnyObject,
+                          "is_video_call": (isVideoCall == true ? 1 : 0) as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callStartCallReportString, paramsDict: reportData)
+        
         if isVideoCall { ZegoUIKit.shared.turnCameraOn(ZegoUIKit.shared.localUserInfo?.userID ?? "", isOn: true) }
         if let invitees = self.invitees {
             if invitees.count > 1 {
@@ -163,6 +170,20 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
     }
     
     @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String, config: ZegoUIKitPrebuiltCallInvitationConfig) {
+        
+        let callSDKBundle = Bundle(identifier: "org.cocoapods.ZegoUIKitPrebuiltCall")
+        let callVersion = callSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        
+        let UIKitSDKBundle = Bundle(identifier: "com.zegocloud.uikit")
+        let UIKitVersion = UIKitSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        
+        let reportData = ["user_id": userID as AnyObject,
+                     "platform": "iOS" as AnyObject,
+                     "platform_version": UIDevice.current.systemVersion as AnyObject,
+                     "uikit_version": UIKitVersion as AnyObject,
+                     "call_version" :callVersion as AnyObject]
+        ReportUtil.sharedInstance().create(withAppID: appID, signOrToken: appSign, commonParams: reportData)
+        
         self.config = config
         self.userID = userID
         self.userName = userName
@@ -183,22 +204,41 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         ZegoUIKitSignalingPluginImpl.shared.initWithAppID(appID: appID, appSign: appSign)
         ZegoUIKit.shared.login(userID, userName: userName)
         ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
+        ReportUtil.sharedInstance().reportEvent(callInitReportString, paramsDict: [:])
     }
     
     @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String) {
+        
+        let callSDKBundle = Bundle(identifier: "org.cocoapods.ZegoUIKitPrebuiltCall")
+        let callVersion = callSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        
+        let UIKitSDKBundle = Bundle(identifier: "com.zegocloud.uikit")
+        let UIKitVersion = UIKitSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        
+        let reportData = ["user_id": userID as AnyObject,
+                     "platform": "iOS" as AnyObject,
+                     "platform_version": UIDevice.current.systemVersion as AnyObject,
+                     "uikit_version": UIKitVersion as AnyObject,
+                     "call_version" :callVersion as AnyObject]
+        ReportUtil.sharedInstance().create(withAppID: appID, signOrToken: appSign, commonParams: reportData)
+        
         self.userID = userID
         self.userName = userName
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
         ZegoUIKitSignalingPluginImpl.shared.initWithAppID(appID: appID, appSign: appSign)
         ZegoUIKit.shared.login(userID, userName: userName)
         ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
+        ReportUtil.sharedInstance().reportEvent(callInitReportString, paramsDict: [:])
+
     }
     
-    @objc public func sendInvitation(_ invitees: [ZegoPluginCallUser], invitationType: ZegoPluginCallType,timeout: Int, customerData: String?, notificationConfig: ZegoSignalingPluginNotificationConfig, callback: PluginCallBack?) {
+    @objc public func sendInvitation(_ invitees: [ZegoPluginCallUser], invitationType: ZegoPluginCallType,timeout: Int, customerData: String?, notificationConfig: ZegoSignalingPluginNotificationConfig,source: String = "button", callback: PluginCallBack?) {
         inviteIDArray = []
         if invitees.count == 0 { return }
-        guard let userID = ZegoUIKit.shared.localUserInfo?.userID else { return }
+        guard (ZegoUIKit.shared.localUserInfo?.userID) != nil else { return }
         if ZegoUIKitPrebuiltCallInvitationService.shared.pluginConnectState == .disconnected {
+            
+            ReportUtil.sharedInstance().reportEvent(callLoginReportString, paramsDict: [:])
             ZegoUIKitSignalingPluginImpl.shared.login(self.userID ?? "", userName: self.userName ?? "") { [self] data in
                 let code = data?["code"] as! Int
                 if code == 0 {
@@ -213,7 +253,7 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         }
         
     }
-    private func sendInvitationLogined(_ invitees: [ZegoPluginCallUser], invitationType: ZegoPluginCallType,timeout: Int, customerData: String?, notificationConfig: ZegoSignalingPluginNotificationConfig, callback: PluginCallBack?) {
+    private func sendInvitationLogined(_ invitees: [ZegoPluginCallUser], invitationType: ZegoPluginCallType,timeout: Int, customerData: String?, notificationConfig: ZegoSignalingPluginNotificationConfig, source: String = "button", callback: PluginCallBack?) {
         guard let userID = ZegoUIKit.shared.localUserInfo?.userID else {
             self.state = .normal
             return
@@ -246,7 +286,6 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         notificationConfig.title = notificationConfig.title.count > 0 ? notificationConfig.title : callData.type == .videoCall ? String(format: config?.translationText.incomingVideoCallDialogTitle ?? "%@", callData.inviter?.userName ?? "") : String(format: config?.translationText.incomingVoiceCallDialogTitle ?? "%@", callData.inviter?.userName ?? "")
         
         notificationConfig.message = notificationConfig.message.count > 0 ? notificationConfig.message : (callData.invitees?.count ?? 0 > 1 ? (callData.type == .videoCall ? config?.translationText.incomingGroupVideoCallDialogMessage : config?.translationText.incomingGroupVoiceCallDialogMessage) : (callData.type == .videoCall ? config?.translationText.incomingVideoCallDialogMessage : config?.translationText.incomingVoiceCallDialogMessage))!
-        print("[log] 发送邀请 callID:\(String(describing: callData.callID))")
         if !(currentViewController() is ZegoUIKitPrebuiltCallWaitingVC || currentViewController() is ZegoUIKitPrebuiltCallVC) {
             if ZegoUIKitPrebuiltCallInvitationService.shared.invitationData == nil {
                 self.state = .normal
@@ -280,11 +319,11 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
                         self.callID = nil
                     } else {
                         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.invitationID = data["callID"] as? String
-                        self.startCall(callData,isVideoCall:(invitationType == .videoCall) ? true : false)
+                        self.startCall(callData,isVideoCall:(invitationType == .videoCall) ? true : false,source:  source)
                     }
                     ZegoUIKitPrebuiltCallInvitationService.shared.help.checkInviteesState()
                 } else {
-                    self.startCall(callData,isVideoCall:(invitationType == .videoCall) ? true : false)
+                    self.startCall(callData,isVideoCall:(invitationType == .videoCall) ? true : false, source: source)
                 }
                 ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onPressed?(code, errorMessage: message, errorInvitees: errorUsers as? [ZegoCallUser])
             } else {
@@ -301,6 +340,7 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
                                                 timeout: Int,
                                                 customerData: String?,
                                                 notificationConfig: ZegoSignalingPluginNotificationConfig,
+                                                source: String = "button",
                                                 callback: PluginCallBack?) {
         
         if  invitees.count == 0 { return }
@@ -385,6 +425,7 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         ZegoUIKitSignalingPluginImpl.shared.uninit()
         ZegoUIKit.shared.enableCustomVideoRender(enable: false)
         NotificationCenter.default.removeObserver(self)
+        ReportUtil.sharedInstance().reportEvent(callUnInitReportString, paramsDict: [:])
     }
 
     @objc public func getPrebuiltCallVC()-> ZegoUIKitPrebuiltCallVC? {
@@ -439,17 +480,29 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         let dataDic: Dictionary? = data?.call_convertStringToDictionary()
         let pluginInvitationID: String? = dataDic?["invitationID"] as? String
 
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+        let reportData = ["call_id": dataDic?["call_id"] as AnyObject,
+                          "inviter": inviter.userID as AnyObject,
+                          "app_state": appState as AnyObject,
+                          "extended_data": dataDic?["customData"] as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callReceiveCallReportString, paramsDict: reportData)
         
         if ZegoUIKitPrebuiltCallInvitationService.shared.state != .normal {
             guard let userID = inviter.userID else { return }
             let dataDict: [String : AnyObject] = ["reason":"busy" as AnyObject,"invitationID": pluginInvitationID as AnyObject]
-            print("[log] 通话中收到请求并拒绝")
             // 多人同时呼叫一人，保留一个ZegoCallInvitationDialog
             if ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.inviter?.userID == inviter.userID {
                 ZegoCallInvitationDialog.hide()
             }
             ZegoCallAudioPlayerTool.stopPlay()
+            //FIXME: 
             ZegoUIKitSignalingPluginImpl.shared.refuseInvitation(userID, data: dataDict.call_jsonString)
+            let refuseData = ["call_id": dataDic?["call_id"] as AnyObject,
+                              "inviter": inviter.userID as AnyObject,
+                              "state":  appState as AnyObject,
+                              "currentCallID": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject]
+            ReportUtil.sharedInstance().reportEvent(callResponseCallReportString, paramsDict: refuseData)
+
         } else {
             ZegoUIKitPrebuiltCallInvitationService.shared.state = .waiting
             let needReportCall = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.invitationID == nil
@@ -465,6 +518,13 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
                   ZegoUIKitPrebuiltCallInvitationService.shared.currentCallUUID = uuid
   //                ZegoPluginAdapter.signalingPlugin?.reportIncomingCall(with: uuid, title: inviter.userName ?? "", hasVideo: type == 1)
                   ZegoPluginAdapter.callkitPlugin?.reportIncomingCall(with: uuid, title: inviter.userName ?? "", hasVideo: type == 1)
+                    if ZegoPluginAdapter.callkitPlugin != nil {
+                        let voipData = ["call_id": dataDic?["call_id"] as AnyObject,
+                                        "app_state": appState as AnyObject,
+                                        "is_voip": 1 as AnyObject,]
+                        ReportUtil.sharedInstance().reportEvent(callReceiveCallAlertReportString, paramsDict: voipData)
+                    }
+
                 }
             }
             
@@ -473,6 +533,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             if (ZegoPluginAdapter.callkitPlugin == nil){
                 _ = ZegoCallInvitationDialog.show(callData)
                 ZegoUIKitPrebuiltCallInvitationService.shared.startIncomingRing()
+                ReportUtil.sharedInstance().reportEvent(callReceiveCallAlertReportString, paramsDict: reportData)
             }
 
             
@@ -493,6 +554,16 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         if (ZegoUIKitPrebuiltCallInvitationService.shared.invitationData == nil) {
             return
         }
+        
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+
+        let refuseData = ["call_id": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject,
+                          "invitee": invitee.userID as AnyObject,
+                          "app_state":  appState as AnyObject,
+                          "action": "inviterCancel" as AnyObject,
+                          "is_group_call" : (ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall == true ? 1 : 0)  as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callInvitationAcceptedReportString, paramsDict: refuseData)
+        
       
         let dataDic: Dictionary? = data?.call_convertStringToDictionary()
         let pluginInvitationID: String? = dataDic?["invitationID"] as? String
@@ -511,6 +582,15 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         if (ZegoUIKitPrebuiltCallInvitationService.shared.invitationData == nil) {
             return
         }
+        
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+
+        let refuseData = ["call_id": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject,
+                          "inviter": inviter.userID as AnyObject,
+                          "app_state":  appState as AnyObject,
+                          "action": "inviterCancel" as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callResponseCallReportString, paramsDict: refuseData)
+        
         let callUser = getCallUser(inviter)
         let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallCanceled?(callID ?? "", caller: callUser)
@@ -528,6 +608,16 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         if (ZegoUIKitPrebuiltCallInvitationService.shared.invitationData == nil) {
             return
         }
+        
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+
+        let refuseData = ["call_id": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject,
+                          "invitee": invitee.userID as AnyObject,
+                          "app_state":  appState as AnyObject,
+                          "action": "refuse" as AnyObject,
+                          "is_group_call" : (ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall == true ? 1 : 0)  as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callInvitationRefusedReportString, paramsDict: refuseData)
+        
         let callee = getCallUser(invitee)
         let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID
         let callData: [String: AnyObject]? = data?.call_convertStringToDictionary()
@@ -567,9 +657,15 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         }
         let dataDic: Dictionary? = data?.call_convertStringToDictionary()
         let pluginInvitationID: String? = dataDic?["invitationID"] as? String
-        print("[log] onInvitationTimeout pluginInvitationID:\(String(describing: pluginInvitationID))")
-        print("[log] onInvitationTimeout invitationData?.callID:\(String(describing: ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.invitationID))")
         // 防止旧的超时回调取消当前的弹窗
+        
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+        let refuseData = ["call_id": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject,
+                          "inviter": inviter.userID as AnyObject,
+                          "app_state":  appState as AnyObject,
+                          "action": "timeout" as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callResponseCallReportString, paramsDict: refuseData)
+        
         if pluginInvitationID != ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.invitationID {
             return
         }
@@ -591,6 +687,14 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         if (ZegoUIKitPrebuiltCallInvitationService.shared.invitationData == nil) {
             return
         }
+        
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+        let refuseData = ["call_id": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject,
+                          "app_state":  appState as AnyObject,
+                          "action": "timeout" as AnyObject,
+                          "is_group_call" : (ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall == true ? 1 : 0)  as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callInvitationResponseTimeoutReportString, paramsDict: refuseData)
+        
         var calles: [ZegoCallUser] = []
         for user in invitees {
             let callee = getCallUser(user)
@@ -623,6 +727,10 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     func onSignalingPluginConnectionState(_ params: [String : AnyObject]) {
         let state: ZegoSignalingPluginConnectionState? = params["state"] as? ZegoSignalingPluginConnectionState
         ZegoUIKitPrebuiltCallInvitationService.shared.pluginConnectState = state
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+        let reportData = ["connect_state": String(describing: state?.rawValue) as AnyObject,
+                          "app_state" : appState as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callConnectStateReportString, paramsDict: reportData)
     }
     
     // MARK: ZegoUIKitPrebuiltCallVCDelegate
@@ -761,7 +869,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         }
         if needClear {
             let callID = ZegoUIKitPrebuiltCallInvitationService.shared.callID ?? ""
-            ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallRejectedCauseBusy?(callID ?? "", callee: ZegoCallUser())
+            ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallRejectedCauseBusy?(callID, callee: ZegoCallUser())
             ZegoCallAudioPlayerTool.stopPlay()
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
             ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil
@@ -784,6 +892,12 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     
     // MARK: CallKit
     func didReceiveIncomingPush(_ uuid: UUID, invitationID: String, data: String) {
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+        let voipData = ["call_id": invitationID as AnyObject,
+                        "app_state": appState as AnyObject,
+                        "is_voip": 1 as AnyObject,]
+        ReportUtil.sharedInstance().reportEvent(callReceiveCallAlertReportString, paramsDict: voipData)
+        
         let dict = data.call_convertStringToDictionary()
         let type = dict?["type"] as? Int ?? 0
         let newData = data.call_convertStringToDictionary()?["data"] as? String
@@ -806,6 +920,16 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             }
             
             let errorCode = data?["code"] as? Int
+            
+            let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+
+            let reportData = ["call_id": String(describing: ZegoUIKitPrebuiltCallInvitationService.shared.callID) as AnyObject,
+                              "action": "accept" as AnyObject,
+                              "app_state":  appState as AnyObject,
+                              "errorCode": errorCode as AnyObject,
+                              "is_voip": 1 as AnyObject]
+            ReportUtil.sharedInstance().reportEvent(callResponseCallReportString, paramsDict: reportData)
+            
             if errorCode != 0 {
                 self.reportCallEnded()
                 return
@@ -829,6 +953,14 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     func onCallKitEndCall(_ action: CallKitAction) {
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+
+        let reportData = ["call_id": String(describing: ZegoUIKitPrebuiltCallInvitationService.shared.callID) as AnyObject,
+                          "action": "refuse" as AnyObject,
+                          "app_state":  appState as AnyObject,
+                          "is_voip": 1 as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callResponseCallReportString, paramsDict: reportData)
+        
         if ZegoUIKitPrebuiltCallInvitationService.shared.isCallInviting {
             // refuse
             let refuseData: [String : AnyObject] = ["reason": "decline" as AnyObject, "invitationID": ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.invitationID as AnyObject]

@@ -246,10 +246,24 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
         ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil
         ZegoCallAudioPlayerTool.stopPlay()
         waitingVC?.dismiss(animated: true, completion: nil)
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+
+        let reportData = ["call_id": String(describing: ZegoUIKitPrebuiltCallInvitationService.shared.callID) as AnyObject,
+                          "action": "refuse" as AnyObject,
+                          "app_state":  appState as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callResponseCallReportString, paramsDict: reportData)
+
     }
     
     func onAcceptInvitationButtonClick() {
         ZegoCallAudioPlayerTool.stopPlay()
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+
+        let reportData = ["call_id": String(describing: ZegoUIKitPrebuiltCallInvitationService.shared.callID) as AnyObject,
+                          "action": "accept" as AnyObject,
+                          "app_state":  appState as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callResponseCallReportString, paramsDict: reportData)
+        
         guard let callInvitationData = self.waitingVC?.callInvitationData else { return }
         self.waitingVC?.dismiss(animated: false, completion: {
             var normalConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
@@ -276,9 +290,16 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
         ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil
         ZegoCallAudioPlayerTool.stopPlay()
         waitingVC?.dismiss(animated: true, completion: nil)
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+
+        let reportData = ["call_id": String(describing: ZegoUIKitPrebuiltCallInvitationService.shared.callID) as AnyObject,
+                          "action": "cancel" as AnyObject,
+                          "app_state":  appState as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callResponseCallReportString, paramsDict: reportData)
     }
     
     func onInvitationAccepted(_ invitee: ZegoUIKitUser, data: String?) {
+
         if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall {
             guard let callInvitationData = self.waitingVC?.callInvitationData else { return }
             self.waitingVC?.dismiss(animated: false, completion: {
@@ -315,6 +336,7 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     }
     
     func onInvitationRefused(_ invitee: ZegoUIKitUser, data: String?) {
+      
         if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall {
             let callee = getCallUser(invitee)
             let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID
