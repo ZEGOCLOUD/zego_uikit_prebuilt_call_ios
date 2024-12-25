@@ -194,6 +194,14 @@ extension ZegoCallInvitationDialog: ZegoAcceptInvitationButtonDelegate {
         guard let invitationData = invitationData else {
             return
         }
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+        let refuseData = ["call_id": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject,
+                          "inviter": ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.inviter?.userID as AnyObject,
+                          "state":  appState as AnyObject,
+                          "action": "accept" as AnyObject,
+                          "currentCallID": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callResponseCallReportString, paramsDict: refuseData)
+        
         var normalConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
         if invitationData.invitees?.count ?? 0 > 1 {
             //group call
@@ -221,6 +229,14 @@ extension ZegoCallInvitationDialog: ZegoAcceptInvitationButtonDelegate {
 
 extension ZegoCallInvitationDialog: ZegoRefuseInvitationButtonDelegate {
     func onRefuseInvitationButtonClick() {
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+        let refuseData = ["call_id": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject,
+                          "inviter": ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.inviter?.userID as AnyObject,
+                          "state":  appState as AnyObject,
+                          "action": "refuse" as AnyObject,
+                          "currentCallID": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callResponseCallReportString, paramsDict: refuseData)
+        
         ZegoCallAudioPlayerTool.stopPlay()
         ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallDeclineButtonPressed?()
         ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil

@@ -496,10 +496,13 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             }
             ZegoCallAudioPlayerTool.stopPlay()
             //FIXME: 
-            ZegoUIKitSignalingPluginImpl.shared.refuseInvitation(userID, data: dataDict.call_jsonString)
+            ZegoUIKitSignalingPluginImpl.shared.refuseInvitation(userID, data: dataDict.call_jsonString) { data in
+                
+            }
             let refuseData = ["call_id": dataDic?["call_id"] as AnyObject,
                               "inviter": inviter.userID as AnyObject,
                               "state":  appState as AnyObject,
+                              "action": "refuse" as AnyObject,
                               "currentCallID": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject]
             ReportUtil.sharedInstance().reportEvent(callResponseCallReportString, paramsDict: refuseData)
 
@@ -560,9 +563,9 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         let refuseData = ["call_id": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject,
                           "invitee": invitee.userID as AnyObject,
                           "app_state":  appState as AnyObject,
-                          "action": "inviterCancel" as AnyObject,
+                          "action": "accepted" as AnyObject,
                           "is_group_call" : (ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall == true ? 1 : 0)  as AnyObject]
-        ReportUtil.sharedInstance().reportEvent(callInvitationAcceptedReportString, paramsDict: refuseData)
+        ReportUtil.sharedInstance().reportEvent(callInvitationResponseReportString, paramsDict: refuseData)
         
       
         let dataDic: Dictionary? = data?.call_convertStringToDictionary()
@@ -608,15 +611,6 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         if (ZegoUIKitPrebuiltCallInvitationService.shared.invitationData == nil) {
             return
         }
-        
-        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
-
-        let refuseData = ["call_id": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject,
-                          "invitee": invitee.userID as AnyObject,
-                          "app_state":  appState as AnyObject,
-                          "action": "refuse" as AnyObject,
-                          "is_group_call" : (ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall == true ? 1 : 0)  as AnyObject]
-        ReportUtil.sharedInstance().reportEvent(callInvitationRefusedReportString, paramsDict: refuseData)
         
         let callee = getCallUser(invitee)
         let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID
@@ -693,7 +687,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
                           "app_state":  appState as AnyObject,
                           "action": "timeout" as AnyObject,
                           "is_group_call" : (ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall == true ? 1 : 0)  as AnyObject]
-        ReportUtil.sharedInstance().reportEvent(callInvitationResponseTimeoutReportString, paramsDict: refuseData)
+        ReportUtil.sharedInstance().reportEvent(callInvitationResponseReportString, paramsDict: refuseData)
         
         var calles: [ZegoCallUser] = []
         for user in invitees {
@@ -965,7 +959,9 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             // refuse
             let refuseData: [String : AnyObject] = ["reason": "decline" as AnyObject, "invitationID": ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.invitationID as AnyObject]
             let inviterID = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.inviter?.userID ?? ""
-            ZegoUIKit.getSignalingPlugin().refuseInvitation(inviterID, data: refuseData.call_jsonString)
+            ZegoUIKit.getSignalingPlugin().refuseInvitation(inviterID, data: refuseData.call_jsonString) { data in
+                
+            }
             
             ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallDeclineButtonPressed?()
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil

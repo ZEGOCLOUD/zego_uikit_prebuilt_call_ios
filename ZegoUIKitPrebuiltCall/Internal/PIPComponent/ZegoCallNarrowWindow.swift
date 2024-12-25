@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import ZegoUIKit
 class ZegoCallNarrowWindow: UIView {
     
     let kBerthRegionWidth: CGFloat = 10
@@ -50,7 +50,7 @@ class ZegoCallNarrowWindow: UIView {
     static func getVirtualHomeHeight() -> CGFloat {
         var virtualHomeHeight: CGFloat = 0
         if #available(iOS 11.0, *) {
-            let keyWindow: UIWindow? = UIApplication.shared.keyWindow
+            let keyWindow: UIWindow? = UIKitKeyWindow
             virtualHomeHeight = keyWindow?.safeAreaInsets.bottom ?? 100
         }
         return virtualHomeHeight
@@ -69,7 +69,7 @@ class ZegoCallNarrowWindow: UIView {
     
     func showNarrowWindow(contentView: UIView, desFrame: CGRect) {
         self.frame = UIScreen.main.bounds
-        UIApplication.shared.keyWindow?.addSubview(self)
+        UIKitKeyWindow?.addSubview(self)
         self.addSubview(contentView)
         contentView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

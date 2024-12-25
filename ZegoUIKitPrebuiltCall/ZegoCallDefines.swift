@@ -15,11 +15,10 @@ let callUnInitReportString = "call/unInit"
 let callStartCallReportString = "call/invite"
 let callReceiveCallReportString = "call/invitationReceived"
 let callReceiveCallAlertReportString = "call/displayNotification"
-let callResponseCallReportString = "call/respondInvitation"
+let callResponseCallReportString = "call/callee/respondInvitation"
 let callLoginReportString = "call/login"
-let callInvitationAcceptedReportString = "call/invitationAccepted"
-let callInvitationRefusedReportString = "call/invitationRefused"
-let callInvitationResponseTimeoutReportString = "call/invitationResponseTimeout"
+
+let callInvitationResponseReportString = "call/caller/respondInvitation"
 let callConnectStateReportString = "call/connectStateChanged"
 let callHangUpString = "call/hangUp"
 
@@ -98,9 +97,8 @@ enum ZegoUIKitCallIconSetType: String, Hashable {
 }
 
 
-let UIkitScreenHeight = UIScreen.main.bounds.size.height
+let UIKitScreenHeight = UIScreen.main.bounds.size.height
 let UIKitScreenWidth = UIScreen.main.bounds.size.width
-let UIKitKeyWindow = UIApplication.shared.windows.first { $0.isKeyWindow }
 let UIKitBottomSafeAreaHeight = UIKitKeyWindow?.safeAreaInsets.bottom ?? 0
 let UIKitTopSafeAreaHeight = UIKitKeyWindow?.safeAreaInsets.top ?? 0
 
@@ -109,7 +107,7 @@ func adaptLandscapeWidth(_ x: CGFloat) -> CGFloat {
 }
 
 func adaptLandscapeHeight(_ x: CGFloat) -> CGFloat {
-    return x * (UIkitScreenHeight / 818.0)
+    return x * (UIKitScreenHeight / 818.0)
 }
 
 func currentViewController() -> (UIViewController?) {

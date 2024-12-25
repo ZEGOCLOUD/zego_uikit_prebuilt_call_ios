@@ -232,14 +232,14 @@ class ZegoTopMenuBar: UIView {
         memberListView.showCameraStateOnMemberList = self.config.memberListConfig.showCameraState
         memberListView.showMicroPhoneStateOnMemberList = self.config.memberListConfig.showMicrophoneState
         memberListView.delegate = self.showQuitDialogVC as? ZegoCallMemberListDelegate
-        memberListView.frame = CGRect(x: 0, y: 0, width: self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIkitScreenHeight)
+        memberListView.frame = CGRect(x: 0, y: 0, width: self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIKitScreenHeight)
         self.showQuitDialogVC?.view.addSubview(memberListView)
     }
     
     @objc func messageButtonClick() {
         let messageView: ZegoCallChatView = ZegoCallChatView(frame: CGRectZero, zegoCallText: self.config.zegoCallText)
         messageView.delegate = self.showQuitDialogVC as? ZegoCallChatViewDelegate
-        messageView.frame = CGRect(x: 0, y: 0, width:self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIkitScreenHeight )
+        messageView.frame = CGRect(x: 0, y: 0, width:self.showQuitDialogVC?.view.frame.size.width ?? UIKitScreenWidth, height:self.showQuitDialogVC?.view.frame.size.height ?? UIKitScreenHeight )
         self.showQuitDialogVC?.view.addSubview(messageView)
     }
 

@@ -80,7 +80,7 @@ extension ZegoSendCallInvitationButtonDelegate {
     
     @objc func buttonClick() {
         if ZegoUIKitPrebuiltCallInvitationService.shared.invitationData != nil || invitees.count == 0 { return }
-        guard let userID = ZegoUIKit.shared.localUserInfo?.userID else { return }
+        guard (ZegoUIKit.shared.localUserInfo?.userID) != nil else { return }
         guard let resourceID = self.resourceID else { return }
       
         let inviteArr:[ZegoPluginCallUser] = inviteeList.map { model in

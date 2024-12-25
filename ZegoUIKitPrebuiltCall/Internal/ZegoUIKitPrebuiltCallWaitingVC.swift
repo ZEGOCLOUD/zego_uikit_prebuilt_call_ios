@@ -337,6 +337,15 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     
     func onInvitationRefused(_ invitee: ZegoUIKitUser, data: String?) {
       
+        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
+
+        let refuseData = ["call_id": ZegoUIKitPrebuiltCallInvitationService.shared.callID as AnyObject,
+                          "invitee": invitee.userID as AnyObject,
+                          "app_state":  appState as AnyObject,
+                          "action": "refused" as AnyObject,
+                          "is_group_call" : (ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall == true ? 1 : 0)  as AnyObject]
+        ReportUtil.sharedInstance().reportEvent(callInvitationResponseReportString, paramsDict: refuseData)
+        
         if !ZegoUIKitPrebuiltCallInvitationService.shared.isGroupCall {
             let callee = getCallUser(invitee)
             let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID

@@ -28,7 +28,7 @@ class ZegoAudioCallWaitView : UIView {
     }()
     
     lazy var audioUserIconLabel: UILabel = {
-        let topPadding: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
+        let topPadding: CGFloat = UIKitKeyWindow?.safeAreaInsets.top ?? 0
         let label = UILabel()
         label.backgroundColor = UIColor.colorWithHexString("#DBDDE3")
         label.frame.size = CGSize(width: 100, height: 100)
