@@ -8,7 +8,7 @@
 import Foundation
 import ZegoPluginAdapter
 
-extension ZegoUIKitPrebuiteCallProvider: @retroactive ZegoPluginProvider {
+extension ZegoUIKitPrebuiteCallProvider: ZegoPluginProvider {
   public func getPlugin() -> ZegoPluginProtocol? {
       ZegoUIKitPrebuiltCallPlugin.shared
   }
