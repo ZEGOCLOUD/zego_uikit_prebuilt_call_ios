@@ -32,6 +32,7 @@ import ZegoPluginAdapter
     var isGroupCall: Bool = false
     var pluginConnectState: ZegoSignalingPluginConnectionState?
     var userID: String?
+    // 加入RTC 房间的ID，不是 zim 的callID
     @objc public var callID: String?
     var userName: String?
     weak var callVC: UIViewController? {

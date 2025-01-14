@@ -373,6 +373,14 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
     
     func onInvitationTimeout(_ inviter: ZegoUIKitUser, data: String?) {
         if inviter.userID == self.waitingVC?.callInvitationData?.inviter?.userID {
+            
+            let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID
+            let caller = getCallUser(inviter)
+            if caller.id == nil {
+              caller.id = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.inviter?.userID
+            }
+            ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallTimeout?(callID ?? "", caller: caller)
+            
             self.waitingVC?.dismiss(animated: true, completion: nil)
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
             ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil
@@ -384,6 +392,18 @@ class ZegoUIKitPrebuiltCallWaitingVC_Help: NSObject, ZegoAcceptInvitationButtonD
         let curInvitee = self.waitingVC?.callInvitationData?.invitees?.first
         let timeoutInvitee = invitees.first
         if curInvitee?.userID == timeoutInvitee?.userID {
+            
+            let callID: String? = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData?.callID
+           
+            var callees: [ZegoCallUser]? = []
+                for callee in invitees {
+                    let calleeUser: ZegoCallUser = getCallUser(callee)
+                    callees?.append(calleeUser)
+                }
+            
+            ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onOutgoingCallTimeout?(callID ?? "", callees: callees ?? [])
+
+            
             self.waitingVC?.dismiss(animated: true, completion: nil)
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = nil
             ZegoUIKitPrebuiltCallInvitationService.shared.callID = nil

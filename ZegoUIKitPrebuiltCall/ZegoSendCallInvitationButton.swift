@@ -34,6 +34,7 @@ extension ZegoSendCallInvitationButtonDelegate {
     }
     @objc public var invitees: [String] = []
     @objc public var data: String?
+    // 加入RTC 房间的ID，不是 zim 的callID
     @objc public var callID: String?
     @objc public var timeout: UInt32 = 60
     @objc public var type: Int = 0
