@@ -423,6 +423,7 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
     
     @objc public func unInit() {
         ZegoUIKit.shared.uninit()
+        ZegoUIKitSignalingPluginImpl.shared.loginOut()
         ZegoUIKitSignalingPluginImpl.shared.uninit()
         ZegoUIKit.shared.enableCustomVideoRender(enable: false)
         NotificationCenter.default.removeObserver(self)
