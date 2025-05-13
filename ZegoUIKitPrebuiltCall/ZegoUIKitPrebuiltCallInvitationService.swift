@@ -170,14 +170,18 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         ZegoUIKit.shared.sendInRoomCommand(command: command, toUserIDs: toUserIDs, callback: callback)
     }
     
-    @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String, config: ZegoUIKitPrebuiltCallInvitationConfig) {
-        
+    @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String, config: ZegoUIKitPrebuiltCallInvitationConfig)
+    {
         let callSDKBundle = Bundle(identifier: "org.cocoapods.ZegoUIKitPrebuiltCall")
         let callVersion = callSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         
         let UIKitSDKBundle = Bundle(identifier: "com.zegocloud.uikit")
         let UIKitVersion = UIKitSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        
+
+        LogManager.sharedInstance().write(toLog: "[Call][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] Call version: \(callVersion ?? "UNKNOWN")")
+        LogManager.sharedInstance().write(toLog: "[Call][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] UIKit version: \(UIKitVersion ?? "UNKNOWN")")
+        LogManager.sharedInstance().write(toLog: "[Call][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] initWithAppID:\(appID), userID:\(userID), userName:\(userName), config:...")
+
         let reportData = ["user_id": userID as AnyObject,
                      "platform": "iOS" as AnyObject,
                      "platform_version": UIDevice.current.systemVersion as AnyObject,
@@ -209,6 +213,7 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
     }
     
     @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String) {
+        LogManager.sharedInstance().write(toLog: "initWithAppID:\(appID), userID:\(userID), userName:\(userName)")
         
         let callSDKBundle = Bundle(identifier: "org.cocoapods.ZegoUIKitPrebuiltCall")
         let callVersion = callSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
@@ -475,6 +480,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     func onInvitationReceived(_ inviter: ZegoUIKitUser, type: Int, data: String?) {
+        LogManager.sharedInstance().write(toLog: "[Call][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] inviter:\(inviter.userID ?? "UNKNOWN"), type:\(type), data:\(data ?? "")")
+        
         // call invitation type, 0 - audio, 1 - video
         if type != 0 && type != 1 {
             return
@@ -888,6 +895,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     
     // MARK: CallKit
     func didReceiveIncomingPush(_ uuid: UUID, invitationID: String, data: String) {
+        LogManager.sharedInstance().write(toLog: "[Call][ZegoUIKitPrebuiltCallInvitationService][didReceiveIncomingPush] uuid:\(uuid.uuidString), invitationID:\(invitationID), data:\(data)", appendTime: true, flush: true)
+        
         let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
         let voipData = ["call_id": invitationID as AnyObject,
                         "app_state": appState as AnyObject,
