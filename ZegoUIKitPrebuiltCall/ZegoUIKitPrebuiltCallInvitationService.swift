@@ -178,9 +178,9 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         let UIKitSDKBundle = Bundle(identifier: "com.zegocloud.uikit")
         let UIKitVersion = UIKitSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
 
-        LogManager.sharedInstance().write(toLog: "[Call][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] Call version: \(callVersion ?? "UNKNOWN")")
-        LogManager.sharedInstance().write(toLog: "[Call][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] UIKit version: \(UIKitVersion ?? "UNKNOWN")")
-        LogManager.sharedInstance().write(toLog: "[Call][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] initWithAppID:\(appID), userID:\(userID), userName:\(userName), config:...")
+        LogManager.sharedInstance().write(toLog: "[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] Call version: \(callVersion ?? "UNKNOWN")")
+        LogManager.sharedInstance().write(toLog: "[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] UIKit version: \(UIKitVersion ?? "UNKNOWN")")
+        LogManager.sharedInstance().write(toLog: "[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] initWithAppID:\(appID), userID:\(userID), userName:\(userName), config:...")
 
         let reportData = ["user_id": userID as AnyObject,
                      "platform": "iOS" as AnyObject,
@@ -480,7 +480,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     func onInvitationReceived(_ inviter: ZegoUIKitUser, type: Int, data: String?) {
-        LogManager.sharedInstance().write(toLog: "[Call][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] inviter:\(inviter.userID ?? "UNKNOWN"), type:\(type), data:\(data ?? "")")
+        LogManager.sharedInstance().write(toLog: "[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] inviter:\(inviter.userID ?? "UNKNOWN"), type:\(type), data:\(data ?? "")")
         
         // call invitation type, 0 - audio, 1 - video
         if type != 0 && type != 1 {
@@ -895,7 +895,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     
     // MARK: CallKit
     func didReceiveIncomingPush(_ uuid: UUID, invitationID: String, data: String) {
-        LogManager.sharedInstance().write(toLog: "[Call][ZegoUIKitPrebuiltCallInvitationService][didReceiveIncomingPush] uuid:\(uuid.uuidString), invitationID:\(invitationID), data:\(data)", appendTime: true, flush: true)
+        LogManager.sharedInstance().write(toLog: "[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][didReceiveIncomingPush] uuid:\(uuid.uuidString), invitationID:\(invitationID), data:\(data)", flush: true)
         
         let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
         let voipData = ["call_id": invitationID as AnyObject,
@@ -915,6 +915,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     func onCallKitAnswerCall(_ action: CallKitAction) {
+        LogManager.sharedInstance().write(toLog: "[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onCallKitAnswerCall]", flush: true)
+
         let invitationData = ZegoUIKitPrebuiltCallInvitationService.shared.invitationData
         let inviterUserID = invitationData?.inviter?.userID ?? ""
         let invitationID = invitationData?.invitationID
@@ -958,6 +960,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     func onCallKitEndCall(_ action: CallKitAction) {
+        LogManager.sharedInstance().write(toLog: "[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onCallKitEndCall]", flush: true)
+        
         let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
 
         let reportData = ["call_id": String(describing: ZegoUIKitPrebuiltCallInvitationService.shared.callID) as AnyObject,
