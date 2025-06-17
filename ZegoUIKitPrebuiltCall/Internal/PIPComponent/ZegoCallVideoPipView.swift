@@ -150,8 +150,34 @@ class ZegoVideoRenderView: UIView {
         }
     }
     
-    func onCapturedVideoFrameCVPixelBuffer(_ buffer: CVPixelBuffer, param: ZegoVideoFrameParam, flipMode: ZegoVideoFlipMode, channel: ZegoPublishChannel) {
-        let sampleBuffer: CMSampleBuffer? = createSampleBuffer(pixelBuffer: buffer)
+    func onCapturedVideoFrameCVPixelBuffer(_ buffer: CVPixelBuffer, param: ZegoVideoFrameParam, flipMode: ZegoVideoFlipMode, channel: ZegoPublishChannel)
+    {
+        var sampleBuffer: CMSampleBuffer? = nil
+        if flipMode != .X {
+            sampleBuffer = createSampleBuffer(pixelBuffer: buffer)
+        } else {
+            let ciImage = CIImage(cvPixelBuffer: buffer)
+            let flippedImage = ciImage.oriented(.upMirrored)
+            
+            let context = CIContext()
+            let width = CVPixelBufferGetWidth(buffer)
+            let height = CVPixelBufferGetHeight(buffer)
+            let pixelFormat = CVPixelBufferGetPixelFormatType(buffer)
+            
+            let pixelBufferAttributes: [String: Any] = [
+                kCVPixelBufferIOSurfacePropertiesKey as String: [:],
+            ]
+            
+            var outputPixelBuffer: CVPixelBuffer?
+            let status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, pixelFormat, pixelBufferAttributes as CFDictionary, &outputPixelBuffer)
+            if (status == kCVReturnSuccess) {
+                context.render(flippedImage, to: outputPixelBuffer!)
+                sampleBuffer = createSampleBuffer(pixelBuffer: outputPixelBuffer)
+            } else {
+                sampleBuffer = createSampleBuffer(pixelBuffer: buffer)
+            }
+        }
+        
         if let sampleBuffer = sampleBuffer {
             self.displayLayer?.enqueue(sampleBuffer)
         }
