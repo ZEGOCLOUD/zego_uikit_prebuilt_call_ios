@@ -88,7 +88,7 @@ extension ZegoSendCallInvitationButtonDelegate {
             ZegoPluginCallUser(userID: model.userID ?? "", userName:model.userName ?? "", avatar: "")
         }
         ZegoUIKitPrebuiltCallInvitationService.shared.callID = self.callID;
-        ZegoUIKitPrebuiltCallInvitationService.shared.sendInvitation(inviteArr, invitationType: isVideoCall ? .videoCall : .voiceCall, timeout: 60, customerData: self.customData, notificationConfig: ZegoSignalingPluginNotificationConfig(resourceID: resourceID, title: "", message: "")) { data in
+        ZegoUIKitPrebuiltCallInvitationService.shared.sendInvitation(inviteArr, invitationType: isVideoCall ? .videoCall : .voiceCall, timeout: Int(self.timeout), customerData: self.customData, notificationConfig: ZegoSignalingPluginNotificationConfig(resourceID: resourceID, title: "", message: "")) { data in
 
         }
     }
