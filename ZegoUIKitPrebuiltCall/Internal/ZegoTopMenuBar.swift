@@ -216,13 +216,17 @@ class ZegoTopMenuBar: UIView {
                 self.addSubview(messageButton)
                 messageButton.addTarget(self, action: #selector(messageButtonClick), for: .touchUpInside)
             case .minimizingButton:
-                let minimizingButton = ZegoMinimizationButton()
-                minimizingButton.delegate = self
-                if let minimizingButtonImage = buttonConfig.minimizingButtonImage {
-                    minimizingButton.iconMinimize = minimizingButtonImage
+                if #available(iOS 16.0, *) {
+                    let minimizingButton = ZegoMinimizationButton()
+                    minimizingButton.delegate = self
+                    if let minimizingButtonImage = buttonConfig.minimizingButtonImage {
+                        minimizingButton.iconMinimize = minimizingButtonImage
+                    }
+                    self.buttons.append(minimizingButton)
+                    self.addSubview(minimizingButton)
+                } else {
+                    LogManager.sharedInstance().write("[PrebuiltCall][ZegoCallBottomMenuBar][createButton] current iOS version is \(UIDevice.current.systemVersion), not support config .minimizingButton")
                 }
-                self.buttons.append(minimizingButton)
-                self.addSubview(minimizingButton)
             }
         }
     }

@@ -271,12 +271,16 @@ class ZegoCallBottomMenuBar: UIView {
                 }
                 saveButton(messageButton, index: index)
             case .minimizingButton:
-                let minimizingButton = ZegoMinimizationButton()
-                minimizingButton.delegate = self
-                if let minimizingButtonImage = buttonConfig.minimizingButtonImage {
-                    minimizingButton.iconMinimize = minimizingButtonImage
+                if #available(iOS 16.0, *) {
+                    let minimizingButton = ZegoMinimizationButton()
+                    minimizingButton.delegate = self
+                    if let minimizingButtonImage = buttonConfig.minimizingButtonImage {
+                        minimizingButton.iconMinimize = minimizingButtonImage
+                    }
+                    saveButton(minimizingButton, index: index)
+                } else {
+                    LogManager.sharedInstance().write("[PrebuiltCall][ZegoCallBottomMenuBar][createButton] current iOS version is \(UIDevice.current.systemVersion), not support config .minimizingButton")
                 }
-                saveButton(minimizingButton, index: index)
             }
         }
     }
