@@ -229,6 +229,8 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
             ZegoUIKit.shared.setVideoConfig(config: config.videoConfig.resolution)
             self.config = config
         }
+        
+        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC][init] userID:\(String(describing: self.userID)), userName:\(String(describing: self.userName)), roomID:\(String(describing: self.roomID))")
     }
     
     required public init?(coder: NSCoder) {
@@ -398,7 +400,12 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         guard let roomID = self.roomID,
               let userID = self.userID,
               let userName = self.userName
-        else { return }
+        else {
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC][joinRoom] joinRoom assert")
+            return
+        }
+        
+        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC][joinRoom] userID:\(userID), userName:\(userName), roomID:\(roomID)")
         ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID) {[weak self] code in
             LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC][joinRoom] error:\(code)")
             
