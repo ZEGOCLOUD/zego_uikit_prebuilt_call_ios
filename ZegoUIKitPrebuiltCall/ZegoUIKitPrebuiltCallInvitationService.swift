@@ -170,22 +170,11 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         ZegoUIKit.shared.sendInRoomCommand(command: command, toUserIDs: toUserIDs, callback: callback)
     }
     
-    @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String, config: ZegoUIKitPrebuiltCallInvitationConfig)
+    @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String, config: ZegoUIKitPrebuiltCallInvitationConfig, callback: ZegoCallInvitationInitCallback?)
     {
-        let bundleMap: [String: String] = ["UIKit": "com.zegocloud.uikit",
-                                           "Call": "org.cocoapods.ZegoUIKitPrebuiltCall",
-                                           "CallKit": "org.cocoapods.ZegoUIKitAppleCallKitPlugin"]
-        var bundleVerMap: [String: String] = [:]
-        for (name, bundleID) in bundleMap {
-            let bundle = Bundle(identifier: bundleID)
-            if (bundle != nil) {
-                let version = bundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-                LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] \(name) version: \(version ?? "UNKNOWN")")
-                bundleVerMap[name+"_version"] = (version ?? "UNKNOWN")
-            }
-        }
-        
         LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] initWithAppID:\(appID), userID:\(userID), userName:\(userName), config:...")
+
+        let bundleVerMap = logComponentsVersion()
 
         var reportData: [String: String] = ["user_id": userID,
                      "platform": "iOS",
@@ -195,6 +184,26 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         }
         ReportUtil.sharedInstance().create(withAppID: appID, signOrToken: appSign, commonParams: reportData)
         
+        // check params
+        if (appSign.isEmpty) {
+            let message = "appSign cannot be empty."
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] error, message: \(message)")
+            callback?(-1, message)
+            return
+        }
+        if (userID.isEmpty) {
+            let message = "userID cannot be empty."
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] error, message: \(message)")
+            callback?(-1, message)
+            return
+        }
+        if (userName.isEmpty) {
+            let message = "userName cannot be empty."
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] error, message: \(message)")
+            callback?(-1, message)
+            return
+        }
+
         self.config = config
         self.userID = userID
         self.userName = userName
@@ -216,23 +225,42 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         ZegoUIKit.shared.login(userID, userName: userName)
         ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
         ReportUtil.sharedInstance().reportEvent(callInitReportString, paramsDict: [:])
+        
+        callback?(0, "")
     }
     
-    @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String) {
-        LogManager.sharedInstance().write("initWithAppID:\(appID), userID:\(userID), userName:\(userName)")
+    @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String, callback: ZegoCallInvitationInitCallback?) {
+        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] initWithAppID:\(appID), userID:\(userID), userName:\(userName)")
         
-        let callSDKBundle = Bundle(identifier: "org.cocoapods.ZegoUIKitPrebuiltCall")
-        let callVersion = callSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        
-        let UIKitSDKBundle = Bundle(identifier: "com.zegocloud.uikit")
-        let UIKitVersion = UIKitSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        
-        let reportData = ["user_id": userID as AnyObject,
-                     "platform": "iOS" as AnyObject,
-                     "platform_version": UIDevice.current.systemVersion as AnyObject,
-                     "uikit_version": UIKitVersion as AnyObject,
-                     "call_version" :callVersion as AnyObject]
+        let bundleVerMap = logComponentsVersion()
+
+        var reportData: [String: String] = ["user_id": userID,
+                     "platform": "iOS",
+                     "platform_version": UIDevice.current.systemVersion]
+        reportData.merge(bundleVerMap) { current, new in
+            return new
+        }
         ReportUtil.sharedInstance().create(withAppID: appID, signOrToken: appSign, commonParams: reportData)
+        
+        // check params
+        if (appSign.isEmpty) {
+            let message = "appSign cannot be empty."
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] error, message: \(message)")
+            callback?(-1, message)
+            return
+        }
+        if (userID.isEmpty) {
+            let message = "userID cannot be empty."
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] error, message: \(message)")
+            callback?(-1, message)
+            return
+        }
+        if (userName.isEmpty) {
+            let message = "userName cannot be empty."
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] error, message: \(message)")
+            callback?(-1, message)
+            return
+        }
         
         self.userID = userID
         self.userName = userName
@@ -242,6 +270,7 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         ZegoUIKitSignalingPluginImpl.shared.login(userID, userName: userName, callback: nil)
         ReportUtil.sharedInstance().reportEvent(callInitReportString, paramsDict: [:])
 
+        callback?(0, "")
     }
     
     @objc public func sendInvitation(_ invitees: [ZegoPluginCallUser], invitationType: ZegoPluginCallType,timeout: Int, customerData: String?, notificationConfig: ZegoSignalingPluginNotificationConfig,source: String = "button", callback: PluginCallBack?) {
@@ -473,6 +502,31 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
   
     @objc public func getAudioRouteType() -> ZegoUIKitAudioOutputDevice {
         ZegoUIKit.shared.getAudioRouteType()
+    }
+    
+    private func logComponentsVersion() -> [String: String] {
+        let bundleMap: [String: String] = ["UIKit": "com.zegocloud.uikit",
+                                           "Call": "org.cocoapods.ZegoUIKitPrebuiltCall",
+                                           "CallKitPlugin": "org.cocoapods.ZegoUIKitAppleCallKitPlugin"]
+        var bundleVerMap: [String: String] = [:]
+        for (name, bundleID) in bundleMap {
+            let bundle = Bundle(identifier: bundleID)
+            if (bundle != nil) {
+                var version = bundle?.object(forInfoDictionaryKey: "CFBundleDisplayVersion") as? String
+                if (version == nil) {
+                    version = bundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+                }
+                bundleVerMap[name+"_version"] = (version ?? "UNKNOWN")
+
+                var nameAlias = name
+                if (nameAlias == "Call") {
+                    nameAlias = "PrebuiltCall"
+                }
+                LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][logComponentsVersion] \(nameAlias) version: \(version ?? "UNKNOWN")")
+            }
+        }
+
+        return bundleMap
     }
 }
 
@@ -936,6 +990,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             
             let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
 
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onCallKitAnswerCall] acceptInvitation, error:\(String(describing: errorCode)), appState:\(appState)")
+
             let reportData = ["call_id": String(describing: ZegoUIKitPrebuiltCallInvitationService.shared.callID) as AnyObject,
                               "action": "accept" as AnyObject,
                               "app_state":  appState as AnyObject,
@@ -947,7 +1003,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
                 self.reportCallEnded()
                 return
             }
-                        
+            
             guard let invitationData = invitationData else { return }
             var nomalConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
             if invitationData.invitees?.count ?? 0 > 1 {
@@ -956,6 +1012,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
                 nomalConfig =  invitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall() : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
             }
             let config = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(invitationData) ?? nomalConfig
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onCallKitAnswerCall] will present ZegoUIKitPrebuiltCallVC config:\(String(describing: config))")
+
             let callVC: ZegoUIKitPrebuiltCallVC = ZegoUIKitPrebuiltCallVC.init(invitationData, config: config)
             callVC.modalPresentationStyle = .fullScreen
             callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help
