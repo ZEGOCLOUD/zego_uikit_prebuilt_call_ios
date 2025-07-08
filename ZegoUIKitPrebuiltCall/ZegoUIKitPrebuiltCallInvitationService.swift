@@ -936,6 +936,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             
             let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
 
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onCallKitAnswerCall] acceptInvitation, error:\(String(describing: errorCode)), appState:\(appState)")
+
             let reportData = ["call_id": String(describing: ZegoUIKitPrebuiltCallInvitationService.shared.callID) as AnyObject,
                               "action": "accept" as AnyObject,
                               "app_state":  appState as AnyObject,
@@ -947,7 +949,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
                 self.reportCallEnded()
                 return
             }
-                        
+            
             guard let invitationData = invitationData else { return }
             var nomalConfig = ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
             if invitationData.invitees?.count ?? 0 > 1 {
@@ -956,6 +958,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
                 nomalConfig =  invitationData.type == .videoCall ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall() : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall()
             }
             let config = ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.requireConfig(invitationData) ?? nomalConfig
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onCallKitAnswerCall] will present ZegoUIKitPrebuiltCallVC config:\(String(describing: config))")
+
             let callVC: ZegoUIKitPrebuiltCallVC = ZegoUIKitPrebuiltCallVC.init(invitationData, config: config)
             callVC.modalPresentationStyle = .fullScreen
             callVC.delegate = ZegoUIKitPrebuiltCallInvitationService.shared.help

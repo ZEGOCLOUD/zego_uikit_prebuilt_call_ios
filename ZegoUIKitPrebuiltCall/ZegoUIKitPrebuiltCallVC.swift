@@ -400,14 +400,16 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
               let userName = self.userName
         else { return }
         ZegoUIKit.shared.joinRoom(userID, userName: userName, roomID: roomID) {[weak self] code in
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC][joinRoom] error:\(code)")
+            
             guard let self = self else { return }
-          if code == 0 {
+            if code == 0 {
               ZegoUIKit.shared.turnCameraOn(userID, isOn: self.config.turnOnCameraWhenJoining)
               ZegoUIKit.shared.turnMicrophoneOn(userID, isOn: self.config.turnOnMicrophoneWhenJoining)
               ZegoUIKit.shared.startPreview(self.view, videoMode: .aspectFill)
-             callDuration.delegate = self
-             callDuration.startTheTimer()
-          }
+              callDuration.delegate = self
+              callDuration.startTheTimer()
+            }
         }
     }
     
@@ -420,7 +422,9 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         if userAvatar != ""{
             loadImage(imageUrl: userAvatar)
         }
-       self.view.addSubview(self.waitingView!)
+        
+        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC][joinRoomAudioWaitingView] will addsubview waitingView")
+        self.view.addSubview(self.waitingView!)
     }
     
     private func loadImage(imageUrl: String) {
@@ -479,7 +483,8 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
     weak var callVC: ZegoUIKitPrebuiltCallVC?
     
     func onUserCountOrPropertyChanged(_ userList: [ZegoUIKitUser]?) {
-      callVC?.waitingView?.removeFromSuperview()
+        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC_Help][onUserCountOrPropertyChanged] will remove waitingView")
+        callVC?.waitingView?.removeFromSuperview()
     }
     
     func onUserIDUpdated(userID: String) -> String? {
