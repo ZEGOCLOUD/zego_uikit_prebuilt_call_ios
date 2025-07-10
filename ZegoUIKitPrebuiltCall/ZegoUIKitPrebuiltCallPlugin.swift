@@ -33,11 +33,11 @@ class ZegoUIKitPrebuiltCallPlugin: ZegoCallPluginProtocol {
         } else {
             invitationConfig = ZegoUIKitPrebuiltCallInvitationConfig();
         }
-        service.initWithAppID(appID, appSign: appSign, userID: userID, userName: userName, config: invitationConfig)
+        service.initWithAppID(appID, appSign: appSign, userID: userID, userName: userName, config: invitationConfig, callback: nil)
     }
     
     func initWith(appID: UInt32, appSign: String, userID: String, userName: String) {
-        service.initWithAppID(appID, appSign: appSign, userID: userID, userName: userName)
+        service.initWithAppID(appID, appSign: appSign, userID: userID, userName: userName, callback: nil)
     }
     
     
