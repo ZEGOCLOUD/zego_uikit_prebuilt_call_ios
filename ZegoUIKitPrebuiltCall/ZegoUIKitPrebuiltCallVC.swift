@@ -401,7 +401,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
               let userID = self.userID,
               let userName = self.userName
         else {
-            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC][joinRoom] joinRoom assert")
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC][joinRoom] joinRoom check params fail")
             return
         }
         

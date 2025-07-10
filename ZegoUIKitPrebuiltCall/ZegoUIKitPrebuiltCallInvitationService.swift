@@ -173,13 +173,16 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
     @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String, config: ZegoUIKitPrebuiltCallInvitationConfig)
     {
         let bundleMap: [String: String] = ["UIKit": "com.zegocloud.uikit",
-                                           "Call": "org.cocoapods.ZegoUIKitPrebuiltCall",
+                                           "PrebuiltCall": "org.cocoapods.ZegoUIKitPrebuiltCall",
                                            "CallKit": "org.cocoapods.ZegoUIKitAppleCallKitPlugin"]
         var bundleVerMap: [String: String] = [:]
         for (name, bundleID) in bundleMap {
             let bundle = Bundle(identifier: bundleID)
             if (bundle != nil) {
-                let version = bundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+                var version = bundle?.object(forInfoDictionaryKey: "CFBundleDisplayVersion") as? String
+                if (version == nil) {
+                    version = bundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+                }
                 LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] \(name) version: \(version ?? "UNKNOWN")")
                 bundleVerMap[name+"_version"] = (version ?? "UNKNOWN")
             }
@@ -219,7 +222,7 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
     }
     
     @objc public func initWithAppID(_ appID: UInt32, appSign: String, userID: String, userName: String) {
-        LogManager.sharedInstance().write("initWithAppID:\(appID), userID:\(userID), userName:\(userName)")
+        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][initWithAppID] initWithAppID:\(appID), userID:\(userID), userName:\(userName)")
         
         let callSDKBundle = Bundle(identifier: "org.cocoapods.ZegoUIKitPrebuiltCall")
         let callVersion = callSDKBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
