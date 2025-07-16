@@ -6,9 +6,9 @@
 //
 
 import UIKit
+import CallKit
 import ZegoUIKit
 import ZegoPluginAdapter
-
 
 @objc public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     
@@ -540,7 +540,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     func onInvitationReceived(_ inviter: ZegoUIKitUser, type: Int, data: String?) {
-        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] inviter:\(inviter.userID ?? "UNKNOWN"), type:\(type), data:\(data ?? "")")
+        let appState = (UIApplication.shared.applicationState == .active ? "active" : "background")
+        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] inviter:\(inviter.userID ?? "UNKNOWN"), type:\(type), data:\(data ?? ""), appState:\(appState)")
         
         // call invitation type, 0 - audio, 1 - video
         if type != 0 && type != 1 {
@@ -549,7 +550,6 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
         let dataDic: Dictionary? = data?.call_convertStringToDictionary()
         let pluginInvitationID: String? = dataDic?["invitationID"] as? String
 
-        let appState:String = UIApplication.shared.applicationState == .active ? "active" : (UIApplication.shared.applicationState == .background ? "background" : "restarted")
         let reportData = ["call_id": dataDic?["call_id"] as AnyObject,
                           "inviter": inviter.userID as AnyObject,
                           "app_state": appState as AnyObject,
@@ -588,7 +588,6 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
                 let uuid = UUID()
                 if UIApplication.shared.applicationState == .active {
                   ZegoUIKitPrebuiltCallInvitationService.shared.currentCallUUID = uuid
-  //                ZegoPluginAdapter.signalingPlugin?.reportIncomingCall(with: uuid, title: inviter.userName ?? "", hasVideo: type == 1)
                   ZegoPluginAdapter.callkitPlugin?.reportIncomingCall(with: uuid, title: inviter.userName ?? "", hasVideo: type == 1)
                     if ZegoPluginAdapter.callkitPlugin != nil {
                         let voipData = ["call_id": dataDic?["call_id"] as AnyObject,
@@ -596,7 +595,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
                                         "is_voip": 1 as AnyObject,]
                         ReportUtil.sharedInstance().reportEvent(callReceiveCallAlertReportString, paramsDict: voipData)
                     }
-
+                } else {
+                    LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] not support report call when appState is \(appState)")
                 }
             }
             
@@ -1062,8 +1062,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     
     func reportCallEnded() {
         if let uuid = ZegoUIKitPrebuiltCallInvitationService.shared.currentCallUUID {
-//            ZegoPluginAdapter.signalingPlugin?.reportCallEnded(with: uuid, reason: 2)
-            ZegoPluginAdapter.callkitPlugin?.reportCallEnded(with: uuid, reason: 2)
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][reportCallEnded] remoteEnded", flush: true)
+            ZegoPluginAdapter.callkitPlugin?.reportCallEnded(with: uuid, reason: CXCallEndedReason.remoteEnded.rawValue)
         }
     }
     

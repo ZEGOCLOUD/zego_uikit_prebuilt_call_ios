@@ -184,7 +184,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         return label
     }()
     
-    var waitingView: ZegoAudioCallWaitView?
+    var waittingView: ZegoAudioCallWaitView?
     
     /// Initialization of call page
     /// - Parameters:
@@ -242,7 +242,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         // Do any additional setup after loading the view.
         self.view.backgroundColor = UIColor.black
         if self.config.turnOnCameraWhenJoining == false {
-          self.joinRoomAudioWaitingView()
+          self.joinRoomAudioWaittingView()
         }
         self.view.addSubview(self.avContainer.view)
         self.view.addSubview(self.callTimeLabel)
@@ -420,18 +420,18 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
         }
     }
     
-    private func joinRoomAudioWaitingView() {
+    private func joinRoomAudioWaittingView() {
        let topPadding: CGFloat = UIKitKeyWindow?.safeAreaInsets.top ?? 0
        let bottomPadding: CGFloat = UIKitKeyWindow?.safeAreaInsets.bottom ?? 0
-       self.waitingView = ZegoAudioCallWaitView.init(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height + topPadding + bottomPadding), userName: self.userName ?? "",bgImage: ZegoUIKitCallIconSetType.call_waiting_bg.load(), callingString: self.config.zegoCallText.outgoingAudioCallPageMessage)
+       self.waittingView = ZegoAudioCallWaitView.init(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height + topPadding + bottomPadding), userName: self.userName ?? "",bgImage: ZegoUIKitCallIconSetType.call_waiting_bg.load(), callingString: self.config.zegoCallText.outgoingAudioCallPageMessage)
         let user: ZegoUIKitUser = ZegoUIKitUser(ZegoUIKit.shared.localUserInfo?.userID ?? "", ZegoUIKit.shared.localUserInfo?.userName ?? "")
         let userAvatar:String = (ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onUserIDUpdated?(user: user) ?? "") as String
         if userAvatar != ""{
             loadImage(imageUrl: userAvatar)
         }
         
-        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC][joinRoomAudioWaitingView] will addsubview waitingView")
-        self.view.addSubview(self.waitingView!)
+        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC][joinRoomAudioWaittingView] will addsubview waittingView")
+        self.view.addSubview(self.waittingView!)
     }
     
     private func loadImage(imageUrl: String) {
@@ -469,9 +469,9 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
             // 在主线程更新 UI
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
-                self.waitingView?.userAvatarImage.isHidden = false
-                self.waitingView?.audioUserIconLabel.isHidden = true
-                self.waitingView?.userAvatarImage.image = image
+                self.waittingView?.userAvatarImage.isHidden = false
+                self.waittingView?.audioUserIconLabel.isHidden = true
+                self.waittingView?.userAvatarImage.image = image
             }
         }
         
@@ -490,8 +490,8 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
     weak var callVC: ZegoUIKitPrebuiltCallVC?
     
     func onUserCountOrPropertyChanged(_ userList: [ZegoUIKitUser]?) {
-        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC_Help][onUserCountOrPropertyChanged] will remove waitingView")
-        callVC?.waitingView?.removeFromSuperview()
+        callVC?.waittingView?.removeFromSuperview()
+        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC_Help][onUserCountOrPropertyChanged] did remove waittingView")
     }
     
     func onUserIDUpdated(userID: String) -> String? {
