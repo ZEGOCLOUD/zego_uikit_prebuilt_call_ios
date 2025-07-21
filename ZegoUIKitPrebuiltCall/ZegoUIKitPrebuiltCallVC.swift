@@ -490,8 +490,8 @@ class ZegoUIKitPrebuiltCallVC_Help: NSObject, ZegoAudioVideoContainerDelegate, Z
     weak var callVC: ZegoUIKitPrebuiltCallVC?
     
     func onUserCountOrPropertyChanged(_ userList: [ZegoUIKitUser]?) {
-        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC_Help][onUserCountOrPropertyChanged] will remove waitingView")
         callVC?.waitingView?.removeFromSuperview()
+        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC_Help][onUserCountOrPropertyChanged] did remove waitingView")
     }
     
     func onUserIDUpdated(userID: String) -> String? {
