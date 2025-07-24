@@ -331,6 +331,7 @@ extension ZegoCallBottomMenuBar: LeaveButtonDelegate,
     }
     
     func onToggleMicButtonClick(_ isOn: Bool) {
+        LogManager.sharedInstance().write("[UIKit][ZegoCallBottomMenuBar][onToggleMicButtonClick] isOn:\(isOn)")
         delegate?.onToggleMicButtonClick(isOn)
     }
     

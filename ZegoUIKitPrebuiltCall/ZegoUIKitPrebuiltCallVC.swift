@@ -635,6 +635,7 @@ extension ZegoUIKitPrebuiltCallVC: ZegoCallBottomMenuBarDelegate, ZegoCallMember
     }
     
     func onToggleMicButtonClick(_ isOn: Bool) {
+        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallVC][onToggleMicButtonClick]")
         delegate?.onToggleMicButtonClick?(isOn)
     }
     
