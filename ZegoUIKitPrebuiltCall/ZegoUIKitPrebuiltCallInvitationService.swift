@@ -13,8 +13,18 @@ import ZegoPluginAdapter
 @objc public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     
     @objc public static let shared = ZegoUIKitPrebuiltCallInvitationService()
-    @objc public weak var delegate: ZegoUIKitPrebuiltCallInvitationServiceDelegate?
-    @objc public weak var callVCDelegate: ZegoUIKitPrebuiltCallVCDelegate?
+
+    @objc public weak var delegate: ZegoUIKitPrebuiltCallInvitationServiceDelegate? {
+        didSet {
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][delegate] didSet")
+        }
+    }
+
+    @objc public weak var callVCDelegate: ZegoUIKitPrebuiltCallVCDelegate? {
+        didSet {
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][callVCDelegate] didSet")
+        }
+    }
     
     let help = ZegoUIKitPrebuiltCallInvitationService_Help()
     var config: ZegoUIKitPrebuiltCallInvitationConfig?
@@ -835,7 +845,12 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     func onToggleMicButtonClick(_ isOn: Bool) {
-        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onToggleMicButtonClick?(isOn)
+        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] isOn:\(isOn)")
+        
+        if (ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate != nil) {
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] will notify callVCDelegate")
+            ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onToggleMicButtonClick?(isOn)
+        }
     }
     
     func onAudioOutputButtonClick(_ isSpeaker: Bool) {
@@ -843,7 +858,7 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
 
     func onAudioOutputDeviceChanged(_ audioOutput: ZegoUIKitAudioOutputDevice) {
-      ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onAudioOutputDeviceChanged?(audioOutput)
+        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onAudioOutputDeviceChanged?(audioOutput)
     }
    
     func onOnlySelfInRoom(_ userList:[ZegoUIKitUser]) {
