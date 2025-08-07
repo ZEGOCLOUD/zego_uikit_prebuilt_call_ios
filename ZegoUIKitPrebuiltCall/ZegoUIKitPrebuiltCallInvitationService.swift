@@ -853,11 +853,14 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     func onToggleMicButtonClick(_ isOn: Bool) {
-        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] isOn:\(isOn)")
-        
-        if (ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate != nil) {
-            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] will notify callVCDelegate")
+        if (ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate == nil) {
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] callVCDelegate is not configured")
+        } else if (ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onToggleMicButtonClick == nil) {
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] callVCDelegate-onToggleMicButtonClick is not configured")
+        } else {
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] will notify")
             ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onToggleMicButtonClick?(isOn)
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] did notify")
         }
     }
     
