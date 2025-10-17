@@ -226,7 +226,7 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
         
         if config.notifyWhenAppRunningInBackgroundOrQuit {
 //            try to enable voip if import
-            ZegoPluginAdapter.callkitPlugin?.enableVoIP(config.isSandboxEnvironment)
+            ZegoPluginAdapter.callkitPlugin?.enableVoIP(isSandboxEnvironment: config.isSandboxEnvironment)
         }
         
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign, scenario: UInt(config.scenario.rawValue))
