@@ -16,13 +16,13 @@ import ZegoPluginAdapter
 
     @objc public weak var delegate: ZegoUIKitPrebuiltCallInvitationServiceDelegate? {
         didSet {
-            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][delegate] didSet")
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][delegate] didSet:\(String(describing: delegate))")
         }
     }
 
     @objc public weak var callVCDelegate: ZegoUIKitPrebuiltCallVCDelegate? {
         didSet {
-            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][callVCDelegate] didSet")
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][callVCDelegate] didSet:\(String(describing: callVCDelegate))")
         }
     }
     
@@ -597,8 +597,8 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             if needReportCall {
                 let uuid = UUID()
                 if UIApplication.shared.applicationState == .active {
-                  ZegoUIKitPrebuiltCallInvitationService.shared.currentCallUUID = uuid
-                  ZegoPluginAdapter.callkitPlugin?.reportIncomingCall(with: uuid, title: inviter.userName ?? "", hasVideo: type == 1)
+                    ZegoUIKitPrebuiltCallInvitationService.shared.currentCallUUID = uuid
+                    ZegoPluginAdapter.callkitPlugin?.reportIncomingCall(with: uuid, title: inviter.userName ?? "", hasVideo: type == 1)
                     if ZegoPluginAdapter.callkitPlugin != nil {
                         let voipData = ["call_id": dataDic?["call_id"] as AnyObject,
                                         "app_state": appState as AnyObject,
@@ -618,17 +618,27 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
                 ReportUtil.sharedInstance().reportEvent(callReceiveCallAlertReportString, paramsDict: reportData)
             }
 
-            
-            let callUser: ZegoCallUser = getCallUser(inviter)
-            
-            var callees: [ZegoCallUser]? = []
-            if let invitees = callData.invitees {
-                for callee in invitees {
-                    let calleeUser: ZegoCallUser = getCallUser(callee)
-                    callees?.append(calleeUser)
+            // notify onIncomingCallReceived
+            if (ZegoUIKitPrebuiltCallInvitationService.shared.delegate == nil) {
+                LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] delegate is not configured")
+            } else if (ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallReceived == nil) {
+                LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] delegate-onIncomingCallReceived is not configured")
+            } else {
+                let callUser: ZegoCallUser = getCallUser(inviter)
+                var callees: [ZegoCallUser]? = []
+                if let invitees = callData.invitees {
+                    for callee in invitees {
+                        let calleeUser: ZegoCallUser = getCallUser(callee)
+                        callees?.append(calleeUser)
+                    }
                 }
+                
+                LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] delegate-onIncomingCallReceived will notify")
+
+                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallReceived?(callData.callID ?? "", caller: callUser, callType: ZegoCallType.init(rawValue: type) ?? .voiceCall, callees: callees)
+
+                LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] delegate-onIncomingCallReceived did notify")
             }
-            ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallReceived?(callData.callID ?? "", caller: callUser, callType: ZegoCallType.init(rawValue: type) ?? .voiceCall, callees: callees)
         }
     }
     
@@ -843,11 +853,14 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     func onToggleMicButtonClick(_ isOn: Bool) {
-        LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] isOn:\(isOn)")
-        
-        if (ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate != nil) {
-            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] will notify callVCDelegate")
+        if (ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate == nil) {
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] callVCDelegate is not configured")
+        } else if (ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onToggleMicButtonClick == nil) {
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] callVCDelegate-onToggleMicButtonClick is not configured")
+        } else {
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] will notify")
             ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onToggleMicButtonClick?(isOn)
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onToggleMicButtonClick] did notify")
         }
     }
     
