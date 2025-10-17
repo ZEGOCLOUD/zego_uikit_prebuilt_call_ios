@@ -595,19 +595,17 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             ZegoUIKitPrebuiltCallInvitationService.shared.invitationData = callData
             
             if needReportCall {
-                let uuid = UUID()
-                if UIApplication.shared.applicationState == .active {
+                    let uuid = UUID()
                     ZegoUIKitPrebuiltCallInvitationService.shared.currentCallUUID = uuid
-                    ZegoPluginAdapter.callkitPlugin?.reportIncomingCall(with: uuid, title: inviter.userName ?? "", hasVideo: type == 1)
+                    let callIdentifier = (pluginInvitationID?.isEmpty == false) ? pluginInvitationID! : uuid.uuidString
+
+                    ZegoPluginAdapter.callkitPlugin?.reportIncomingCall(with: uuid, title: inviter.userName ?? "", hasVideo: type == 1, identifier: callIdentifier)
                     if ZegoPluginAdapter.callkitPlugin != nil {
                         let voipData = ["call_id": dataDic?["call_id"] as AnyObject,
                                         "app_state": appState as AnyObject,
                                         "is_voip": 1 as AnyObject,]
                         ReportUtil.sharedInstance().reportEvent(callReceiveCallAlertReportString, paramsDict: voipData)
                     }
-                } else {
-                    LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] not support report call when appState is \(appState)")
-                }
             }
             
             ZegoUIKitPrebuiltCallInvitationService.shared.isCallInviting = true

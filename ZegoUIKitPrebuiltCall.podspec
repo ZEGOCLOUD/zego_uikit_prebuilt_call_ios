@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "ZegoUIKitPrebuiltCall"
-  spec.version      = "2.14.2"
+  spec.version      = "2.14.3"
   spec.summary      = "ZegoUIKitPrebuiltCall iOS SDK"
 
   # This description is used to generate tags and improve search results.
@@ -27,7 +27,7 @@ Pod::Spec.new do |spec|
   spec.description  = "ZegoUIKitPrebuiltCall SDK for iOS by ZEGO."
 
   spec.homepage     = "https://www.zegocloud.com"
-  spec.documentation_url = "https://docs.zegocloud.com"
+  spec.documentation_url = "https://www.zegocloud.com/docs/uikit/callkit-ios/overview"
   # spec.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
 
@@ -39,7 +39,7 @@ Pod::Spec.new do |spec|
   #
 
   # spec.license      = "MIT (example)"
-  spec.license      = { :type => "Copyright", :text => "Copyright © 2022-2024 ZEGO. All Rights Reserved.\n" }
+  spec.license      = { :type => "Copyright", :text => "Copyright © 2015-2025 ZEGO. All Rights Reserved.\n" }
 
 
   # ――― Author Metadata  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -141,6 +141,6 @@ Pod::Spec.new do |spec|
 
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   # spec.dependency "JSONKit", "~> 1.4"
-  spec.dependency 'ZegoUIKit','>=2.13.0'
+  spec.dependency 'ZegoUIKit','>=2.13.4'
 
 end
