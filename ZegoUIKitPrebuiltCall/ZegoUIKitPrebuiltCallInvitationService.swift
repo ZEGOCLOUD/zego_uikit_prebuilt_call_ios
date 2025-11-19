@@ -9,6 +9,7 @@ import UIKit
 import CallKit
 import ZegoUIKit
 import ZegoPluginAdapter
+import ZegoPrebuiltLog
 
 @objc public class ZegoUIKitPrebuiltCallInvitationService: NSObject {
     
@@ -473,6 +474,8 @@ extension ZegoUIKitPrebuiltCallInvitationService: CallInvitationServiceApi {
     
     
     @objc public func unInit() {
+        ZegoPrebuiltLog.shared.write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][unInit]")
+
         ZegoUIKit.shared.uninit()
         ZegoUIKitSignalingPluginImpl.shared.loginOut()
         ZegoUIKitSignalingPluginImpl.shared.uninit()

@@ -7,6 +7,7 @@
 
 import UIKit
 import ZegoUIKit
+import ZegoPrebuiltLog
 
 protocol ZegoTopMenuBarDelegate: AnyObject {
     func onHangUp(_ isHangup: Bool)

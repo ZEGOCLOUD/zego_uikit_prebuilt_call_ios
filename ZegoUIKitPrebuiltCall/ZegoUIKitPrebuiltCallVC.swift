@@ -7,6 +7,7 @@
 
 import UIKit
 import ZegoUIKit
+import ZegoPrebuiltLog
 
 class ZegoAudioCallWaitView : UIView {
   

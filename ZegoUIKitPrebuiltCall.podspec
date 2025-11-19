@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "ZegoUIKitPrebuiltCall"
-  spec.version      = "2.14.5"
+  spec.version      = "2.16.0"
   spec.summary      = "ZegoUIKitPrebuiltCall iOS SDK"
 
   # This description is used to generate tags and improve search results.
@@ -52,7 +52,7 @@ Pod::Spec.new do |spec|
   #  profile URL.
   #
 
-  spec.author             = { "ZEGOCLOUND" => "zego.im" }
+  spec.author             = { "ZEGOCLOUD" => "zego.im" }
   # Or just: spec.author    = "careyxi"
   # spec.authors            = { "careyxi" => "careyxi@zego.im" }
   # spec.social_media_url   = "https://twitter.com/careyxi"
@@ -140,7 +140,8 @@ Pod::Spec.new do |spec|
   # spec.framework = 'ZegoUIKit'
 
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  # spec.dependency "JSONKit", "~> 1.4"
-  spec.dependency 'ZegoUIKit','>=2.13.4'
+
+  spec.dependency 'ZegoUIKit','>= 2.15.0'
+  spec.dependency 'ZegoPrebuiltLog'
 
 end
