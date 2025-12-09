@@ -622,8 +622,6 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
             // notify onIncomingCallReceived
             if (ZegoUIKitPrebuiltCallInvitationService.shared.delegate == nil) {
                 LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] delegate is not configured")
-            } else if (ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallReceived == nil) {
-                LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] delegate-onIncomingCallReceived is not configured")
             } else {
                 let callUser: ZegoCallUser = getCallUser(inviter)
                 var callees: [ZegoCallUser]? = []
@@ -634,11 +632,22 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
                     }
                 }
                 
-                LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] delegate-onIncomingCallReceived will notify")
+                LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] delegate-onIncomingCallReceived will notify if configured")
 
-                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallReceived?(callData.callID ?? "", caller: callUser, callType: ZegoCallType.init(rawValue: type) ?? .voiceCall, callees: callees)
+                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallReceived?(
+                    callData.callID ?? "",
+                    caller: callUser,
+                    callType: ZegoCallType.init(rawValue: type) ?? .voiceCall,
+                    callees: callees)
 
-                LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] delegate-onIncomingCallReceived did notify")
+                ZegoUIKitPrebuiltCallInvitationService.shared.delegate?.onIncomingCallReceived?(
+                    callData.callID ?? "",
+                    caller: callUser,
+                    callType: ZegoCallType.init(rawValue: type) ?? .voiceCall,
+                    callees: callees,
+                    customData: callData.customData ?? "")
+
+                LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onInvitationReceived] delegate-onIncomingCallReceived did notify if configured")
             }
         }
     }
