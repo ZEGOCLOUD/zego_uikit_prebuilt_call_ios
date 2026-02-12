@@ -875,7 +875,13 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     }
     
     func onAudioOutputButtonClick(_ isSpeaker: Bool) {
-        ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onAudioOutputButtonClick?(isSpeaker)
+        if (ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onAudioOutputButtonClick == nil) {
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onAudioOutputButtonClick] callVCDelegate or onAudioOutputButtonClick is not configured")
+        } else {
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onAudioOutputButtonClick] will notify")
+            ZegoUIKitPrebuiltCallInvitationService.shared.callVCDelegate?.onAudioOutputButtonClick?(isSpeaker)
+            LogManager.sharedInstance().write("[PrebuiltCall][ZegoUIKitPrebuiltCallInvitationService][onAudioOutputButtonClick] did notify")
+        }
     }
 
     func onAudioOutputDeviceChanged(_ audioOutput: ZegoUIKitAudioOutputDevice) {

@@ -205,6 +205,7 @@ open class ZegoUIKitPrebuiltCallVC: UIViewController {
       
         ZegoUIKit.shared.addEventHandler(self.help)
         ZegoUIKit.shared.initWithAppID(appID: appID, appSign: appSign)
+        ZegoUIKit.shared.login(userID, userName: userName)
         self.userID = userID
         self.userName = userName
         self.roomID = callID
