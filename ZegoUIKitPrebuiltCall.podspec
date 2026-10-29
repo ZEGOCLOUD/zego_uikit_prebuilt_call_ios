@@ -93,7 +93,7 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files =  "ZegoUIKitPrebuiltCall","ZegoUIKitPrebuiltCall/**/*.{swift,xib}"
+  spec.source_files =  "ZegoUIKitPrebuiltCall","ZegoUIKitPrebuiltCall/**/*.{swift,h,m}"
   # spec.exclude_files = "Classes/Exclude"
 
   # spec.public_header_files = "Classes/**/*.h"
@@ -110,7 +110,7 @@ Pod::Spec.new do |spec|
   # spec.resource  = "icon.png"
   # spec.resources = "ZegoUIKitPrebuiltCall/Resource/Call/**/*.png"
   # create  ZegoUIKitPrebuiltCall_bundle
-  spec.resource_bundle = {'ZegoUIKitPrebuiltCall' => ['ZegoUIKitPrebuiltCall/Resource/*.{mp3,png}']}
+  spec.resource_bundle = {'ZegoUIKitPrebuiltCall' => ['ZegoUIKitPrebuiltCall/Resource/*.{mp3,png}', 'ZegoUIKitPrebuiltCall/**/*.{xib}']}
   # spec.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
 

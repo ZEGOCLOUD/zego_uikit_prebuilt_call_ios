@@ -120,7 +120,7 @@ class ZegoCallInvitationDialog: UIView {
     
     private static func showTipView(_ callInvitationData: ZegoCallInvitationData) -> ZegoCallInvitationDialog {
         
-        let tipView: ZegoCallInvitationDialog = UINib(nibName: "ZegoCallInvitationDialog", bundle: Bundle(for: ZegoCallInvitationData.self)).instantiate(withOwner: nil, options: nil).first as! ZegoCallInvitationDialog
+        let tipView: ZegoCallInvitationDialog = UINib(nibName: "ZegoCallInvitationDialog", bundle: Bundle.nibBundle(forClass: ZegoCallInvitationDialog.self)).instantiate(withOwner: nil, options: nil).first as! ZegoCallInvitationDialog
         let y = KeyWindow().safeAreaInsets.top
         tipView.frame = CGRect.init(x: 8, y: y + 8, width: UIScreen.main.bounds.size.width - 16, height: 80)
         tipView.invitationData = callInvitationData
@@ -178,7 +178,7 @@ class ZegoCallInvitationDialog: UIView {
     }
     
     @objc func viewTap() {
-        let vc = UINib.init(nibName: "ZegoUIKitPrebuiltCallWaitingVC", bundle: Bundle(for: ZegoUIKitPrebuiltCallWaitingVC.self)).instantiate(withOwner: nil, options: nil).first as! ZegoUIKitPrebuiltCallWaitingVC
+        let vc = UINib.init(nibName: "ZegoUIKitPrebuiltCallWaitingVC", bundle: Bundle.nibBundle(forClass: ZegoUIKitPrebuiltCallWaitingVC.self)).instantiate(withOwner: nil, options: nil).first as! ZegoUIKitPrebuiltCallWaitingVC
         vc.isInviter = false
         vc.callInvitationData = self.invitationData
         vc.modalPresentationStyle = .fullScreen

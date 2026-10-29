@@ -106,11 +106,24 @@ import ZegoPrebuiltLog
     }
     
     func getMusicBundle() -> Bundle? {
+        // Try resource bundle from Bundle(for: class) first
+        let classBundle = Bundle(for: ZegoUIKitPrebuiltCallInvitationService.self)
+        if let resourceBundleURL = classBundle.url(forResource: "ZegoUIKitPrebuiltCall", withExtension: "bundle") {
+            if let resourceBundle = Bundle(url: resourceBundleURL) {
+                return resourceBundle
+            }
+        }
+        // Fallback: try framework path in main bundle
         guard let resourcePath: String = Bundle.main.resourcePath else { return nil }
         let pathComponent = "/Frameworks/ZegoUIKitPrebuiltCall.framework/ZegoUIKitPrebuiltCall.bundle"
         let bundlePath = resourcePath + pathComponent
         let bundle = Bundle(path: bundlePath)
-        return bundle
+        if bundle != nil {
+            return bundle
+        }
+        // Fallback: try direct bundle in main bundle
+        let directBundlePath = resourcePath + "/ZegoUIKitPrebuiltCall.bundle"
+        return Bundle(path: directBundlePath)
     }
     
     private func startCall(_ callData: ZegoCallInvitationData, isVideoCall: Bool, source: String) {
@@ -136,7 +149,7 @@ import ZegoPrebuiltLog
                 ZegoUIKitPrebuiltCallInvitationService.shared.callVC = callVC
             } else {
                 // one on one call
-                let vc = UINib.init(nibName: "ZegoUIKitPrebuiltCallWaitingVC", bundle: Bundle(for: ZegoUIKitPrebuiltCallWaitingVC.self)).instantiate(withOwner: nil, options: nil).first as! ZegoUIKitPrebuiltCallWaitingVC
+                let vc = UINib.init(nibName: "ZegoUIKitPrebuiltCallWaitingVC", bundle: Bundle.nibBundle(forClass: ZegoUIKitPrebuiltCallWaitingVC.self)).instantiate(withOwner: nil, options: nil).first as! ZegoUIKitPrebuiltCallWaitingVC
                 vc.isInviter = true
                 vc.callInvitationData = callData
                 vc.modalPresentationStyle = .fullScreen
@@ -1131,4 +1144,41 @@ class ZegoUIKitPrebuiltCallInvitationService_Help: NSObject, ZegoUIKitEventHandl
     
 }
 
+
+// MARK: - NIB Bundle Loading Helper
+extension Bundle {
+    /// Safely load a NIB from the correct bundle with fallback logic
+    /// This handles the case where CocoaPods integrates as source files vs framework
+    static func nibBundle(forClass classType: AnyClass) -> Bundle {
+        return resolveNibBundle(nibName: String(describing: classType),
+                                classBundle: Bundle(for: classType),
+                                mainBundle: Bundle.main)
+    }
+    
+    /// Resolution core behind `nibBundle(forClass:)`, with the bundles injected so the
+    /// fallback chain can be covered by unit tests without a host app.
+    static func resolveNibBundle(nibName: String, classBundle: Bundle, mainBundle: Bundle) -> Bundle {
+        // Primary: Bundle(for: class) - works for framework integration
+        if classBundle.path(forResource: nibName, ofType: "nib") != nil {
+            return classBundle
+        }
+        
+        // Try resource bundle inside the class bundle
+        if let resourceBundleURL = classBundle.url(forResource: "ZegoUIKitPrebuiltCall", withExtension: "bundle") {
+            if let resourceBundle = Bundle(url: resourceBundleURL) {
+                if resourceBundle.path(forResource: nibName, ofType: "nib") != nil {
+                    return resourceBundle
+                }
+            }
+        }
+        
+        // Fallback: try main bundle (for source files integration mode)
+        if mainBundle.path(forResource: nibName, ofType: "nib") != nil {
+            return mainBundle
+        }
+        
+        // Last resort: return class bundle anyway (will crash with original error)
+        return classBundle
+    }
+}
 

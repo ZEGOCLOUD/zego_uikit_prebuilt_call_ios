@@ -20,5 +20,6 @@ let package = Package(
     
     targets: [
         .target(name: "ZegoUIKitPrebuiltCall", dependencies: [.product(name: "ZegoUIKit", package: "zego_uikit_ios")], path: "ZegoUIKitPrebuiltCall"),
+        .testTarget(name: "ZegoUIKitPrebuiltCallTests", dependencies: ["ZegoUIKitPrebuiltCall"], path: "Tests/ZegoUIKitPrebuiltCallTests"),
     ]
 )
